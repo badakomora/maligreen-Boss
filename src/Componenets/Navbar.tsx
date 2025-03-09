@@ -43,13 +43,13 @@ export const Navbar = () =>{
     
     return(
          <aside css={sidebarStyles}>
-               <img src="/logo.png" alt="logo" style={{ width: "200px" }} />
+               <img src="/logo.png" alt="logo" style={{ width: "100%" }} />
                 <nav>
                   <ul>
                     <li><a href="." className="active">Dashboard</a></li>
                     <li><a href=".">Production</a></li>
                     <li><a href=".">Sales</a></li>
-                    <li><a href=".">Expenses</a></li>
+                    <li><a href=".">Expenses & Budget</a></li>
                     <li><a href=".">Livestock Log</a></li>
                     <li><a href=".">Payroll</a></li>
                     <li><a href=".">Customers</a></li>

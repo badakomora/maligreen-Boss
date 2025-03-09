@@ -62,23 +62,7 @@ const filtersStyles = css`
   }
 `;
 
-const projectsSectionStyles = css`
-  margin-bottom: 2rem;
-`;
 
-const projectListStyles = css`
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-`;
-
-const projectCardStyles = css`
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  flex: 1 1 calc(50% - 1rem);
-`;
 
 
 
@@ -106,27 +90,8 @@ function App() {
             <option value="a-faire">Sales and Marketing</option>
             <option value="terminé">Progress</option>
           </select>
-          <input type="text" placeholder="Rechercher..." />
+          {/* <input type="text" placeholder="Rechercher..." /> */}
         </div>
-
-        {/* Projects */}
-        <section css={projectsSectionStyles}>
-          <h2>Projets</h2>
-          <div css={projectListStyles}>
-            <div css={projectCardStyles}>
-              <h3>Migration Serveur</h3>
-              <p><strong>Responsable :</strong> Alice</p>
-              <p><strong>Statut :</strong> En cours</p>
-              <p><strong>Date limite :</strong> 25/11/2024</p>
-            </div>
-            <div css={projectCardStyles}>
-              <h3>Développement Application</h3>
-              <p><strong>Responsable :</strong> Bob</p>
-              <p><strong>Statut :</strong> À faire</p>
-              <p><strong>Date limite :</strong> 30/11/2024</p>
-            </div>
-          </div>
-        </section>
 
         {/* Tasks */}
        <Table />
@@ -137,3 +102,5 @@ function App() {
 
 export default App;
 // https://codepen.io/Kcreation-MTech/pen/zYgQVwK
+// https://codepen.io/leonam-silva-de-souza/pen/MWNbyZJ
+// https://codepen.io/alreylz/pen/XWLvRpM

@@ -40,7 +40,7 @@ const paid = css`
 export const Table = () =>{
     return(
         <section>
-        <h2>Unpaid Invoices</h2>
+        <h2>Profit & Loss</h2>
         <table css={tableStyles}>
           <thead>
             <tr>
