@@ -31,8 +31,12 @@ const sidebarStyles = css`
 
   nav ul li a:hover,
   nav ul li a.active {
-    background: #3498db;
-    color: white;
+    background: #486c1b;
+   color: #ffffff;
+  }
+    nav ul li a:hover {
+    background: #486c1b;
+    color: #ffffff;
   }
 `;
 
@@ -43,12 +47,11 @@ export const Navbar = () =>{
     
     return(
          <aside css={sidebarStyles}>
-               <img src="/logo.png" alt="logo" style={{ width: "100%" }} />
+               <img src="/2.png" alt="logo" style={{ width: "100%" }} />
                 <nav>
                   <ul>
                     <li><a href="." className="active">Dashboard</a></li>
-                    <li><a href=".">Production</a></li>
-                    <li><a href=".">Sales</a></li>
+                    <li><a href=".">Sales & Production</a></li>
                     <li><a href=".">Expenses & Budget</a></li>
                     <li><a href=".">Livestock Log</a></li>
                     <li><a href=".">Payroll</a></li>

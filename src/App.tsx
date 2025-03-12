@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useState } from "react";
 import { Navbar } from "./Componenets/Navbar";
-import { Table } from "./Componenets/Table";
+import { Grid } from "./Componenets/Grid";
 
 const layoutStyles = css`
   display: flex;
@@ -13,7 +14,7 @@ const mainContentStyles = css`
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
-  background: #f9f9f9;
+  background: white;
 `;
 
 const headerStyles = css`
@@ -22,7 +23,6 @@ const headerStyles = css`
   align-items: center;
   margin-bottom: 2rem;
 `;
-
 
 const buttonStyles = css`
   padding: 0.5rem 1rem;
@@ -35,13 +35,14 @@ const buttonStyles = css`
 const btnPrimary = css`
   ${buttonStyles}
   background: #486c1b;
-  color: white;
+  color: #ffffff;
 `;
 
 const btnSecondary = css`
   ${buttonStyles}
-  background: #3498db;
-  color: white;
+  background: #ffffff;
+  border: solid 2px #486c1b;
+  color: #486c1b;
 `;
 
 const filtersStyles = css`
@@ -52,49 +53,60 @@ const filtersStyles = css`
   select {
     padding: 0.5rem;
     border-radius: 8px;
-  }
-
-  input {
-    width: 50%;
-    padding: 0.5rem;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    background: white;
+    color: #486c1b;
   }
 `;
 
-
-
-
+const months = [
+  { value: "01", label: "January" },
+  { value: "02", label: "February" },
+  { value: "03", label: "March" },
+  { value: "04", label: "April" },
+  { value: "05", label: "May" },
+  { value: "06", label: "June" },
+  { value: "07", label: "July" },
+  { value: "08", label: "August" },
+  { value: "09", label: "September" },
+  { value: "10", label: "October" },
+  { value: "11", label: "November" },
+  { value: "12", label: "December" },
+];
 
 function App() {
+  const [selectedMonth, setSelectedMonth] = useState("");
+
   return (
     <div css={layoutStyles}>
       {/* Sidebar */}
-     <Navbar />
+      <Navbar />
 
       {/* Main Content */}
       <main css={mainContentStyles}>
         <header css={headerStyles}>
-          <h1>Dashboard</h1>
+          <h1 style={{ color: "#486c1b" }}>Dashboard</h1>
           <div>
-            <button css={btnPrimary}>+ New Customer</button>
-            <button css={btnSecondary}>+ create Invoice</button>
+            <select
+              css={btnPrimary}
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+            >
+              <option value="">Generate Profit and Loss Report</option>
+              {months.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </select>
+            <button css={btnSecondary}>View Report</button>
           </div>
         </header>
 
         {/* Filters */}
         <div css={filtersStyles}>
-          <select>
-            <option value="all">ALL Reports</option>
-            <option value="en-cours">Profit & Loss</option>
-            <option value="a-faire">Sales and Marketing</option>
-            <option value="terminé">Progress</option>
-          </select>
-          {/* <input type="text" placeholder="Rechercher..." /> */}
+          <Grid />
         </div>
-
-        {/* Tasks */}
-       <Table />
       </main>
     </div>
   );
