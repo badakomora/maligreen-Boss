@@ -51,9 +51,9 @@ export const Navbar = () =>{
                 <nav>
                   <ul>
                     <li><a href="." className="active">Dashboard</a></li>
-                    <li><a href=".">Sales & Production</a></li>
+                    <li><a href=".">Sales</a></li>
                     <li><a href=".">Expenses & Budget</a></li>
-                    <li><a href=".">Livestock Log</a></li>
+                    <li><a href=".">Production & Livestock Log</a></li>
                     <li><a href=".">Payroll</a></li>
                     <li><a href=".">Customers</a></li>
                     <li><a href=".">Logout</a></li>

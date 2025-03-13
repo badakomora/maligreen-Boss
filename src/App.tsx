@@ -2,12 +2,15 @@
 import { css } from "@emotion/react";
 import { useState } from "react";
 import { Navbar } from "./Componenets/Navbar";
-import { Grid } from "./Componenets/Grid";
+// import { Grid } from "./Componenets/Grid";
+import { Data } from "./Componenets/Data";
+import { Chart } from "./Componenets/Chart";
 
 const layoutStyles = css`
   display: flex;
   height: 100vh;
   overflow: hidden;
+  font-family:Monaco;
 `;
 
 const mainContentStyles = css`
@@ -46,7 +49,7 @@ const btnSecondary = css`
 `;
 
 const filtersStyles = css`
-  display: flex;
+  display: block;
   justify-content: space-between;
   margin-bottom: 1rem;
 
@@ -105,7 +108,9 @@ function App() {
 
         {/* Filters */}
         <div css={filtersStyles}>
-          <Grid />
+          {/* <Grid /> */}
+          <Data />
+          <Chart />
         </div>
       </main>
     </div>

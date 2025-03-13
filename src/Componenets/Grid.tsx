@@ -36,15 +36,16 @@ const globalStyles = css`
     display: grid;
     grid-template-columns: 2fr 2fr 1fr 1fr;
     grid-template-rows: 2fr 1fr;
-    box-shadow: 0px 0px 10px -6px  #ffffff;;
+    box-shadow: 0px 0px 10px -6px  #ffffff;
   }
   .section {
     padding: 1rem 1.8rem;
     transition: scale 1s ease-out;
+    box-shadow: 0px 0px 65px -3px  #486c1b;
   }
   .section:hover {
     transform: scale(1.01);
-    box-shadow: 0px 0px 65px -3px  #486c1b;
+    // box-shadow: 0px 0px 65px -3px  #486c1b;
   }
   .special1 {
     grid-column: span 2;
