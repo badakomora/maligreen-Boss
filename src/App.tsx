@@ -8,7 +8,7 @@ import { Chart } from "./Componenets/Chart";
 
 const layoutStyles = css`
   display: flex;
-  height: 100vh;
+ 
   overflow: hidden;
   font-family:Monaco;
 `;
