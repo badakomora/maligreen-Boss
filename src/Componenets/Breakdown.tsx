@@ -121,6 +121,32 @@ export const Breakdown = () => {
             ))}
           </div>
         </div>
+
+        <div css={styles.rowdiv}>
+          <h2>Overtime Expense & Budget Breakdown</h2>
+          <hr style={{ borderTop: "1px dotted #333" }} />
+          <div css={styles.row}> 
+            {menuItems.map((menu, index) => (
+              <div key={index} css={styles.specialCard}>
+                <ul>
+                  {menu.items.map((item, i) => (
+                    <li key={i}>
+                      {item.name}<span className="note">({item.note})</span>
+                      <span className="amount-note">
+                        <span><b>{item.price}</b></span>
+                      </span>
+                    </li>
+                  ))}
+                  {index === 0 && (
+                    <li className="total">
+                      Variance: <span>{menu.total}</span>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
