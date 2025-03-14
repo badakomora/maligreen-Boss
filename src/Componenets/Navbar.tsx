@@ -6,17 +6,20 @@ const sidebarStyles = css`
   color: #486c1b;
   width: 250px;
   padding: 1rem;
-  display: flex;
-  flex-direction: column;
+  display: block;
+
 
   h2 {
     margin-bottom: 2rem;
   }
 
-  nav ul {
-    list-style: none;
+  nav{
+  margin-top:50px;
   }
-
+  nav ul {
+    list-style:none;
+    text-align:left;
+}
   nav ul li {
     margin-bottom: 1rem;
   }
@@ -53,7 +56,7 @@ export const Navbar = () =>{
                     <li><a href="." className="active">Dashboard</a></li>
                     <li><a href=".">Sales</a></li>
                     <li><a href=".">Expenses & Budget</a></li>
-                    <li><a href=".">Production & Livestock Log</a></li>
+                    <li><a href=".">Livestock & Production</a></li>
                     <li><a href=".">Payroll</a></li>
                     <li><a href=".">Customers</a></li>
                     <li><a href=".">Logout</a></li>

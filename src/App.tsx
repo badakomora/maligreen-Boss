@@ -2,9 +2,11 @@
 import { css } from "@emotion/react";
 import { useState } from "react";
 import { Navbar } from "./Componenets/Navbar";
+import { Breakdown } from "./Componenets/Breakdown";
 // import { Grid } from "./Componenets/Grid";
-import { Data } from "./Componenets/Data";
-import { Chart } from "./Componenets/Chart";
+// import { Data } from "./Componenets/Data";
+// import { Chart } from "./Componenets/Chart";
+// import { Budget } from "./Componenets/Budget";
 
 const layoutStyles = css`
   display: flex;
@@ -52,6 +54,7 @@ const filtersStyles = css`
   display: block;
   justify-content: space-between;
   margin-bottom: 1rem;
+  margin-top:50px;
 
   select {
     padding: 0.5rem;
@@ -108,9 +111,11 @@ function App() {
 
         {/* Filters */}
         <div css={filtersStyles}>
-          {/* <Grid /> */}
+          {/* <Grid />
           <Data />
-          <Chart />
+          <Chart /> */}
+          <Breakdown />
+          {/* <Budget />  */}
         </div>
       </main>
     </div>
@@ -121,3 +126,6 @@ export default App;
 // https://codepen.io/Kcreation-MTech/pen/zYgQVwK
 // https://codepen.io/leonam-silva-de-souza/pen/MWNbyZJ
 // https://codepen.io/alreylz/pen/XWLvRpM
+
+
+// add expense https://codepen.io/click4manoj/pen/RwpdNqy
