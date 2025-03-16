@@ -47,12 +47,15 @@ export const Chart = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const dataSets = [dailyData, weeklyData, monthlyData, yearlyData];
-  const labels = ["Daily", "Weekly", "Monthly", "Annually"];
+  // const labels = ["Daily", "Weekly", "Monthly", "Annually"];
+  const labels = ["March 25", "February 25", "January 25", "December 24"];
 
   return (
-    <div style={{ display: "flex", width: "100%", marginTop: "100px" }}>
+    // <div style={{ display: "flex", width: "100%", marginTop: "100px" }}>
+    <div style={{ display: "flex", width: "100%"}}>
       <div>
-        <h2 style={{ color: "#486c1b" }}>General Sales Revenue Trends</h2>
+        {/* <h2 style={{ color: "#486c1b" }}>General Sales Revenue Trends</h2> */}
+        <h2 style={{ color: "#486c1b" }}> General Production Trends</h2>
         <div>
           {labels.map((label, index) => (
             <button

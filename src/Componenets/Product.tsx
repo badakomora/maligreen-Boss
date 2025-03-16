@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { Chart } from "./Chart";
 
 const productStyles = css`
   @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap");
@@ -35,6 +36,7 @@ const productStyles = css`
   .left {
     display: block;
     min-width: 250px;
+    align-items: center;
   }
 
   .product_img {
@@ -42,7 +44,7 @@ const productStyles = css`
     width: 230px;
     margin: 10px;
     border-radius: 5px;
-    background: url("https://sapinsdairy.com/wp-content/uploads/2021/12/milk-bottle.png") no-repeat center;
+    background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR17rLWpUemc2N_ScqpAr-NX1OOKWUQmQwdyXWDf1U0o6XpdFhm1mSI1GIzVFAVjxwahb0&usqp=CAU") no-repeat center;
     background-size: cover;
   }
 
@@ -120,38 +122,45 @@ export const Product = () => {
         <div className="left">
           <div className="product_img"></div>
           <div className="product_details">
-            <h4 className="title">Woakers</h4>
-            <p className="discription">Men's White Printed Sneakers</p>
+            <h4 className="title">GoatMilk 1L</h4>
+            <p className="discription">Market Prize</p>
             <p className="price">
-              ₹824 <span className="price_original">₹4000</span>
-              <span className="offer"> 79% OFF</span>
+              {/* ₹824 <span className="price_original">₹4000</span> */}
+              <span className="offer">KES 200</span>
             </p>
-            <p className="other">inclusive of all taxes</p>
+            <p className="other">Inclusive of all taxes</p>
           </div>
         </div>
 
         <div className="right">
           <div className="product_description">
-            <h4>PRODUCT DESCRIPTION</h4>
+            <Chart />
             <p>
-              Elevate your style with this classy pair of Casual Shoes from the house of Our brand. Featuring a contemporary refined design with exceptional comfort, this pair is perfect to give your quintessential dressing an upgrade.
+              <span className="highlight">Total Goat Count</span> <a href=".">5000.</a>
+              <span className="special"> Kids Count</span> <a href=".">4006</a> 
+              <span className="special"> Pregnant Goats</span> <a href=".">400</a>  
             </p>
+            <hr />
             <p>
-              <span className="highlight">Country of Origin -</span> India
+              <span className="highlight">Today's production </span><a href="."><b>4000 litres</b>.</a>
+              <span className="special"> Lactating Goats</span><a href=".">3000</a>
             </p>
+            <hr />
             <p>
-              <span className="highlight">Manufactured By -</span> S.K. INTERNATIONAL AJUDD PURAM BAGDA TAHSIL AGRA U.P.
-              <span className="special"> 282001, 9759860599, sheela.woakers@gmail.com</span>
+              <span className="highlight">Total deceased goats</span> <a href=".">500</a>
+              <span className="special"> Sick goats</span> <a href=".">40</a>
             </p>
+            <hr />
             <p>
-              <span className="highlight">Packed By -</span> S.K. INTERNATIONAL AJUDD PURAM BAGDA TAHSIL AGRA U.P.
-              <span className="special"> 282001, 9759860599, sheela.woakers@gmail.com</span>
+              <span className="highlight">Breeds</span> <a href=".">50</a>
             </p>
+            <hr />
             <p>
-              <span className="highlight">Commodity -</span> Men's Casual Shoes
+              <span className="highlight"></span> <a href=".">Feeding program</a>
             </p>
+            <hr />
             <p>
-              <span className="highlight">Sold By -</span> Next Tree Private Limited
+              <span className="highlight"></span> <a href=".">Vaccination log</a>
             </p>
           </div>
         </div>
@@ -159,3 +168,4 @@ export const Product = () => {
     </section>
   );
 };
+ 
