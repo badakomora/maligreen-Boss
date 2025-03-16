@@ -2,7 +2,8 @@
 import { css } from "@emotion/react";
 import { useState } from "react";
 import { Navbar } from "./Componenets/Navbar";
-import { Breakdown } from "./Componenets/Breakdown";
+// import { Breakdown } from "./Componenets/Breakdown";
+import { Product } from "./Componenets/Product";
 // import { Grid } from "./Componenets/Grid";
 // import { Data } from "./Componenets/Data";
 // import { Chart } from "./Componenets/Chart";
@@ -10,7 +11,6 @@ import { Breakdown } from "./Componenets/Breakdown";
 
 const layoutStyles = css`
   display: flex;
- 
   overflow: hidden;
   font-family:Monaco;
 `;
@@ -111,11 +111,12 @@ function App() {
 
         {/* Filters */}
         <div css={filtersStyles}>
-          {/* <Grid />
-          <Data />
-          <Chart /> */}
-          <Breakdown />
+          {/* <Grid /> */}
+          {/* <Data /> */}
+          {/* <Chart /> */}
+          {/* <Breakdown /> */}
           {/* <Budget />  */}
+          <Product />
         </div>
       </main>
     </div>
