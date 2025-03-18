@@ -8,6 +8,7 @@ const pricingGridStyles = css`
   align-items: center;
   gap: 20px;
   flex-wrap: wrap;
+  padding:20px;
 `;
 
 const planStyles = css`

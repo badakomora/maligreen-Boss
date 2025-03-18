@@ -3,10 +3,10 @@ import { css } from "@emotion/react";
 import { useState } from "react";
 import { Navbar } from "./Componenets/Navbar";
 // import { Breakdown } from "./Componenets/Breakdown";
-import { Product } from "./Componenets/Product";
+// import { Product } from "./Componenets/Product";
 // import { Grid } from "./Componenets/Grid";
-// import { Data } from "./Componenets/Data";
-// import { Chart } from "./Componenets/Chart";
+import { Data } from "./Componenets/Data";
+import { Chart } from "./Componenets/Chart";
 // import { Budget } from "./Componenets/Budget";
 
 const layoutStyles = css`
@@ -93,6 +93,7 @@ function App() {
         <header css={headerStyles}>
           <h1 style={{ color: "#486c1b" }}>Dashboard</h1>
           <div>
+            <button css={btnSecondary}>Schedule a meeting</button>
             <select
               css={btnPrimary}
               value={selectedMonth}
@@ -105,18 +106,17 @@ function App() {
                 </option>
               ))}
             </select>
-            <button css={btnSecondary}>View Report</button>
           </div>
         </header>
 
         {/* Filters */}
         <div css={filtersStyles}>
           {/* <Grid /> */}
-          {/* <Data /> */}
-          {/* <Chart /> */}
+          <Data /> 
+          <Chart />
           {/* <Breakdown /> */}
           {/* <Budget />  */}
-          <Product />
+          {/* <Product /> */}
         </div>
       </main>
     </div>

@@ -14,7 +14,6 @@ const productStyles = css`
   }
 
   body {
-    background: #002447;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,7 +21,7 @@ const productStyles = css`
   }
 
   section {
-    background: #fbeceb;
+    background: #ffffff;
     width: 700px;
     border-radius: 5px;
     padding: 20px;
@@ -36,7 +35,6 @@ const productStyles = css`
   .left {
     display: block;
     min-width: 250px;
-    align-items: center;
   }
 
   .product_img {
@@ -56,7 +54,7 @@ const productStyles = css`
 
   .product_details .title {
     font-size: 1.3em;
-    color: rgb(99, 99, 99);
+    color: #486c1b;
     font-weight: 900;
   }
 
@@ -64,7 +62,7 @@ const productStyles = css`
   .product_details .price,
   .product_details .other {
     font-size: 0.8em;
-    color: gray;
+    color: #486c1b;
   }
 
   .product_details .price {
@@ -76,11 +74,10 @@ const productStyles = css`
     text-decoration: line-through;
     font-size: 0.7em;
     font-weight: 400;
-    color: gray;
   }
 
   .product_details .price .offer {
-    color: #03ac13;
+    color: #486c1b;
     font-weight: 600;
   }
 
@@ -90,7 +87,7 @@ const productStyles = css`
 
   .product_description {
     text-align: left;
-    margin: 30px 20px;
+    margin: 20px 10px;
   }
 
   .product_description h4 {
@@ -101,13 +98,8 @@ const productStyles = css`
 
   .product_description p {
     font-size: 0.8em;
-    color: grey;
+    color: #486c1b;
     margin-bottom: 15px;
-  }
-
-  .highlight {
-    color: rgb(99, 99, 99);
-    font-weight: 900;
   }
 
   .special {
@@ -122,11 +114,10 @@ export const Product = () => {
         <div className="left">
           <div className="product_img"></div>
           <div className="product_details">
-            <h4 className="title">GoatMilk 1L</h4>
+            <h4 className="title">Goat Milk 1L</h4>
             <p className="discription">Market Prize</p>
             <p className="price">
-              {/* ₹824 <span className="price_original">₹4000</span> */}
-              <span className="offer">KES 200</span>
+              <span className="offer">KES200</span>
             </p>
             <p className="other">Inclusive of all taxes</p>
           </div>
@@ -135,33 +126,6 @@ export const Product = () => {
         <div className="right">
           <div className="product_description">
             <Chart />
-            <p>
-              <span className="highlight">Total Goat Count</span> <a href=".">5000.</a>
-              <span className="special"> Kids Count</span> <a href=".">4006</a> 
-              <span className="special"> Pregnant Goats</span> <a href=".">400</a>  
-            </p>
-            <hr />
-            <p>
-              <span className="highlight">Today's production </span><a href="."><b>4000 litres</b>.</a>
-              <span className="special"> Lactating Goats</span><a href=".">3000</a>
-            </p>
-            <hr />
-            <p>
-              <span className="highlight">Total deceased goats</span> <a href=".">500</a>
-              <span className="special"> Sick goats</span> <a href=".">40</a>
-            </p>
-            <hr />
-            <p>
-              <span className="highlight">Breeds</span> <a href=".">50</a>
-            </p>
-            <hr />
-            <p>
-              <span className="highlight"></span> <a href=".">Feeding program</a>
-            </p>
-            <hr />
-            <p>
-              <span className="highlight"></span> <a href=".">Vaccination log</a>
-            </p>
           </div>
         </div>
       </div>
