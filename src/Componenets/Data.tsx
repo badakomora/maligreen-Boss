@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-// https://codepen.io/Yashi-Singh/pen/EaYemax
 import { css } from '@emotion/react';
 
 const pricingGridStyles = css`
@@ -26,14 +25,12 @@ const planStyles = css`
 `;
 
 const plan1Styles = css`
-  background: #ffffff;
   color: #486c1b;
   > a{
     display: inline-block;
     margin-top: 10px;
     padding: 10px 15px;
-    background:  #486c1b;
-    color: #ffffff;
+    color: #486c1b;
     text-decoration: none;
     border-radius: 5px;
     transition: background 0.3s;
@@ -50,8 +47,7 @@ const plan2Styles = css`
     display: inline-block;
     margin-top: 10px;
     padding: 10px 15px;
-    background:  #ffffff;
-    color: #486c1b;
+    color:  #ffffff;
     text-decoration: none;
     border-radius: 5px;
     transition: background 0.3s;
@@ -64,47 +60,51 @@ const plan2Styles = css`
 
 export const Data = () => {
   return (
-    <div css={pricingGridStyles}>
-   <p style={{color:"#486c1b"}}> <big><b>Today's Sale Revenue </b></big> <br />remained steady across <br />all channels, <br /> with <b>farm pickups</b> <br /> leading in volume.</p>
-      <div css={[planStyles, plan1Styles]}>
-        <h2>Cash Revenue</h2>
-        <div>
-          <p>Farm Pickup<big><b>KES400</b></big></p>
-          <hr />
-          <p>Delivery<big><b>KES3,200</b></big></p>
-          <hr />
-          <p>Wholesale<big><b>KES2,000</b></big></p>
-          <hr />
+  <div>
+      <center>
+        <h1 style={{color:"#486c1b"}}>Sales Revenue Overtime KES30000</h1>
+      </center>
+      <div css={pricingGridStyles}>
+        <div css={[planStyles, plan1Styles]}>
+          <h3>Overtime Cash Revenue</h3>
+          <div>
+            <p>Farm Pickup<big><b>KES400</b></big></p>
+            <hr />
+            <p>Delivery<big><b>KES3,200</b></big></p>
+            <hr />
+            <p>Wholesale<big><b>KES2,000</b></big></p>
+            <hr />
+          </div>
+          <a href=".">Total KES 5,800</a>
         </div>
-        <a  href=".">KES 5,800</a>
-      </div>
 
-      <div css={[planStyles, plan2Styles]}>
-        <h2>Till 4367608 Revenue</h2>
-        <div>
-        <p>Farm Pickup<big><b>KES400</b></big></p>
-          <hr />
-          <p>Delivery<big><b>KES3,200</b></big></p>
-          <hr />
-          <p>Wholesale<big><b>KES2,000</b></big></p>
-          <hr />
+        <div css={[planStyles, plan2Styles]}>
+          <h3>Overtime Till 4367608 Revenue</h3>
+          <div>
+            <p>Farm Pickup<big><b>KES400</b></big></p>
+            <hr />
+            <p>Delivery<big><b>KES3,200</b></big></p>
+            <hr />
+            <p>Wholesale<big><b>KES2,000</b></big></p>
+            <hr />
+          </div>
+          <a href=".">Total KES 5,100</a>
         </div>
-        <a  href=".">KES 5,100</a>
-      </div>
 
-      <div css={[planStyles, plan1Styles]}>
-        <h2>Sanbic Bank Revenue</h2>
-        <div>
-        <p>Farm Pickup<big><b>KES400</b></big></p>
-          <hr />
-          <p>Delivery<big><b>KES3,200</b></big></p>
-          <hr />
-          <p>Wholesale<big><b>KES2,000</b></big></p>
-          <hr />
+        <div css={[planStyles, plan1Styles]}>
+          <h3>Overtime Stanbic Bank Revenue</h3>
+          <div>
+            <p>Farm Pickup<big><b>KES400</b></big></p>
+            <hr />
+            <p>Delivery<big><b>KES3,200</b></big></p>
+            <hr />
+            <p>Wholesale<big><b>KES2,000</b></big></p>
+            <hr />
+          </div>
+          <a href=".">Total KES 5,200</a>
         </div>
-        <a  href=".">KES 5,200</a>
       </div>
-    </div>
+  </div>
   );
 };
 

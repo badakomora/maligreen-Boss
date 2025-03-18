@@ -9,7 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { List } from "./List";
+// import { List } from "./List";
 
 const dailyData = [
   { name: "Mon", sales: 5000 },
@@ -52,11 +52,10 @@ export const Chart = () => {
   const labels = ["March 25", "February 25", "January 25", "December 24"];
 
   return (
-    // <div style={{ display: "flex", width: "100%", marginTop: "100px" }}>
     <div style={{ display: "flex", width: "100%"}}>
       <div  style={{width:"30%"}}>
-        {/* <h2 style={{ color: "#486c1b" }}>General Sales Revenue Trends</h2> */}
-        <h2 style={{ color: "#486c1b" }}>Production Trends</h2>
+        <h2 style={{ color: "#486c1b" }}>Sales Revenue Trends</h2>
+        {/* <h2 style={{ color: "#486c1b" }}>Production Trends</h2> */}
         <div>
           {labels.map((label, index) => (
             <button
@@ -79,9 +78,8 @@ export const Chart = () => {
               {label}
             </button>
           ))}
-          <List />
+          {/* <List /> */}
         </div>
-
       </div>
       <div style={{ width: "70%", height: 350 }}>
         <ResponsiveContainer width="100%" height="100%">
@@ -92,7 +90,6 @@ export const Chart = () => {
             <Tooltip />
             <Legend />
             <Line type="monotone" dataKey="sales" stroke="#486c1b" name="Sales" />
-           
           </LineChart>
         </ResponsiveContainer>
       </div>

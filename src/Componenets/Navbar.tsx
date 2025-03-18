@@ -8,36 +8,29 @@ const sidebarStyles = css`
   padding: 1rem;
   display: block;
 
-
-  h2 {
-    margin-bottom: 2rem;
-  }
-
   nav{
   margin-top:50px;
   }
-  nav ul {
-    list-style:none;
-    text-align:left;
-}
-  nav ul li {
+
+  nav div a {
     margin-bottom: 1rem;
   }
 
-  nav ul li a {
+  nav div a {
     text-decoration: none;
     color: #486c1b;
     padding: 0.5rem 1rem;
     display: block;
-    border-radius: 8px;
+    border-radius: 5px;
   }
 
-  nav ul li a:hover,
-  nav ul li a.active {
+  nav div a:hover,
+  nav div a.active {
     background: #486c1b;
-   color: #ffffff;
+    color: #ffffff;
   }
-    nav ul li a:hover {
+
+  nav div a:hover {
     background: #486c1b;
     color: #ffffff;
   }
@@ -49,19 +42,19 @@ export const Navbar = () =>{
 
     
     return(
-         <aside css={sidebarStyles}>
+            <div css={sidebarStyles}>
                <img src="/2.png" alt="logo" style={{ width: "100%" }} />
                 <nav>
-                  <ul>
-                    <li><a href="." className="active">Dashboard</a></li>
-                    <li><a href=".">Sales</a></li>
-                    <li><a href=".">Expenses & Budget</a></li>
-                    <li><a href=".">Livestock & Production</a></li>
-                    <li><a href=".">Payroll</a></li>
-                    <li><a href=".">Customers</a></li>
-                    <li><a href=".">Logout</a></li>
-                  </ul>
+                  <div>
+                    <a href="." className="active">Dashboard</a>
+                    <a href=".">Sales</a>
+                    <a href=".">Expenses & Budget</a>
+                    <a href=".">Livestock & Production</a>
+                    <a href=".">Payroll</a>
+                    <a href=".">Settings</a>
+                    <a href=".">Logout</a>
+                  </div>
                 </nav>
-              </aside>
+              </div>
     )
 }

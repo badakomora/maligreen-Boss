@@ -112,8 +112,9 @@ function App() {
         {/* Filters */}
         <div css={filtersStyles}>
           {/* <Grid /> */}
-          <Data /> 
+        
           <Chart />
+          <Data /> 
           {/* <Breakdown /> */}
           {/* <Budget />  */}
           {/* <Product /> */}
