@@ -43,13 +43,17 @@ const yearlyData = [
   { name: "2023", sales: 2_700_000 },
 ];
 
-export const Chart = () => {
+interface NavbarProps {
+  activeTab: string;
+}
+
+export const Chart:React.FC<NavbarProps> = ({activeTab}) => {
   const [selectedData, setSelectedData] = useState(dailyData);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const dataSets = [dailyData, weeklyData, monthlyData, yearlyData];
-  // const labels = ["Daily", "Weekly", "Monthly", "Annually"];
-  const labels = ["March 25", "February 25", "January 25", "December 24"];
+  const labels = ["Daily", "Weekly", "Monthly", "Annually"];
+  // const labels = ["March 25", "February 25", "January 25", "December 24"];
 
   return (
     <div style={{ display: "flex", width: "100%"}}>
@@ -78,10 +82,10 @@ export const Chart = () => {
               {label}
             </button>
           ))}
-          <List />
+          {activeTab === "Livestock & Production" ? <List /> : ""}
         </div>
       </div>
-      <div style={{ width: "70%"}}>
+      <div style={{ width: "70%", height: "500px"}}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={selectedData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" />

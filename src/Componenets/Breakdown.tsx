@@ -121,7 +121,7 @@ export const Breakdown = () => {
           Replenish Farm Manager{"\u00BB"}
         </a>
         <div css={styles.rowdiv}>
-          <h2>Daily Expense & Budget Breakdown</h2>
+          <h2 style={{ color: "#486c1b" }}>Daily Expense & Budget Breakdown</h2>
           <hr style={{ borderTop: "1px dotted #333" }} />
           <div css={styles.row}>
             {dailyMenuItems.map((menu, index) => (
@@ -150,7 +150,7 @@ export const Breakdown = () => {
         </div>
 
         <div css={styles.rowdiv}>
-          <h2>Overtime Expense & Budget Breakdown (All-Time)</h2>
+          <h2 style={{ color: "#486c1b" }}>Overtime Expense & Budget Breakdown (All-Time)</h2>
           <hr style={{ borderTop: "1px dotted #333" }} />
           <div css={styles.row}>
             {overtimeMenuItems.map((menu, index) => (

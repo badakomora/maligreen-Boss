@@ -63,13 +63,17 @@ const productStyles = css`
   }
 `;
 
-export const Product = () => {
+interface NavbarProps {
+  activeTab: string;
+}
+
+export const Product:React.FC<NavbarProps> = ({activeTab}) => {
   return (
     <section css={productStyles}>
       <div className="content">
         <div className="right">
           <div className="product_description">
-            <Chart />
+            <Chart activeTab={activeTab} />
           </div>
         </div>
         <div className="left">

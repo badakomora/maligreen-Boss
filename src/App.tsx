@@ -8,6 +8,7 @@ import { Grid } from "./Componenets/Grid";
 import { Data } from "./Componenets/Data";
 import { Chart } from "./Componenets/Chart";
 import { Block } from "./Componenets/Block";
+import { Budget } from "./Componenets/Budget";
 
 const layoutStyles = css`
   display: flex;
@@ -78,16 +79,18 @@ const getFilteredComponent = (activeTab: string) => {
     case "Sales":
       return (
         <>
-          <Chart />
+          <Chart activeTab={activeTab} />
           <Data />
         </>
       );
     case "Expenses & Budget":
       return <Breakdown />;
     case "Livestock & Production":
-      return <Product />;
+      return <Product activeTab={activeTab} />;
     case "Payroll":
       return <Block />;
+      case "Budget":
+        return <Budget />;
     default:
       return <p>No data available</p>;
   }
@@ -107,19 +110,101 @@ function App() {
         <header css={headerStyles}>
           <h1 style={{ color: "#486c1b" }}>{activeTab}</h1>
           <div>
-            <button css={btnSecondary}>Schedule a meeting</button>
-            <select
-              css={btnPrimary}
+            {activeTab === "Sales" ? <span style={{color:"#486c1b"}}>Revenue Overtime: <b><big>KES300,000</big></b></span> : activeTab === "Expenses & Budget" ? <select
+             css={btnSecondary}
               value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
+              onChange={(e) => {
+                setSelectedMonth(e.target.value);
+                if (e.target.value) {
+                  setActiveTab("Budget");
+                }
+              }}
             >
-              <option value="">Generate Profit and Loss Report</option>
+              <option value=""> Replenish Breakdown</option>
               {months.map((month) => (
                 <option key={month.value} value={month.value}>
                   {month.label}
                 </option>
               ))}
-            </select>
+</select> : activeTab === "Livestock & Production" ?  <span style={{color:"#486c1b"}}>Production Overtime: <b><big>300000 Litres</big></b></span> : <button css={btnSecondary}>Schedule a meeting</button> }          
+            
+            
+            
+            
+            
+            
+
+
+
+
+            {/* //second button */}
+            
+            {activeTab === "Sales" ?  <select
+              css={btnPrimary}
+              value={selectedMonth}
+               onChange={(e) => {
+    setSelectedMonth(e.target.value);
+    if (e.target.value) {
+      setActiveTab("Budget");
+    }
+  }}
+            >
+              <option value=""> Sales Report</option>
+              {months.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </select> : activeTab === "Expenses & Budget" ? <select
+              css={btnPrimary}
+              value={selectedMonth}
+               onChange={(e) => {
+    setSelectedMonth(e.target.value);
+    if (e.target.value) {
+      setActiveTab("Budget");
+    }
+  }}
+            >
+              <option value=""> Budgets</option>
+              {months.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </select>  : activeTab === "Livestock & Production" ?  <select
+              css={btnPrimary}
+              value={selectedMonth}
+               onChange={(e) => {
+    setSelectedMonth(e.target.value);
+    if (e.target.value) {
+      setActiveTab("Budget");
+    }
+  }}
+            >
+              <option value="">Livestock & Production Report</option>
+              {months.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </select> : <select
+  css={btnPrimary}
+  value={selectedMonth}
+  onChange={(e) => {
+    setSelectedMonth(e.target.value);
+    if (e.target.value) {
+      setActiveTab("Budget");
+    }
+  }}
+>
+  <option value=""> Profit and Loss Report</option>
+  {months.map((month) => (
+    <option key={month.value} value={month.value}>
+      {month.label}
+    </option>
+  ))}
+</select>
+ }   
           </div>
         </header>
 
