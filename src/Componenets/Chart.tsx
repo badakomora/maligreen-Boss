@@ -9,7 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-// import { List } from "./List";
+import { List } from "./List";
 
 const dailyData = [
   { name: "Mon", sales: 5000 },
@@ -54,7 +54,7 @@ export const Chart = () => {
   return (
     <div style={{ display: "flex", width: "100%"}}>
       <div  style={{width:"30%"}}>
-        <h2 style={{ color: "#486c1b" }}>Sales Revenue Trends</h2>
+        <h2 style={{ fontFamily: "Monaco", color: "#486c1b"}}>Sales Revenue Trends</h2>
         {/* <h2 style={{ color: "#486c1b" }}>Production Trends</h2> */}
         <div>
           {labels.map((label, index) => (
@@ -78,7 +78,7 @@ export const Chart = () => {
               {label}
             </button>
           ))}
-          {/* <List /> */}
+          <List />
         </div>
       </div>
       <div style={{ width: "70%", height: 350 }}>

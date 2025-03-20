@@ -2,17 +2,17 @@
 import { css } from "@emotion/react";
 import { useState } from "react";
 import { Navbar } from "./Componenets/Navbar";
-// import { Breakdown } from "./Componenets/Breakdown";
-// import { Product } from "./Componenets/Product";
-// import { Grid } from "./Componenets/Grid";
+import { Breakdown } from "./Componenets/Breakdown";
+import { Product } from "./Componenets/Product";
+import { Grid } from "./Componenets/Grid";
 import { Data } from "./Componenets/Data";
 import { Chart } from "./Componenets/Chart";
-// import { Budget } from "./Componenets/Budget";
+import { Block } from "./Componenets/Block";
 
 const layoutStyles = css`
   display: flex;
   overflow: hidden;
-  font-family:Monaco;
+  font-family: Monaco;
 `;
 
 const mainContentStyles = css`
@@ -53,16 +53,6 @@ const btnSecondary = css`
 const filtersStyles = css`
   display: block;
   justify-content: space-between;
-  margin-bottom: 1rem;
-  margin-top:50px;
-
-  select {
-    padding: 0.5rem;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background: white;
-    color: #486c1b;
-  }
 `;
 
 const months = [
@@ -80,18 +70,42 @@ const months = [
   { value: "12", label: "December" },
 ];
 
+// Function to return the component based on activeTab
+const getFilteredComponent = (activeTab: string) => {
+  switch (activeTab) {
+    case "Dashboard":
+      return <Grid />;
+    case "Sales":
+      return (
+        <>
+          <Chart />
+          <Data />
+        </>
+      );
+    case "Expenses & Budget":
+      return <Breakdown />;
+    case "Livestock & Production":
+      return <Product />;
+    case "Payroll":
+      return <Block />;
+    default:
+      return <p>No data available</p>;
+  }
+};
+
 function App() {
   const [selectedMonth, setSelectedMonth] = useState("");
+  const [activeTab, setActiveTab] = useState("Dashboard");
 
   return (
     <div css={layoutStyles}>
       {/* Sidebar */}
-      <Navbar />
+      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content */}
       <main css={mainContentStyles}>
         <header css={headerStyles}>
-          <h1 style={{ color: "#486c1b" }}>Dashboard</h1>
+          <h1 style={{ color: "#486c1b" }}>{activeTab}</h1>
           <div>
             <button css={btnSecondary}>Schedule a meeting</button>
             <select
@@ -110,24 +124,10 @@ function App() {
         </header>
 
         {/* Filters */}
-        <div css={filtersStyles}>
-          {/* <Grid /> */}
-        
-          <Chart />
-          <Data /> 
-          {/* <Breakdown /> */}
-          {/* <Budget />  */}
-          {/* <Product /> */}
-        </div>
+        <div css={filtersStyles}>{getFilteredComponent(activeTab)}</div>
       </main>
     </div>
   );
 }
 
 export default App;
-// https://codepen.io/Kcreation-MTech/pen/zYgQVwK
-// https://codepen.io/leonam-silva-de-souza/pen/MWNbyZJ
-// https://codepen.io/alreylz/pen/XWLvRpM
-
-
-// add expense https://codepen.io/click4manoj/pen/RwpdNqy

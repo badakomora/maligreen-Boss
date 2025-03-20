@@ -67,7 +67,7 @@ const models = {
 export const List = () => {
   return (
     <div css={styles.container}>
-      <h2 >Livestock Log</h2>
+      <h2 style={{ fontFamily: "Monaco"}}>Livestock Log</h2>
       <div css={styles.sectionHeader}>Herd Metrics</div>
       <div css={styles.modelList}>
         {models.standard.map((model, index) => (

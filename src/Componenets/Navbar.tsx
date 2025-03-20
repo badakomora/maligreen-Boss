@@ -8,12 +8,8 @@ const sidebarStyles = css`
   padding: 1rem;
   display: block;
 
-  nav{
-  margin-top:50px;
-  }
-
-  nav div a {
-    margin-bottom: 1rem;
+  nav {
+    margin-top: 50px;
   }
 
   nav div a {
@@ -22,39 +18,57 @@ const sidebarStyles = css`
     padding: 0.5rem 1rem;
     display: block;
     border-radius: 5px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-size: 16px;
   }
 
   nav div a:hover,
-  nav div a.active {
-    background: #486c1b;
-    color: #ffffff;
-  }
-
-  nav div a:hover {
+  nav div button.active {
     background: #486c1b;
     color: #ffffff;
   }
 `;
 
+const tabs = [
+  "Dashboard",
+  "Sales",
+  "Expenses & Budget",
+  "Livestock & Production",
+  "Payroll",
+  // "Settings",
+  // "Logout",
+];
 
-export const Navbar = () =>{
+type NavbarProps = {
+  activeTab: string;
+  setActiveTab: React.Dispatch<React.SetStateAction<string>>;
+};
 
-
-    
-    return(
-            <div css={sidebarStyles}>
-               <img src="/2.png" alt="logo" style={{ width: "100%" }} />
-                <nav>
-                  <div>
-                    <a href="." className="active">Dashboard</a>
-                    <a href=".">Sales</a>
-                    <a href=".">Expenses & Budget</a>
-                    <a href=".">Livestock & Production</a>
-                    <a href=".">Payroll</a>
-                    <a href=".">Settings</a>
-                    <a href=".">Logout</a>
-                  </div>
-                </nav>
-              </div>
-    )
-}
+export const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
+  return (
+    <div css={sidebarStyles}>
+      <img src="/2.png" alt="logo" style={{ width: "100%" }} />
+      <nav>
+        <div>
+          {tabs.map((tab) => (
+          <a
+          href="."
+          key={tab}
+          onClick={(e) => {
+            e.preventDefault();
+            setActiveTab(tab);
+          }}
+              className={activeTab === tab ? "active" : ""}
+            >
+              {tab}
+            </a>
+          ))}
+        </div>
+      </nav>
+    </div>
+  );
+};
