@@ -26,15 +26,25 @@ const userListStyle = css`
     padding-right: 40px;
     position: relative;
 
+    &::before {
+      content: '';
+      width: 8px;
+      height: 100%;
+      background-color: #486c1b;
+      position: absolute;
+      left: 0;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+    }
+
     img {
       height: 50px;
       width: 50px;
+      margin-left: 16px;
       margin-right: 1rem;
       border-radius: 3px;
     }
 
-    h5,
-    p {
+    h5, p {
       margin: 4px 0;
       color: #486c1b;
     }
@@ -46,6 +56,14 @@ const userListStyle = css`
     .action-wrap {
       position: absolute;
       right: 0;
+      display: flex;
+      align-items: center;
+
+      hr {
+        border-top: 1px dotted #486c1b;
+        width: 40px;
+        margin: 0 8px;
+      }
 
       .btn-action {
         display: none;
@@ -61,11 +79,9 @@ const userListStyle = css`
         }
       }
 
-      .btn-invite,
-      .btn-invited {
+      .btn-invite, .btn-invited {
         color: #fff;
-        &:hover,
-        &:focus {
+        &:hover, &:focus {
           opacity: 0.9;
         }
       }
@@ -79,15 +95,6 @@ const userListStyle = css`
       }
     }
   }
-`;
-
-const btnSecondary = css`
-  padding: 0.5rem 1rem;
-  border: 2px solid #486c1b;
-  border-radius: 8px;
-  background: #fff;
-  color: #486c1b;
-  cursor: pointer;
 `;
 
 const users = [
@@ -110,7 +117,7 @@ export const Block = () => {
     <>
       {["Administration", "Goat Attendants"].map((title) => (
         <div key={title} css={panelStyle}>
-          <h4  style={{ color: "#486c1b" }}>{title}</h4>
+          <h4 style={{ color: "#486c1b" }}>{title}</h4>
           <ul css={userListStyle}>
             {users.map((user, index) => (
               <li key={index}>
@@ -118,11 +125,14 @@ export const Block = () => {
                 <div>
                   <h5>{user.name}</h5>
                   <p>{user.designation}</p>
-                  <hr style={{ borderTop: "1px dotted #333" }} />
                   <p><b><big>{user.salary}</big></b></p>
                 </div>
                 <div className="action-wrap">
-                  <button css={btnSecondary}>View Profile {"\u00BB"}</button>
+                  <hr />
+                 <p><b><big>Joined</big></b>: 2024, 1, 32. </p>
+                 <p><b><big>Prev Employment</big></b>: Chef. </p>
+                 <p><b><big>Credit</big></b>: employee of the year.</p>
+                  <hr />
                 </div>
               </li>
             ))}

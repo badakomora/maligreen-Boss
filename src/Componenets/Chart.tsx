@@ -53,13 +53,11 @@ export const Chart:React.FC<NavbarProps> = ({activeTab}) => {
 
   const dataSets = [dailyData, weeklyData, monthlyData, yearlyData];
   const labels = ["Daily", "Weekly", "Monthly", "Annually"];
-  // const labels = ["March 25", "February 25", "January 25", "December 24"];
 
   return (
     <div style={{ display: "flex", width: "100%"}}>
       <div  style={{width:"30%"}}>
-        <h2 style={{ fontFamily: "Monaco", color: "#486c1b"}}>Sales Revenue Trends</h2>
-        {/* <h2 style={{ color: "#486c1b" }}>Production Trends</h2> */}
+      <h2 style={{ fontFamily: "Monaco", color: "#486c1b"}}> {activeTab === "Livestock & Production" ? "Production Trends" : "Sales Revenue Trends"}</h2>
         <div>
           {labels.map((label, index) => (
             <button

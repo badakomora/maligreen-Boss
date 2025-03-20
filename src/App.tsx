@@ -126,7 +126,24 @@ function App() {
                   {month.label}
                 </option>
               ))}
-</select> : activeTab === "Livestock & Production" ?  <span style={{color:"#486c1b"}}>Production Overtime: <b><big>300000 Litres</big></b></span> : <button css={btnSecondary}>Schedule a meeting</button> }          
+</select> : activeTab === "Livestock & Production" ?  <span style={{color:"#486c1b"}}>Production Overtime: <b><big>300000 Litres</big></b></span> : activeTab === "Payroll" ?  <span style={{color:"#486c1b"}}>Current Monthly    Salary: <b><big>KES30,0000</big></b></span> : 
+activeTab === "Budget" ?  <select
+              css={btnPrimary}
+              value={selectedMonth}
+               onChange={(e) => {
+    setSelectedMonth(e.target.value);
+    if (e.target.value) {
+      setActiveTab("Budget");
+    }
+  }}
+            >
+              <option value="">Action</option>
+              {months.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </select> : <button css={btnSecondary}>Schedule a meeting</button> }          
             
             
             
@@ -182,6 +199,38 @@ function App() {
   }}
             >
               <option value="">Livestock & Production Report</option>
+              {months.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </select> : activeTab === "Payroll" ?  <select
+              css={btnPrimary}
+              value={selectedMonth}
+               onChange={(e) => {
+    setSelectedMonth(e.target.value);
+    if (e.target.value) {
+      setActiveTab("Budget");
+    }
+  }}
+            >
+              <option value="">Monthly Payrolls</option>
+              {months.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </select> : activeTab === "Budget" ?  <select
+              css={btnPrimary}
+              value={selectedMonth}
+               onChange={(e) => {
+    setSelectedMonth(e.target.value);
+    if (e.target.value) {
+      setActiveTab("Budget");
+    }
+  }}
+            >
+              <option value="">Approved Budgets</option>
               {months.map((month) => (
                 <option key={month.value} value={month.value}>
                   {month.label}
