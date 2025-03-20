@@ -12,15 +12,7 @@ const globalStyles = css`
     --color6: #486c1b;
     font-family: "Inria Sans", sans-serif;
   }
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  body {
-    width: 100vw;
-    height: 100vh;
-  }
+
   .center-container {
     background-color: #486c1b;
     display: flex;

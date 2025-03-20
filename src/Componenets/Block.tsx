@@ -98,7 +98,7 @@ const users = [
     img: "https://gravatar.com/avatar/3cacb983245e521381e6e128efa8216d?s=50",
   },
   {
-    name: "Amulya Acharya",
+    name: "Andrew Bada Komora",
     designation: "Admin/Accounts Assistant",
     salary: "KES310,000",
     img: "https://avatars2.githubusercontent.com/u/5351212?s=460&v=4",
@@ -110,7 +110,7 @@ export const Block = () => {
     <>
       {["Administration", "Goat Attendants"].map((title) => (
         <div key={title} css={panelStyle}>
-          <h6>{title}</h6>
+          <h4  style={{ color: "#486c1b" }}>{title}</h4>
           <ul css={userListStyle}>
             {users.map((user, index) => (
               <li key={index}>

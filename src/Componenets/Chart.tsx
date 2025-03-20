@@ -81,7 +81,7 @@ export const Chart = () => {
           <List />
         </div>
       </div>
-      <div style={{ width: "70%", height: 350 }}>
+      <div style={{ width: "70%"}}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={selectedData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" />

@@ -35,6 +35,7 @@ const styles = {
   modelInfo: css`
     display: flex;
     width: 100%;
+    margin:2px;
   `,
   modelName: css`
     font-size: 14px;
@@ -55,12 +56,13 @@ const models = {
     { name: "Lactating Goats", credit: "500" },
     { name: "Total Deceased Goats", credit: "60"},
     { name: "Sick Goats", credit: "4" },
-    { name: "Breeds", credit: "55" }
+    { name: "Breeds", credit: "55" },
+    { name: "Bucks", credit: "49" }
   ],
   thinking: [
     { name: "Today's production(Litres)", credit: "5000" },
-    { name: "Feeding Program", credit: "View" },
-    { name: "Vaccination Log", credit: "View"},
+    { name: "Feeding Program", credit: "" },
+    { name: "Vaccination Log", credit: ""},
   ]
 };
 
