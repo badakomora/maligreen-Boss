@@ -120,7 +120,7 @@ function App() {
                 }
               }}
             >
-              <option value=""> Replenish Breakdown</option>
+              <option value=""> Receipts Breakdown</option>
               {months.map((month) => (
                 <option key={month.value} value={month.value}>
                   {month.label}
@@ -128,7 +128,7 @@ function App() {
               ))}
 </select> : activeTab === "Livestock & Production" ?  <span style={{color:"#486c1b"}}>Production Overtime: <b><big>300000 Litres</big></b></span> : activeTab === "Payroll" ?  <span style={{color:"#486c1b"}}>Current Monthly    Salary: <b><big>KES30,0000</big></b></span> : 
 activeTab === "Budget" ?  <select
-              css={btnPrimary}
+              css={btnSecondary}
               value={selectedMonth}
                onChange={(e) => {
     setSelectedMonth(e.target.value);

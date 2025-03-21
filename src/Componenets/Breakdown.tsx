@@ -118,7 +118,7 @@ export const Breakdown = () => {
         </a>
         <br />
         <a href="." style={{ color: "#486c1b" }}>
-          Replenish Farm Manager{"\u00BB"}
+          Replenish Budget{"\u00BB"}
         </a>
         <div css={styles.rowdiv}>
           <h2 style={{ color: "#486c1b" }}>Daily Expense & Budget Breakdown</h2>
