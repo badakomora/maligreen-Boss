@@ -64,38 +64,29 @@ const userListStyle = css`
         width: 40px;
         margin: 0 8px;
       }
-
-      .btn-action {
-        display: none;
-        height: 24px;
-        width: 24px;
-        border-radius: 50%;
-        background: #486c1b;
-        text-align: center;
-        transition: all 0.3s ease-in-out;
-
-        &.active {
-          display: inline-block;
-        }
-      }
-
-      .btn-invite, .btn-invited {
-        color: #fff;
-        &:hover, &:focus {
-          opacity: 0.9;
-        }
-      }
-
-      .btn-invite {
-        background: #486c1b;
-      }
-
-      .btn-invited {
-        background: #016699;
-      }
     }
   }
 `;
+
+const buttonStyles = css`
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+`
+
+const btnPrimary = css`
+  ${buttonStyles}
+  background: #486c1b;
+  border: none;
+  color: #ffffff;
+
+  &:hover {
+    background: #365214;
+    color: #ffffff;
+  }
+`
 
 const users = [
   {
@@ -124,15 +115,12 @@ export const Block = () => {
                 <img src={user.img} alt={user.name} />
                 <div>
                   <h5>{user.name}</h5>
-                  <p>{user.designation}</p>
+                  <p>{user.designation} || Joined on 2024, 1, 32. </p>
                   <p><b><big>{user.salary}</big></b></p>
                 </div>
                 <div className="action-wrap">
-                  <hr />
-                 <p><b><big>Joined</big></b>: 2024, 1, 32. </p>
-                 <p><b><big>Prev Employment</big></b>: Chef. </p>
-                 <p><b><big>Credit</big></b>: employee of the year.</p>
-                  <hr />
+                 <p><b><big>Credit</big></b>: Employee of the year.</p><hr />
+                 <button css={btnPrimary}>Give a Raise</button>
                 </div>
               </li>
             ))}

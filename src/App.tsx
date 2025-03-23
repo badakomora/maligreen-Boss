@@ -126,7 +126,9 @@ function App() {
                   {month.label}
                 </option>
               ))}
-</select> : activeTab === "Livestock & Production" ?  <span style={{color:"#486c1b"}}>Production Overtime: <b><big>300000 Litres</big></b></span> : activeTab === "Payroll" ?  <span style={{color:"#486c1b"}}>Current Monthly    Salary: <b><big>KES30,0000</big></b></span> : 
+</select> : activeTab === "Livestock & Production" ?  <span style={{color:"#486c1b"}}>Production Overtime: <b><big>300000 Litres</big></b></span> 
+: activeTab === "Payroll" ?  <span style={{color:"#486c1b"}}>Current Monthly    Salary: <b><big>KES30,0000</big></b></span> 
+: 
 activeTab === "Budget" ?  <select
               css={btnSecondary}
               value={selectedMonth}
