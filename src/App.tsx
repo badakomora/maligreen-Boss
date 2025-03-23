@@ -5,9 +5,10 @@ import { Navbar } from "./Componenets/Navbar";
 import { Breakdown } from "./Componenets/Breakdown";
 import { Product } from "./Componenets/Product";
 import { Grid } from "./Componenets/Grid";
+import { Data } from "./Componenets/Data";
+import { Chart } from "./Componenets/Chart";
 import { Block } from "./Componenets/Block";
 import { Budget } from "./Componenets/Budget";
-import { Table } from "./Componenets/Table";
 
 const layoutStyles = css`
   display: flex;
@@ -18,7 +19,7 @@ const layoutStyles = css`
 const mainContentStyles = css`
   flex: 1;
   overflow-y: auto;
-  padding: 3rem;
+  padding: 2rem;
   background: white;
 `;
 
@@ -26,6 +27,7 @@ const headerStyles = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 2rem;
 `;
 
 const buttonStyles = css`
@@ -76,7 +78,10 @@ const getFilteredComponent = (activeTab: string) => {
       return <Grid />;
     case "Sales":
       return (
-        <Table />
+        <>
+          <Chart activeTab={activeTab} />
+          <Data />
+        </>
       );
     case "Expenses & Budget":
       return <Breakdown />;
@@ -140,7 +145,7 @@ activeTab === "Budget" ?  <select
                   {month.label}
                 </option>
               ))}
-            </select> : <span style={{color:"#486c1b"}}>Running Balance: <b><big>KES30,0000</big></b></span> }          
+            </select> : <button css={btnSecondary}>Schedule a meeting</button> }          
             
             
             
@@ -153,7 +158,23 @@ activeTab === "Budget" ?  <select
 
             {/* //second button */}
             
-            {activeTab === "Sales" ?  <><button css={btnSecondary}>Create Invoice</button><button css={btnPrimary}>New Customer</button></> : activeTab === "Expenses & Budget" ? <select
+            {activeTab === "Sales" ?  <select
+              css={btnPrimary}
+              value={selectedMonth}
+               onChange={(e) => {
+    setSelectedMonth(e.target.value);
+    if (e.target.value) {
+      setActiveTab("Budget");
+    }
+  }}
+            >
+              <option value=""> Sales Report</option>
+              {months.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </select> : activeTab === "Expenses & Budget" ? <select
               css={btnPrimary}
               value={selectedMonth}
                onChange={(e) => {
@@ -217,7 +238,23 @@ activeTab === "Budget" ?  <select
                   {month.label}
                 </option>
               ))}
-            </select> : <button css={btnPrimary}>Pay For Expense</button>
+            </select> : <select
+  css={btnPrimary}
+  value={selectedMonth}
+  onChange={(e) => {
+    setSelectedMonth(e.target.value);
+    if (e.target.value) {
+      setActiveTab("Budget");
+    }
+  }}
+>
+  <option value=""> Profit and Loss Report</option>
+  {months.map((month) => (
+    <option key={month.value} value={month.value}>
+      {month.label}
+    </option>
+  ))}
+</select>
  }   
           </div>
         </header>
