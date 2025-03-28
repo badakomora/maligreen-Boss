@@ -1,5 +1,5 @@
-import React from "react";
 import { Global, css } from "@emotion/react";
+import { useState } from "react";
 
 const globalStyles = css`
   @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
@@ -7,7 +7,7 @@ const globalStyles = css`
 
   :root {
     --color1: #ffffff;
-    --color2:  #ffffff;
+    --color2: #ffffff;
     --color5: #ffffff;
     --color6: #486c1b;
     font-family: "Inria Sans", sans-serif;
@@ -21,6 +21,7 @@ const globalStyles = css`
     width: 100%;
     height: 100%;
   }
+
   .grid {
     width: 90vw;
     height: 90vh;
@@ -28,17 +29,19 @@ const globalStyles = css`
     display: grid;
     grid-template-columns: 2fr 2fr 1fr 1fr;
     grid-template-rows: 2fr 1fr;
-    box-shadow: 0px 0px 10px -6px  #ffffff;
+    box-shadow: 0px 0px 10px -6px #ffffff;
   }
+
   .section {
     padding: 1rem 1.8rem;
-    transition: scale 1s ease-out;
-    box-shadow: 0px 0px 65px -3px  #486c1b;
+    transition: transform 0.3s ease-out;
+    box-shadow: 0px 0px 65px -3px #486c1b;
   }
+
   .section:hover {
     transform: scale(1.01);
-    // box-shadow: 0px 0px 65px -3px  #486c1b;
   }
+
   .special1 {
     grid-column: span 2;
     background: url(https://upload.wikimedia.org/wikipedia/commons/0/00/Old_Albanian_woman.jpg)
@@ -46,15 +49,29 @@ const globalStyles = css`
     background-size: cover;
     color: white;
   }
-     .special3 {
+
+  .special3 {
     color: #486c1b;
   }
-      .special4 {
-    color:  #ffffff;
+
+  .special3 b {
+    color: #2d5110;
+    font-weight: bold;
+    font-size: 1.2rem;
   }
+
+  .special3 span:first-of-type {
+    font-size: 4rem;
+    font-weight: bold;
+  }
+
+  .special4 {
+    color: #ffffff;
+  }
+
   .special2 {
     grid-column: span 2;
-     color:  #ffffff;
+    color: #ffffff;
   }
 `;
 
@@ -68,6 +85,8 @@ const bgColors = {
 };
 
 export const Grid = () => {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   return (
     <>
       <Global styles={globalStyles} />
@@ -75,36 +94,49 @@ export const Grid = () => {
         <main className="grid">
           <section className="section" style={{ backgroundColor: bgColors.c1 }}>
             <header className="special3">
-              <span style={{ fontSize: "5rem", fontWeight: "bolder" }}>Today's Sales</span>
-              <span style={{ fontSize: "1.2rem" }}>
-                <b>KES</b>36,584
+              <span>Today's Sales</span>
+              <span>
+                <b>KES</b> 36,584 {"\u2191"}
               </span>
             </header>
           </section>
-          <section className="section special3" style={{ backgroundColor: bgColors.c2 }}>
+          <section
+            className="section special3"
+            style={{ backgroundColor: bgColors.c2 }}
+          >
             <span>Today's Production</span>
-            <span style={{ fontSize: "4rem" }}>3247 Litres</span>
+            <span>3247 Litres{"\u2193"}</span>
           </section>
           <section className="section special1">
             <span style={{ fontSize: "2.5rem" }}>Grey Martin</span>
-            <span style={{ fontSize: "1.2rem" }}>⭐ Rated Valued Customer</span>
+            <span style={{ fontSize: "1.2rem" }}>⭐Most Valued Customer</span>
           </section>
           <section className="section special2">
-            <span>Today's Incurred Expenses</span>
-            <span style={{ fontSize: "4rem" }}>KES300,064</span>
+            <span>Today's Incurred Expenses{"\u2191"}</span>
+            <span style={{ fontSize: "4rem" }}>KES 300,064</span>
           </section>
-          <section className="section special3" style={{ backgroundColor: bgColors.c5 }}>
+          <section
+            className="section special3"
+            style={{ backgroundColor: bgColors.c5 }}
+          >
             <span style={{ fontSize: "4rem" }}>Today's Variance </span>
             <b>KES300,000</b>
+            {"\u2193"}
           </section>
-          <section className="section special4" style={{ backgroundColor: bgColors.c6 }}>
-            <span style={{ fontSize: "1.2rem" }}>Today's goat count on the farm</span>
-            <b><big>4004</big></b>
+          <section
+            className="section special4"
+            style={{ backgroundColor: bgColors.c6 }}
+          >
+            <span style={{ fontSize: "1.2rem" }}>
+              Today's Goat Count on the Farm
+            </span>
+            <b>
+              <big>4004</big>
+              {"\u2193"}
+            </b>
           </section>
         </main>
       </div>
     </>
   );
 };
-
-
