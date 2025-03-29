@@ -86,7 +86,7 @@ const getFilteredComponent = (
     case "Livestock & Production":
       return <Product activeTab={activeTab} setActiveTab={setActiveTab} />;
     case "Payroll":
-      return <Block />;
+      return <Block activeTab={activeTab} setActiveTab={setActiveTab} />;
     case "Budget":
     case "Sales Report":
       return <Budget activeTab={activeTab} />;
