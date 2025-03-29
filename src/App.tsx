@@ -72,20 +72,23 @@ const months = [
 ];
 
 // Function to return the component based on activeTab
-const getFilteredComponent = (activeTab: string) => {
+const getFilteredComponent = (
+  activeTab: string,
+  setActiveTab: React.Dispatch<React.SetStateAction<string>>
+) => {
   switch (activeTab) {
     case "Dashboard":
       return <Grid />;
     case "Sales":
-      return <Chart activeTab={activeTab} />;
+      return <Chart activeTab={activeTab} setActiveTab={setActiveTab} />;
     case "Expenses & Budget":
       return <Breakdown />;
     case "Livestock & Production":
-      return <Product activeTab={activeTab} />;
+      return <Product activeTab={activeTab} setActiveTab={setActiveTab} />;
     case "Payroll":
       return <Block />;
     case "Budget":
-      case "Sales Report":
+    case "Sales Report":
       return <Budget activeTab={activeTab} />;
     case "Scheule a meeting":
       return <Form activeTab={activeTab} />;
@@ -199,9 +202,9 @@ function App() {
               </select>
             ) : activeTab === "Livestock & Production" ? (
               <span style={{ color: "#486c1b" }}>
-                Production Over Time:{" "}
+                Production Over Time:
                 <b>
-                  <big>300000 Litres</big>
+                  <big>300000 Litres </big>
                 </b>
               </span>
             ) : activeTab === "Payroll" ? (
@@ -279,23 +282,6 @@ function App() {
             ) : activeTab === "Livestock & Production" ? (
               <>
                 <select
-                  css={btnSecondary}
-                  value={selectedMonth}
-                  onChange={(e) => {
-                    setSelectedMonth(e.target.value);
-                    if (e.target.value) {
-                      setActiveTab("Budget");
-                    }
-                  }}
-                >
-                  <option value="">Livestock Report</option>
-                  {months.map((month) => (
-                    <option key={month.value} value={month.value}>
-                      {month.label}
-                    </option>
-                  ))}
-                </select>
-                <select
                   css={btnPrimary}
                   value={selectedMonth}
                   onChange={(e) => {
@@ -372,7 +358,9 @@ function App() {
         </header>
 
         {/* Filters */}
-        <div css={filtersStyles}>{getFilteredComponent(activeTab)}</div>
+        <div css={filtersStyles}>
+          {getFilteredComponent(activeTab, setActiveTab)}
+        </div>
       </main>
     </div>
   );

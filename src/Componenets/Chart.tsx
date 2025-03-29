@@ -54,9 +54,10 @@ const detailedDailyData: DailyDataItem[] = [
 
 interface NavbarProps {
   activeTab: string;
+  setActiveTab: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const Chart: React.FC<NavbarProps> = ({ activeTab }) => {
+export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
   const [startDate, setStartDate] = useState(detailedDailyData[0]?.date || "");
   const [endDate, setEndDate] = useState(
     detailedDailyData[detailedDailyData.length - 1]?.date || ""
@@ -92,7 +93,7 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab }) => {
                 color: "#486c1b",
               }}
             >
-              Start Date:
+              Select Start Date:
             </label>
             <input
               type="date"
@@ -107,6 +108,7 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab }) => {
                 width: "100%",
               }}
             />
+            <br /> <br />
             <label
               style={{
                 display: "block",
@@ -114,7 +116,7 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab }) => {
                 color: "#486c1b",
               }}
             >
-              End Date:
+              Select End Date:
             </label>
             <input
               type="date"
@@ -129,6 +131,22 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab }) => {
                 width: "100%",
               }}
             />
+            <br />
+            <br />
+            {activeTab === "Livestock & Production" ? (
+              <a
+                href="."
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveTab("Budget");
+                }}
+                style={{ color: "#486c1b" }}
+              >
+                <b>Livestock Report {"\u00BB"}</b>
+              </a>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>

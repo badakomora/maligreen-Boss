@@ -17,7 +17,7 @@ const productStyles = css`
 
   .left {
     width: 20%;
-    margin:2px;
+    margin: 2px;
   }
 
   .product_img {
@@ -25,7 +25,8 @@ const productStyles = css`
     width: 230px;
     margin-top: 20px;
     border-radius: 5px;
-    background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR17rLWpUemc2N_ScqpAr-NX1OOKWUQmQwdyXWDf1U0o6XpdFhm1mSI1GIzVFAVjxwahb0&usqp=CAU") no-repeat center;
+    background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR17rLWpUemc2N_ScqpAr-NX1OOKWUQmQwdyXWDf1U0o6XpdFhm1mSI1GIzVFAVjxwahb0&usqp=CAU")
+      no-repeat center;
     background-size: cover;
   }
 
@@ -55,7 +56,7 @@ const productStyles = css`
 
   .right {
     width: 80%;
-    margin:2px;
+    margin: 2px;
   }
 
   .product_description {
@@ -65,15 +66,16 @@ const productStyles = css`
 
 interface NavbarProps {
   activeTab: string;
+  setActiveTab: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const Product:React.FC<NavbarProps> = ({activeTab}) => {
+export const Product: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
   return (
     <section css={productStyles}>
       <div className="content">
         <div className="right">
           <div className="product_description">
-            <Chart activeTab={activeTab} />
+            <Chart activeTab={activeTab} setActiveTab={setActiveTab} />
           </div>
         </div>
         <div className="left">
