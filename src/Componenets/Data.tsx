@@ -71,12 +71,12 @@ export const Data = () => {
     <div>
       <center>
         <h1 css={css`color: #486c1b; margin-bottom: 20px;`}>
-          Sales Revenue Overtime KES 30,000
+          Sales Revenue Over Time
         </h1>
       </center>
       <div css={pricingGridStyles}>
         <div css={[planStyles, plan1Styles]}>
-          <h3>Overtime Cash Revenue</h3>
+          <h3>Cash Revenue</h3>
           <div>
             <p>Farm Pickup: <big><b>KES 400</b></big></p>
             <hr />

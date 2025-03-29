@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -9,89 +11,146 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { List } from "./List";
 
-const dailyData = [
-  { name: "Mon", sales: 5000 },
-  { name: "Tue", sales: 7000 },
-  { name: "Wed", sales: 6500 },
-  { name: "Thu", sales: 8000 },
-  { name: "Fri", sales: 9000 },
-  { name: "Sat", sales: 7500 },
-  { name: "Sun", sales: 8500 },
-];
+type DailyDataItem = {
+  date: string;
+  name: string;
+  sales: number;
+};
 
-const weeklyData = [
-  { name: "Week 1", sales: 40000 },
-  { name: "Week 2", sales: 45000 },
-  { name: "Week 3", sales: 42000 },
-  { name: "Week 4", sales: 47000 },
-];
-
-const monthlyData = [
-  { name: "Jan", sales: 180000 },
-  { name: "Feb", sales: 190000 },
-  { name: "Mar", sales: 200000 },
-  { name: "Apr", sales: 210000 },
-  { name: "May", sales: 220000 },
-];
-
-const yearlyData = [
-  { name: "2020", sales: 2_000_000 },
-  { name: "2021", sales: 2_200_000 },
-  { name: "2022", sales: 2_500_000 },
-  { name: "2023", sales: 2_700_000 },
+// **Actual Sales Data for 30 Days**
+const detailedDailyData: DailyDataItem[] = [
+  { date: "2024-03-01", name: "Mar 01", sales: 5000 },
+  { date: "2024-03-02", name: "Mar 02", sales: 5200 },
+  { date: "2024-03-03", name: "Mar 03", sales: 4800 },
+  { date: "2024-03-04", name: "Mar 04", sales: 5100 },
+  { date: "2024-03-05", name: "Mar 05", sales: 5300 },
+  { date: "2024-03-06", name: "Mar 06", sales: 4900 },
+  { date: "2024-03-07", name: "Mar 07", sales: 5000 },
+  { date: "2024-03-08", name: "Mar 08", sales: 5400 },
+  { date: "2024-03-09", name: "Mar 09", sales: 5600 },
+  { date: "2024-03-10", name: "Mar 10", sales: 5900 },
+  { date: "2024-03-11", name: "Mar 11", sales: 6000 },
+  { date: "2024-03-12", name: "Mar 12", sales: 5700 },
+  { date: "2024-03-13", name: "Mar 13", sales: 6200 },
+  { date: "2024-03-14", name: "Mar 14", sales: 6100 },
+  { date: "2024-03-15", name: "Mar 15", sales: 5800 },
+  { date: "2024-03-16", name: "Mar 16", sales: 5900 },
+  { date: "2024-03-17", name: "Mar 17", sales: 5600 },
+  { date: "2024-03-18", name: "Mar 18", sales: 5400 },
+  { date: "2024-03-19", name: "Mar 19", sales: 5500 },
+  { date: "2024-03-20", name: "Mar 20", sales: 5300 },
+  { date: "2024-03-21", name: "Mar 21", sales: 5000 },
+  { date: "2024-03-22", name: "Mar 22", sales: 5200 },
+  { date: "2024-03-23", name: "Mar 23", sales: 5100 },
+  { date: "2024-03-24", name: "Mar 24", sales: 4900 },
+  { date: "2024-03-25", name: "Mar 25", sales: 4700 },
+  { date: "2024-03-26", name: "Mar 26", sales: 4800 },
+  { date: "2024-03-27", name: "Mar 27", sales: 4600 },
+  { date: "2024-03-28", name: "Mar 28", sales: 4500 },
+  { date: "2024-03-29", name: "Mar 29", sales: 4300 },
+  { date: "2024-03-30", name: "Mar 30", sales: 4200 },
 ];
 
 interface NavbarProps {
   activeTab: string;
 }
 
-export const Chart:React.FC<NavbarProps> = ({activeTab}) => {
-  const [selectedData, setSelectedData] = useState(dailyData);
-  const [activeIndex, setActiveIndex] = useState(0);
+export const Chart: React.FC<NavbarProps> = ({ activeTab }) => {
+  const [startDate, setStartDate] = useState(detailedDailyData[0]?.date || "");
+  const [endDate, setEndDate] = useState(
+    detailedDailyData[detailedDailyData.length - 1]?.date || ""
+  );
+  const [filteredDailyData, setFilteredDailyData] = useState<DailyDataItem[]>(
+    []
+  );
 
-  const dataSets = [dailyData, weeklyData, monthlyData, yearlyData];
-  const labels = ["Daily", "Weekly", "Monthly", "Annually"];
+  useEffect(() => {
+    if (startDate && endDate) {
+      setFilteredDailyData(
+        detailedDailyData.filter(
+          (item) => item.date >= startDate && item.date <= endDate
+        )
+      );
+    }
+  }, [startDate, endDate]);
 
   return (
-    <div style={{ display: "flex", width: "100%"}}>
-      <div  style={{width:"30%"}}>
-      <h2 style={{ fontFamily: "Monaco", color: "#486c1b"}}> {activeTab === "Livestock & Production" ? "Production Trends" : "Sales Revenue Trends"}</h2>
+    <div style={{ display: "flex", width: "100%" }}>
+      <div style={{ width: "30%" }}>
+        <h2 style={{ fontFamily: "Monaco", color: "#486c1b" }}>
+          {activeTab === "Livestock & Production"
+            ? "Production Trends"
+            : "Sales Revenue Overview"}
+        </h2>
         <div>
-          {labels.map((label, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                setSelectedData(dataSets[index]);
-                setActiveIndex(index);
-              }}
+          <div style={{ marginTop: "16px" }}>
+            <label
               style={{
-                padding: "7px",
-                margin:"4px",
-                border: "none",
-                borderRadius:"5px",
-                cursor: "pointer",
-                backgroundColor: activeIndex === index ? "#486c1b" : " #ffffff",
-                color: activeIndex === index ? " #ffffff" : "#486c1b",
-                transition: "0.3s",
+                display: "block",
+                marginBottom: "4px",
+                color: "#486c1b",
               }}
             >
-              {label}
-            </button>
-          ))}
-          {activeTab === "Livestock & Production" ? <List /> : ""}
+              Start Date:
+            </label>
+            <input
+              type="date"
+              value={startDate}
+              min={detailedDailyData[0]?.date}
+              max={endDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              style={{
+                padding: "6px",
+                borderRadius: "4px",
+                border: "1px solid #486c1b",
+                width: "100%",
+              }}
+            />
+            <label
+              style={{
+                display: "block",
+                marginBottom: "4px",
+                color: "#486c1b",
+              }}
+            >
+              End Date:
+            </label>
+            <input
+              type="date"
+              value={endDate}
+              min={startDate}
+              max={detailedDailyData[detailedDailyData.length - 1]?.date}
+              onChange={(e) => setEndDate(e.target.value)}
+              style={{
+                padding: "6px",
+                borderRadius: "4px",
+                border: "1px solid #486c1b",
+                width: "100%",
+              }}
+            />
+          </div>
         </div>
       </div>
-      <div style={{ width: "70%", height: "500px"}}>
+      <div style={{ width: "70%", height: "500px" }}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={selectedData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
+          <LineChart
+            data={filteredDailyData}
+            margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+          >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
+            <XAxis dataKey="name" height={60} />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Line type="monotone" dataKey="sales" stroke="#486c1b" name="Sales" />
+            <Line
+              type="monotone"
+              dataKey="sales"
+              stroke="#486c1b"
+              strokeWidth={2}
+              dot={{ r: 3 }}
+              activeDot={{ r: 6 }}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>

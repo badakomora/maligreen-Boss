@@ -5,10 +5,10 @@ import { Navbar } from "./Componenets/Navbar";
 import { Breakdown } from "./Componenets/Breakdown";
 import { Product } from "./Componenets/Product";
 import { Grid } from "./Componenets/Grid";
-import { Data } from "./Componenets/Data";
 import { Chart } from "./Componenets/Chart";
 import { Block } from "./Componenets/Block";
 import { Budget } from "./Componenets/Budget";
+import { Form } from "./Componenets/Form";
 
 const layoutStyles = css`
   display: flex;
@@ -77,12 +77,7 @@ const getFilteredComponent = (activeTab: string) => {
     case "Dashboard":
       return <Grid />;
     case "Sales":
-      return (
-        <>
-          <Chart activeTab={activeTab} />
-          <Data />
-        </>
-      );
+      return <Chart activeTab={activeTab} />;
     case "Expenses & Budget":
       return <Breakdown />;
     case "Livestock & Production":
@@ -90,7 +85,10 @@ const getFilteredComponent = (activeTab: string) => {
     case "Payroll":
       return <Block />;
     case "Budget":
-      return <Budget />;
+      case "Sales Report":
+      return <Budget activeTab={activeTab} />;
+    case "Scheule a meeting":
+      return <Form activeTab={activeTab} />;
     default:
       return <p>No data available</p>;
   }
@@ -111,12 +109,76 @@ function App() {
           <h1 style={{ color: "#486c1b" }}>{activeTab}</h1>
           <div>
             {activeTab === "Sales" ? (
-              <span style={{ color: "#486c1b" }}>
-                Revenue Overtime:{" "}
-                <b>
-                  <big>KES300,000</big>
-                </b>
-              </span>
+              <div
+                css={css`
+                  position: relative;
+                  display: inline-block;
+
+                  &:hover .tooltip-content {
+                    display: block;
+                  }
+                `}
+              >
+                <span style={{ color: "#486c1b", cursor: "pointer" }}>
+                  Revenue Over Time:{" "}
+                  <b>
+                    <big>KES800,000 </big>
+                  </b>
+                </span>
+                <div
+                  className="tooltip-content"
+                  css={css`
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    background-color: #ffffff;
+                    border: 1px solid #486c1b;
+                    color: #486c1b;
+                    border-radius: 4px;
+                    padding: 8px 12px;
+                    z-index: 1;
+                    box-shadow: 0px 0px 10px -6px #486c1b;
+                    width: 300px;
+                    display: none;
+                  `}
+                >
+                  <p
+                    css={css`
+                      margin: 0;
+                      font-size: 14px;
+                    `}
+                  >
+                    Cash Revenue:
+                    <b>
+                      <big>KES60,000 </big>
+                    </b>
+                  </p>
+                  <hr />
+                  <p
+                    css={css`
+                      margin: 0;
+                      font-size: 14px;
+                    `}
+                  >
+                    Buy Goods 4367606 Revenue:
+                    <b>
+                      <big>KES210,000 </big>
+                    </b>
+                  </p>
+                  <hr />
+                  <p
+                    css={css`
+                      margin: 0;
+                      font-size: 14px;
+                    `}
+                  >
+                    Stanbic Bank:
+                    <b>
+                      <big>KES60,000 </big>
+                    </b>
+                  </p>
+                </div>
+              </div>
             ) : activeTab === "Expenses & Budget" ? (
               <select
                 css={btnSecondary}
@@ -137,7 +199,7 @@ function App() {
               </select>
             ) : activeTab === "Livestock & Production" ? (
               <span style={{ color: "#486c1b" }}>
-                Production Overtime:{" "}
+                Production Over Time:{" "}
                 <b>
                   <big>300000 Litres</big>
                 </b>
@@ -168,7 +230,12 @@ function App() {
                 ))}
               </select>
             ) : (
-              <button css={btnSecondary}>Schedule a meeting</button>
+              <button
+                css={btnSecondary}
+                onClick={() => setActiveTab("Scheule a meeting")}
+              >
+                Schedule a meeting
+              </button>
             )}
 
             {/* //second button */}
@@ -180,7 +247,7 @@ function App() {
                 onChange={(e) => {
                   setSelectedMonth(e.target.value);
                   if (e.target.value) {
-                    setActiveTab("Budget");
+                    setActiveTab("Sales Report");
                   }
                 }}
               >
@@ -210,23 +277,42 @@ function App() {
                 ))}
               </select>
             ) : activeTab === "Livestock & Production" ? (
-              <select
-                css={btnPrimary}
-                value={selectedMonth}
-                onChange={(e) => {
-                  setSelectedMonth(e.target.value);
-                  if (e.target.value) {
-                    setActiveTab("Budget");
-                  }
-                }}
-              >
-                <option value="">Livestock & Production Report</option>
-                {months.map((month) => (
-                  <option key={month.value} value={month.value}>
-                    {month.label}
-                  </option>
-                ))}
-              </select>
+              <>
+                <select
+                  css={btnSecondary}
+                  value={selectedMonth}
+                  onChange={(e) => {
+                    setSelectedMonth(e.target.value);
+                    if (e.target.value) {
+                      setActiveTab("Budget");
+                    }
+                  }}
+                >
+                  <option value="">Livestock Report</option>
+                  {months.map((month) => (
+                    <option key={month.value} value={month.value}>
+                      {month.label}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  css={btnPrimary}
+                  value={selectedMonth}
+                  onChange={(e) => {
+                    setSelectedMonth(e.target.value);
+                    if (e.target.value) {
+                      setActiveTab("Budget");
+                    }
+                  }}
+                >
+                  <option value="">Production Report</option>
+                  {months.map((month) => (
+                    <option key={month.value} value={month.value}>
+                      {month.label}
+                    </option>
+                  ))}
+                </select>
+              </>
             ) : activeTab === "Payroll" ? (
               <select
                 css={btnPrimary}
@@ -293,3 +379,4 @@ function App() {
 }
 
 export default App;
+// shop home https://codepen.io/TurkAysenur/pen/gORaboY

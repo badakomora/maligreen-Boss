@@ -1,5 +1,5 @@
 import { Global, css } from "@emotion/react";
-import { useState } from "react";
+// import { useState } from "react";
 
 const globalStyles = css`
   @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
@@ -85,7 +85,7 @@ const bgColors = {
 };
 
 export const Grid = () => {
-  const [showTooltip, setShowTooltip] = useState(false);
+  // const [showTooltip, setShowTooltip] = useState(false);
 
   return (
     <>
