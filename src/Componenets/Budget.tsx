@@ -133,13 +133,18 @@ interface NavbarProps {
 export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
   const farmMetrics = {
     herdMetrics: [
-      { name: "Initial Goat Stock", value: "8,000", important: true },
-      { name: "Total Goat Count", value: "5,000", important: true },
+      {
+        name: "Initial Goat Stock (2/4/2025)",
+        value: "8,000",
+        important: true,
+      },
+      { name: "Second Goat Stock (2/4/2025)", value: "8,000", important: true },
       { name: "Lactating Goats", value: "2,039", important: true },
       { name: "Kids Count", value: "8,457" },
       { name: "Pregnant Goats", value: "457" },
       { name: "Bucks", value: "457" },
       { name: "Breeds", value: "1,209" },
+      { name: "Total Goat Count", value: "5,000", important: true },
     ],
     healthStatus: [
       { name: "Healthy", value: "457", important: true },
