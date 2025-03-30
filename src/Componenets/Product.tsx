@@ -17,7 +17,7 @@ const productStyles = css`
 
   .left {
     width: 20%;
-    margin: 2px;
+    margin: 1px;
   }
 
   .product_img {
@@ -82,9 +82,10 @@ export const Product: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
           <div className="product_img"></div>
           <div className="product_details">
             <h4 className="title">Goat Milk 1L</h4>
-            <p className="discription">Market Prize</p>
             <p className="price">
-              <span className="offer">KES200</span>
+              <span className="offer">
+                <span className="discription">Market Prize </span>KES200
+              </span>
             </p>
             <p className="other">Inclusive of all taxes</p>
           </div>

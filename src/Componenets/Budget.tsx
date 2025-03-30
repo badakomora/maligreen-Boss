@@ -77,12 +77,8 @@ const styles = {
       color: #ffffff;
       font-weight: 600;
     }
-    th:first-of-type {
-      width: 70%;
-    }
-    th:last-of-type {
+    th {
       width: 30%;
-      text-align: right;
     }
   `,
   tbody: css`
@@ -98,7 +94,7 @@ const styles = {
       font-weight: normal;
     }
     td {
-      text-align: right;
+      text-align: leftt;
     }
     tr:hover {
       background-color: #486c1b;
@@ -112,7 +108,6 @@ const styles = {
     margin: 0.75rem 0;
     font-size: 1rem;
     display: flex;
-    justify-content: space-between;
 
     b {
       font-weight: 700;
@@ -120,8 +115,7 @@ const styles = {
     }
   `,
   summaryContainer: css`
-    background: #486c1b;
-    color: #ffffff;
+    color: #486c1b;
     padding: 1rem;
     border-radius: 6px;
     margin-top: 1rem;
@@ -139,6 +133,7 @@ interface NavbarProps {
 export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
   const farmMetrics = {
     herdMetrics: [
+      { name: "Initial Goat Stock", value: "8,000", important: true },
       { name: "Total Goat Count", value: "5,000", important: true },
       { name: "Lactating Goats", value: "2,039", important: true },
       { name: "Kids Count", value: "8,457" },
@@ -163,11 +158,11 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
 
   const itemsRequired = {
     General: [
-      { name: "Total Revenue", value: "300000", important: true },
-      { name: "Total Units Sold", value: "25000", important: true },
-      { name: "Gross Profit", value: "3000" },
-      { name: "Net ProfitAverage Order Value (AOV)", value: "5000" },
-      { name: "Sales Growth ", value: "100" },
+      { name: "Salaries", value: "300000", important: true },
+      { name: "Kitchen Shopping", value: "25000", important: true },
+      { name: "WIFI Bill", value: "3000" },
+      { name: "Electricity Bill", value: "5000" },
+      { name: "Miscellaneous", value: "10,000" },
     ],
     farm: [
       { name: "Dairy Meal", value: "250000", important: true },
@@ -177,37 +172,245 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
     ],
   };
 
-  // Format currency values consistently
-  const formatCurrency = (value: string) => {
-    // Remove commas and convert to number
-    const numValue = Number(value.replace(/,/g, ""));
-    // Format with commas
-    return numValue.toLocaleString();
+  const financials = [
+    {
+      item: "Revenue",
+      value: "500,345",
+      important: true,
+    },
+    {
+      item: "Cost of Goods Sold (COGS)",
+      value: "500,345",
+    },
+    {
+      item: "Operating Expenses(OPEX)",
+      value: "500,345",
+    },
+    {
+      item: "Other Income & Expenses",
+      value: "500,345",
+    },
+  ];
+
+  const sales = [
+    {
+      item: "Cash Revenue",
+      value: "500,345",
+      important: true,
+    },
+    {
+      item: "Buy Goods Revenue",
+      value: "500,345",
+      important: true,
+    },
+    {
+      item: "Stanbic Bank Revenue",
+      value: "500,345",
+      important: true,
+    },
+    {
+      item: "Litres Sold",
+      value: "500,345",
+    },
+    {
+      item: "Trends (Month-over-Month)",
+      value: `50% \u2191`,
+    },
+  ];
+
+  const salaries = [
+    {
+      name: "Andrew Bada",
+      designation: "Administrator",
+      allowance: "300000",
+      salary: "200000",
+    },
+    {
+      name: "Andrew Bada",
+      designation: "Administrator",
+      allowance: "300000",
+      salary: "200000",
+    },
+    {
+      name: "Andrew Bada",
+      designation: "Administrator",
+      allowance: "300000",
+      salary: "200000",
+    },
+    {
+      name: "Andrew Bada",
+      designation: "Administrator",
+      allowance: "300000",
+      salary: "200000",
+    },
+    {
+      name: "Andrew Bada",
+      designation: "Administrator",
+      allowance: "300000",
+      salary: "200000",
+    },
+    {
+      name: "Andrew Bada",
+      designation: "Administrator",
+      allowance: "300000",
+      salary: "200000",
+    },
+  ];
+
+  const recipts = {
+    General: [
+      { name: "Electricity Bill", value: "300000", important: true },
+      { name: "Kitchen Shopping", value: "25000", important: true },
+      { name: "WIFI Bill", value: "3000" },
+      { name: "Electricity Bill", value: "5000" },
+      { name: "Miscellaneous", value: "10,000" },
+    ],
+    farm: [
+      { name: "Dairy Meal", value: "250000", important: true },
+      { name: "Goat Salt", value: "12000" },
+      { name: "Mollusses", value: "50000" },
+      { name: "Dog Meal", value: "2,039" },
+    ],
   };
+
+  const production = [
+    { date: "1/2/2025", morning: "300000", evening: "2000" },
+    { date: "1/2/2025", morning: "300000", evening: "2000" },
+    { date: "1/2/2025", morning: "300000", evening: "2000" },
+    { date: "1/2/2025", morning: "300000", evening: "2000" },
+    { date: "1/2/2025", morning: "300000", evening: "2000" },
+    { date: "1/2/2025", morning: "300000", evening: "2000" },
+    { date: "1/2/2025", morning: "300000", evening: "2000" },
+  ];
 
   return (
     <main css={styles.container}>
       <section css={styles.section}>
         <div css={styles.headerContainer}>
           <img src="/2.png" alt="Company Logo" width="200px" height="80px" />
-          <h1 css={styles.header}>
-            <span css={styles.spanFirst}>March 2025</span>
-            {activeTab === "Budget" ? (
-              <span css={styles.spanLast}>Monthly Budget</span>
-            ) : activeTab === "Receipt Breakdown" ? (
-              <span css={styles.spanLast}>Receipt Breakdown</span>
-            ) : activeTab === "Production Report" ? (
-              <span css={styles.spanLast}>Monthly Production</span>
+          <h4 css={styles.header}>
+            {activeTab === "Profit & Loss" ? (
+              <>
+                <span css={styles.spanFirst}>March 2025</span>
+                <span css={styles.spanLast}>Profit & Loss Report</span>
+              </>
             ) : activeTab === "Sales Report" ? (
-              <span css={styles.spanLast}>Monthly Report</span>
+              <>
+                <span css={styles.spanFirst}>March 2025</span>
+                <span css={styles.spanLast}>Sales Report</span>
+              </>
+            ) : activeTab === "Budget" ? (
+              <>
+                <span css={styles.spanFirst}>March 2025</span>
+                <span css={styles.spanLast}>Monthly Budget</span>
+              </>
+            ) : activeTab === "Receipt Breakdown" ? (
+              <>
+                <span css={styles.spanFirst}>13/3/2025</span>
+                <span css={styles.spanLast}>Receipt KES 435,876 Breakdown</span>
+              </>
+            ) : activeTab === "Livestock Report" ? (
+              <>
+                <span css={styles.spanFirst}>March 2025</span>
+                <span css={styles.spanLast}>Livestock Report</span>
+              </>
+            ) : activeTab === "Production Report" ? (
+              <>
+                <span css={styles.spanFirst}>March 2025</span>
+                <span css={styles.spanLast}>Production Report</span>
+              </>
             ) : (
-              <span css={styles.spanLast}>Payroll Report</span>
+              <>
+                <span css={styles.spanFirst}>March 2025</span>
+                <span css={styles.spanLast}>Payroll Report</span>
+              </>
             )}
-          </h1>
+          </h4>
         </div>
 
         <div css={styles.tableWrap}>
-          {activeTab === "Livestock Report" ? (
+          {activeTab === "Profit & Loss" ? (
+            <>
+              <table css={styles.table}>
+                <thead css={styles.thead}>
+                  <tr>
+                    <th>Details</th>
+                    <th>Cost</th>
+                  </tr>
+                </thead>
+                <tbody css={styles.tbody}>
+                  {financials.map((item, i) => (
+                    <tr
+                      key={i}
+                      css={item.important ? styles.importantRow : undefined}
+                    >
+                      <th>{item.item}</th>
+                      <td>KES{item.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div css={styles.summaryContainer}>
+                <h2>Receipt Summary</h2>
+                <hr style={{ border: "1px dotted #486c1b" }} />
+                <p css={styles.summaryText}>
+                  <span>Gross Profit:</span>
+                  <b>KES 500,000</b>
+                </p>
+
+                <p css={styles.summaryText}>
+                  <span>Operating Profit:</span>
+                  <b>KES 259,598</b>
+                </p>
+
+                <p css={styles.summaryText}>
+                  <span>Net Profit:</span>
+                  <b>KES 43,587</b>
+                </p>
+
+                <hr style={{ border: "1px dotted #486c1b" }} />
+              </div>
+            </>
+          ) : activeTab === "Sales Report" ? (
+            <>
+              <table css={styles.table}>
+                <thead css={styles.thead}>
+                  <tr>
+                    <th>Details</th>
+                    <th>Cost</th>
+                  </tr>
+                </thead>
+                <tbody css={styles.tbody}>
+                  {sales.map((item, i) => (
+                    <tr
+                      key={i}
+                      css={item.important ? styles.importantRow : undefined}
+                    >
+                      <th>{item.item}</th>
+                      <td>KES{item.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div css={styles.summaryContainer}>
+                <h2>Sales Summary</h2>
+                <hr style={{ border: "1px dotted #486c1b" }} />
+                <p css={styles.summaryText}>
+                  <span>Profit(Month-over-Month):</span>
+                  <b>KES 500,000</b>
+                </p>
+
+                <p css={styles.summaryText}>
+                  <span>Total Sales Revenue:</span>
+                  <b>KES 43,587</b>
+                </p>
+
+                <hr style={{ border: "1px dotted #486c1b" }} />
+              </div>
+            </>
+          ) : activeTab === "Livestock Report" ? (
             <>
               <table css={styles.table}>
                 <caption css={styles.caption}>Herd Metrics</caption>
@@ -224,7 +427,7 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
                       css={item.important ? styles.importantRow : undefined}
                     >
                       <th>{item.name}</th>
-                      <td>{formatCurrency(item.value)}</td>
+                      <td>{item.value}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -245,7 +448,7 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
                       css={item.important ? styles.importantRow : undefined}
                     >
                       <th>{item.name}</th>
-                      <td>{formatCurrency(item.value)}</td>
+                      <td>{item.value}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -253,36 +456,33 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
             </>
           ) : activeTab === "Receipt Breakdown" ? (
             <>
-              <h2 style={{ color: " #486c1b" }}>
-                Receipt KES 435,876 (23/3/2025) Breakdown
-              </h2>
               <table css={styles.table}>
-                <caption css={styles.caption}>General Expenses</caption>
+                <caption css={styles.caption}>Utilities & Services</caption>
                 <thead css={styles.thead}>
                   <tr>
                     <th>Details</th>
-                    <th>Amount (KES)</th>
+                    <th>Cost</th>
                   </tr>
                 </thead>
                 <tbody css={styles.tbody}>
-                  {itemsRequired.General.map((item, i) => (
+                  {recipts.General.map((item, i) => (
                     <tr
                       key={i}
                       css={item.important ? styles.importantRow : undefined}
                     >
                       <th>{item.name}</th>
-                      <td>{formatCurrency(item.value)}</td>
+                      <td>{item.value}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
               <table css={styles.table}>
-                <caption css={styles.caption}>Farm Operations</caption>
+                <caption css={styles.caption}>Consumables & Supplies</caption>
                 <thead css={styles.thead}>
                   <tr>
                     <th>Details</th>
-                    <th>Amount (KES)</th>
+                    <th>Cost</th>
                   </tr>
                 </thead>
                 <tbody css={styles.tbody}>
@@ -292,119 +492,146 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
                       css={item.important ? styles.importantRow : undefined}
                     >
                       <th>{item.name}</th>
-                      <td>{formatCurrency(item.value)}</td>
+                      <td>{item.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <table css={styles.table}>
+                <caption css={styles.caption}>Equipment & Maintenance</caption>
+                <thead css={styles.thead}>
+                  <tr>
+                    <th>Details</th>
+                    <th>Cost</th>
+                  </tr>
+                </thead>
+                <tbody css={styles.tbody}>
+                  {itemsRequired.farm.map((item, i) => (
+                    <tr
+                      key={i}
+                      css={item.important ? styles.importantRow : undefined}
+                    >
+                      <th>{item.name}</th>
+                      <td>{item.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <table css={styles.table}>
+                <caption css={styles.caption}>
+                  Salaries & Operational Costs
+                </caption>
+                <thead css={styles.thead}>
+                  <tr>
+                    <th>Details</th>
+                    <th>Cost</th>
+                  </tr>
+                </thead>
+                <tbody css={styles.tbody}>
+                  {itemsRequired.farm.map((item, i) => (
+                    <tr
+                      key={i}
+                      css={item.important ? styles.importantRow : undefined}
+                    >
+                      <th>{item.name}</th>
+                      <td>{item.value}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
               <div css={styles.summaryContainer}>
+                <h2>Receipt Summary</h2>
+                <hr style={{ border: "1px dotted #486c1b" }} />
                 <p css={styles.summaryText}>
-                  <span>Funding:</span>
-                  <b>KES 435,876</b>
+                  <span>Receipt Funding:</span>
+                  <b>KES 500,000</b>
                 </p>
+
                 <p css={styles.summaryText}>
-                  <span>Surplus:</span>
-                  <b>KES 35,876</b>
+                  <span>Total Expenses:</span>
+                  <b>KES 259,598</b>
                 </p>
+
                 <p css={styles.summaryText}>
                   <span>Running Balance:</span>
-                  <b>KES 35,876</b>
+                  <b>KES 43,587</b>
                 </p>
+
+                <hr style={{ border: "1px dotted #486c1b" }} />
               </div>
             </>
           ) : activeTab === "Production Report" ? (
             <>
               <table css={styles.table}>
-                <caption css={styles.caption}>
-                  January 2025 Production Report
-                </caption>
                 <thead css={styles.thead}>
                   <tr>
-                    <th>Details</th>
-                    <th>Amount (KES)</th>
+                    <th>Date</th>
+                    <th>Morning Production(Litres)</th>
+                    <th>Evening Production(Litres)</th>
                   </tr>
                 </thead>
                 <tbody css={styles.tbody}>
-                  {itemsRequired.General.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.name}</th>
-                      <td>{formatCurrency(item.value)}</td>
+                  {production.map((item, i) => (
+                    <tr key={i}>
+                      <th>{item.date}</th>
+                      <td>{item.morning}</td>
+                      <td>{item.evening}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-
-              <table css={styles.table}>
-                <caption css={styles.caption}>Farm Operations</caption>
-                <thead css={styles.thead}>
-                  <tr>
-                    <th>Details</th>
-                    <th>Amount (KES)</th>
-                  </tr>
-                </thead>
-                <tbody css={styles.tbody}>
-                  {itemsRequired.farm.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.name}</th>
-                      <td>{formatCurrency(item.value)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
               <div css={styles.summaryContainer}>
+                <hr style={{ border: "1px dotted #486c1b" }} />
                 <p css={styles.summaryText}>
-                  <span>Funding:</span>
-                  <b>KES 435,876</b>
+                  <span>Total Morning Production:</span>
+                  <b>43587 Litres</b>
                 </p>
+
                 <p css={styles.summaryText}>
-                  <span>Surplus:</span>
-                  <b>KES 35,876</b>
+                  <span>Total Evening Production:</span>
+                  <b>43587 Litres</b>
                 </p>
+
                 <p css={styles.summaryText}>
-                  <span>Running Balance:</span>
-                  <b>KES 35,876</b>
+                  <span>Total Production:</span>
+                  <b>43587 Litres</b>
                 </p>
+
+                <hr style={{ border: "1px dotted #486c1b" }} />
               </div>
             </>
-          ) : activeTab === "Sales Report" ? (
+          ) : activeTab === "Budget" ? (
             <>
               <table css={styles.table}>
-                <caption css={styles.caption}>
-                  January 2025 Sales Report
-                </caption>
+                <caption css={styles.caption}>Utilities & Services</caption>
                 <thead css={styles.thead}>
                   <tr>
                     <th>Details</th>
-                    <th>Amount (KES)</th>
+                    <th>Cost</th>
                   </tr>
                 </thead>
                 <tbody css={styles.tbody}>
-                  {itemsRequired.General.map((item, i) => (
+                  {recipts.General.map((item, i) => (
                     <tr
                       key={i}
                       css={item.important ? styles.importantRow : undefined}
                     >
                       <th>{item.name}</th>
-                      <td>{formatCurrency(item.value)}</td>
+                      <td>KES{item.value}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
               <table css={styles.table}>
-                <caption css={styles.caption}>Farm Operations</caption>
+                <caption css={styles.caption}>Consumables & Supplies</caption>
                 <thead css={styles.thead}>
                   <tr>
                     <th>Details</th>
-                    <th>Amount (KES)</th>
+                    <th>Cost</th>
                   </tr>
                 </thead>
                 <tbody css={styles.tbody}>
@@ -414,85 +641,114 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
                       css={item.important ? styles.importantRow : undefined}
                     >
                       <th>{item.name}</th>
-                      <td>{formatCurrency(item.value)}</td>
+                      <td>KES{item.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <table css={styles.table}>
+                <caption css={styles.caption}>Equipment & Maintenance</caption>
+                <thead css={styles.thead}>
+                  <tr>
+                    <th>Details</th>
+                    <th>Cost</th>
+                  </tr>
+                </thead>
+                <tbody css={styles.tbody}>
+                  {itemsRequired.farm.map((item, i) => (
+                    <tr
+                      key={i}
+                      css={item.important ? styles.importantRow : undefined}
+                    >
+                      <th>{item.name}</th>
+                      <td>KES{item.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <table css={styles.table}>
+                <caption css={styles.caption}>
+                  Salaries & Operational Costs
+                </caption>
+                <thead css={styles.thead}>
+                  <tr>
+                    <th>Details</th>
+                    <th>Cost</th>
+                  </tr>
+                </thead>
+                <tbody css={styles.tbody}>
+                  {itemsRequired.farm.map((item, i) => (
+                    <tr
+                      key={i}
+                      css={item.important ? styles.importantRow : undefined}
+                    >
+                      <th>{item.name}</th>
+                      <td>KES{item.value}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
               <div css={styles.summaryContainer}>
+                <h2>Budget Summary</h2>
+                <hr style={{ border: "1px dotted #486c1b" }} />
                 <p css={styles.summaryText}>
-                  <span>Funding:</span>
-                  <b>KES 435,876</b>
+                  <span>Budget Funding:</span>
+                  <b>KES 500,000</b>
                 </p>
-                <p css={styles.summaryText}>
-                  <span>Surplus:</span>
-                  <b>KES 35,876</b>
-                </p>
+
                 <p css={styles.summaryText}>
                   <span>Running Balance:</span>
-                  <b>KES 35,876</b>
+                  <b>KES 43,587</b>
                 </p>
+
+                <hr style={{ border: "1px dotted #486c1b" }} />
               </div>
             </>
           ) : (
             <>
-              <h2 style={{ color: " #486c1b" }}>January 2025 Payroll Report</h2>
               <table css={styles.table}>
-                <caption css={styles.caption}>General Requirements</caption>
                 <thead css={styles.thead}>
                   <tr>
                     <th>Details</th>
-                    <th>Amount (KES)</th>
+                    <th>Designation</th>
+                    <th>Allowances </th>
+                    <th>Basic Salary</th>
                   </tr>
                 </thead>
                 <tbody css={styles.tbody}>
-                  {itemsRequired.General.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
+                  {salaries.map((item, i) => (
+                    <tr key={i}>
                       <th>{item.name}</th>
-                      <td>{formatCurrency(item.value)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <table css={styles.table}>
-                <caption css={styles.caption}>Farm Operations</caption>
-                <thead css={styles.thead}>
-                  <tr>
-                    <th>Details</th>
-                    <th>Amount (KES)</th>
-                  </tr>
-                </thead>
-                <tbody css={styles.tbody}>
-                  {itemsRequired.farm.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.name}</th>
-                      <td>{formatCurrency(item.value)}</td>
+                      <td>{item.designation}</td>
+                      <td>KES{item.allowance}</td>
+                      <td>KES{item.salary}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
               <div css={styles.summaryContainer}>
+                <h2>Payroll Summary</h2>
+                <hr style={{ border: "1px dotted #486c1b" }} />
                 <p css={styles.summaryText}>
-                  <span>Total Budget:</span>
-                  <b>KES 35,876</b>
+                  <span>Sallaries:</span>
+                  <b>KES 500,000</b>
                 </p>
+
                 <p css={styles.summaryText}>
-                  <span>Surplus:</span>
-                  <b>KES 35,876</b>
+                  <span>Allowances:</span>
+                  <b>KES 43,587</b>
                 </p>
+
                 <p css={styles.summaryText}>
                   <span>Total Funding:</span>
-                  <b>KES 35,876</b>
+                  <b>KES 503,587</b>
                 </p>
+
+                <hr style={{ border: "1px dotted #486c1b" }} />
               </div>
             </>
           )}

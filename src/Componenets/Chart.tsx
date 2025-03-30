@@ -138,7 +138,7 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                 href="."
                 onClick={(e) => {
                   e.preventDefault();
-                  setActiveTab("Budget");
+                  setActiveTab("Livestock Report");
                 }}
                 style={{ color: "#486c1b" }}
               >

@@ -87,8 +87,14 @@ const getFilteredComponent = (
       return <Product activeTab={activeTab} setActiveTab={setActiveTab} />;
     case "Payroll":
       return <Block activeTab={activeTab} setActiveTab={setActiveTab} />;
+    case "Profit & Loss":
     case "Budget":
     case "Sales Report":
+    case "Receipt Breakdown":
+    case "Incurred Costs":
+    case "Livestock Report":
+    case "Production Report":
+    case "Payroll Report":
       return <Budget activeTab={activeTab} />;
     case "Scheule a meeting":
       return <Form activeTab={activeTab} />;
@@ -189,7 +195,7 @@ function App() {
                 onChange={(e) => {
                   setSelectedMonth(e.target.value);
                   if (e.target.value) {
-                    setActiveTab("Budget");
+                    setActiveTab("Receipt Breakdown");
                   }
                 }}
               >
@@ -287,7 +293,7 @@ function App() {
                   onChange={(e) => {
                     setSelectedMonth(e.target.value);
                     if (e.target.value) {
-                      setActiveTab("Budget");
+                      setActiveTab("Production Report");
                     }
                   }}
                 >
@@ -306,11 +312,11 @@ function App() {
                 onChange={(e) => {
                   setSelectedMonth(e.target.value);
                   if (e.target.value) {
-                    setActiveTab("Budget");
+                    setActiveTab("Payroll Report");
                   }
                 }}
               >
-                <option value="">Monthly Payrolls</option>
+                <option value="">Monthly Payroll</option>
                 {months.map((month) => (
                   <option key={month.value} value={month.value}>
                     {month.label}
@@ -342,7 +348,7 @@ function App() {
                 onChange={(e) => {
                   setSelectedMonth(e.target.value);
                   if (e.target.value) {
-                    setActiveTab("Budget");
+                    setActiveTab("Profit & Loss");
                   }
                 }}
               >
