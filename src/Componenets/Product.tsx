@@ -17,7 +17,6 @@ const productStyles = css`
 
   .left {
     width: 20%;
-    margin: 1px;
   }
 
   .product_img {
@@ -32,8 +31,6 @@ const productStyles = css`
 
   .product_details {
     text-align: left;
-    margin: 10px;
-    padding: 5px;
   }
 
   .product_details .title {
@@ -94,3 +91,5 @@ export const Product: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
     </section>
   );
 };
+
+// https://codepen.io/TunderScripts/pen/JdeeQX

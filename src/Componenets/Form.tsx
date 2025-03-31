@@ -14,11 +14,6 @@ const styles = {
   page: css`
     background-color: ${colors.background};
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, sans-serif;
-    padding: 20px;
   `,
   container: css`
     width: 800px;
