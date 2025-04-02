@@ -578,16 +578,18 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
                 <thead css={styles.thead}>
                   <tr>
                     <th>Date</th>
-                    <th>Morning Production(Litres)</th>
-                    <th>Evening Production(Litres)</th>
+                    <th>Morning Production</th>
+                    <th>Evening Production</th>
+                    <th>Total Production</th>
                   </tr>
                 </thead>
                 <tbody css={styles.tbody}>
                   {production.map((item, i) => (
                     <tr key={i}>
                       <th>{item.date}</th>
-                      <td>{item.morning}</td>
-                      <td>{item.evening}</td>
+                      <td>{item.morning} Litres</td>
+                      <td>{item.evening} Litres</td>
+                      <td>50000 Litres</td>
                     </tr>
                   ))}
                 </tbody>
