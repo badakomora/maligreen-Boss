@@ -13,15 +13,20 @@ const colors = {
 const styles = {
   page: css`
     background-color: ${colors.background};
-    min-height: 100vh;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    padding: 20px;
   `,
   container: css`
-    width: 800px;
     height: 100%;
-    padding: 24px;
+    padding: 40px;
     border-radius: 12px;
     background-color: ${colors.white};
     border: 2px solid ${colors.border};
+    margin: auto;
   `,
   heading: css`
     color: ${colors.primary};

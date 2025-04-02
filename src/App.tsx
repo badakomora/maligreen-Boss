@@ -9,6 +9,7 @@ import { Chart } from "./Componenets/Chart";
 import { Block } from "./Componenets/Block";
 import { Budget } from "./Componenets/Budget";
 import { Form } from "./Componenets/Form";
+import { View } from "./Componenets/View";
 
 const layoutStyles = css`
   display: flex;
@@ -96,6 +97,8 @@ const getFilteredComponent = (
     case "Production Report":
     case "Payroll Report":
       return <Budget activeTab={activeTab} />;
+    case "Staff Review":
+      return <View activeTab={activeTab} />;
     case "Scheule a meeting":
       return <Form activeTab={activeTab} />;
     default:
