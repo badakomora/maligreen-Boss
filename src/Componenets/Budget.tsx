@@ -5,64 +5,71 @@ const styles = {
   container: css`
     font-family: "Lato", sans-serif;
     background: #ffffff;
-    width: 90%;
-    margin: 5px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
   `,
   section: css`
     border: 2px solid #486c1b;
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px -6p #486c1b;
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(72, 108, 27, 0.2);
   `,
   headerContainer: css`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
-    @media (max-width: 600px) {
+    gap: 2rem;
+    margin-bottom: 3rem;
+    @media (max-width: 768px) {
       flex-direction: column;
       align-items: flex-start;
     }
   `,
   header: css`
     font-family: "Raleway", sans-serif;
-    font-weight: bold;
+    font-weight: 700;
     margin: 0;
     text-align: right;
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       text-align: left;
       margin-top: 1rem;
     }
   `,
   spanFirst: css`
-    font-size: 0.9em;
+    font-size: 1em;
     color: #486c1b;
     display: block;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
   `,
   spanLast: css`
-    font-size: 1.4em;
+    font-size: 1.6em;
     color: #486c1b;
     display: block;
+    font-weight: 800;
   `,
   tableWrap: css`
     overflow-x: auto;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     width: 100%;
+    border-radius: 8px;
   `,
   table: css`
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     width: 100%;
-    height: 100%;
-    background: white;
-    margin-bottom: 1.5rem;
+    background: #ffffff;
+    margin-bottom: 2rem;
     table-layout: fixed;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #486c1b;
   `,
   caption: css`
     color: #486c1b;
-    font-size: 1.3em;
+    font-size: 1.4em;
     font-weight: bold;
     margin-bottom: 1rem;
     text-align: left;
@@ -72,14 +79,11 @@ const styles = {
   thead: css`
     background: #486c1b;
     th {
-      padding: 0.85rem 1rem;
+      padding: 1rem 1.25rem;
       text-align: left;
-      border-bottom: 2px solid #ffffff;
       color: #ffffff;
       font-weight: 600;
-    }
-    th {
-      width: 30%;
+      font-size: 1.05rem;
     }
     th:last-child {
       text-align: right;
@@ -88,20 +92,21 @@ const styles = {
   tbody: css`
     td,
     th {
-      padding: 0.75rem 1rem;
+      padding: 1rem 1.25rem;
       border-bottom: 1px solid #486c1b;
       color: #486c1b;
-      background: white;
+      background: #ffffff;
     }
     th {
       text-align: left;
-      font-weight: normal;
+      font-weight: 500;
     }
     td:last-child {
       text-align: right;
+      font-weight: 600;
     }
-    tr:hover {
-      background-color: #486c1b;
+    tr:hover td,
+    tr:hover th {
     }
     tr:last-child td,
     tr:last-child th {
@@ -109,24 +114,47 @@ const styles = {
     }
   `,
   summaryText: css`
-    margin: 0.75rem 0;
-    font-size: 1rem;
+    margin: 1rem 0;
+    font-size: 1.05rem;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #486c1b;
 
     b {
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
     }
   `,
   summaryContainer: css`
     color: #486c1b;
-    padding: 1rem;
-    border-radius: 6px;
-    margin-top: 1rem;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+    background: #ffffff;
+    // border: 1px solid #486c1b;
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
   `,
   importantRow: css`
     font-weight: bold;
-    background-color: #486c1b;
+
+    td,
+    th {
+      color: #486c1b;
+      font-weight: 700;
+    }
+
+    &:hover td,
+    &:hover th {
+      color: #486c1b !important;
+      font-weight: bold;
+      opacity: 0.9;
+    }
   `,
 };
 
@@ -361,7 +389,7 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
               </table>
 
               <div css={styles.summaryContainer}>
-                <h2>Receipt Summary</h2>
+                <h2>P&L Report Summary</h2>
                 <hr style={{ border: "1px dotted #486c1b" }} />
                 <p css={styles.summaryText}>
                   <span>Gross Profit:</span>
@@ -595,6 +623,7 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
                 </tbody>
               </table>
               <div css={styles.summaryContainer}>
+                <h2>Production Summary</h2>
                 <hr style={{ border: "1px dotted #486c1b" }} />
                 <p css={styles.summaryText}>
                   <span>Total Morning Production:</span>
