@@ -5,9 +5,8 @@ const styles = {
   container: css`
     font-family: "Lato", sans-serif;
     background: #ffffff;
-    padding: 1.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 90%;
+    margin: 5px;
   `,
   section: css`
     border: 2px solid #486c1b;
@@ -51,10 +50,12 @@ const styles = {
   tableWrap: css`
     overflow-x: auto;
     margin-bottom: 1.5rem;
+    width: 100%;
   `,
   table: css`
     border-collapse: collapse;
     width: 100%;
+    height: 100%;
     background: white;
     margin-bottom: 1.5rem;
     table-layout: fixed;
@@ -80,6 +81,9 @@ const styles = {
     th {
       width: 30%;
     }
+    th:last-child {
+      text-align: right;
+    }
   `,
   tbody: css`
     td,
@@ -93,8 +97,8 @@ const styles = {
       text-align: left;
       font-weight: normal;
     }
-    td {
-      text-align: leftt;
+    td:last-child {
+      text-align: right;
     }
     tr:hover {
       background-color: #486c1b;
