@@ -5,10 +5,8 @@ const styles = {
   container: css`
     font-family: "Lato", sans-serif;
     background: #ffffff;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+    width: 95%;
+    margin: auto;
   `,
   section: css`
     border: 2px solid #486c1b;
@@ -157,7 +155,6 @@ const styles = {
     }
   `,
 };
-
 interface NavbarProps {
   activeTab: string;
 }
@@ -211,7 +208,7 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
 
   const financials = [
     {
-      item: "Revenue",
+      item: "Funding",
       value: "500,345",
       important: true,
     },
@@ -246,7 +243,7 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
       important: true,
     },
     {
-      item: "Litres Sold",
+      item: "Unit Sold",
       value: "500,345",
     },
     {
