@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navbar } from "./Componenets/Navbar";
 import { Breakdown } from "./Componenets/Breakdown";
 import { Product } from "./Componenets/Product";
@@ -10,6 +10,8 @@ import { Block } from "./Componenets/Block";
 import { Budget } from "./Componenets/Budget";
 import { Form } from "./Componenets/Form";
 import { View } from "./Componenets/View";
+import { serverUrl } from "./AppConfig";
+import axios from "axios";
 
 const layoutStyles = css`
   display: flex;
@@ -108,6 +110,19 @@ const getFilteredComponent = (
 function App() {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [activeTab, setActiveTab] = useState("Dashboard");
+  const [totalsales, setTotalSalesData] = useState(0);
+  const revenue = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}invoice/list`);
+      setTotalSalesData(response.data.totalsales);
+    } catch (error) {
+      console.error("Error fetching invoices:", error);
+    }
+  };
+
+  useEffect(() => {
+    revenue();
+  });
 
   return (
     <div css={layoutStyles}>
@@ -131,9 +146,9 @@ function App() {
                 `}
               >
                 <span style={{ color: "#486c1b", cursor: "pointer" }}>
-                  Revenue Over Time:{" "}
+                  Revenue Overtime:{" "}
                   <b>
-                    <big>KES800,000 </big>
+                    <big>KES {totalsales.toLocaleString("en-US")} </big>
                   </b>
                 </span>
                 <div
@@ -159,8 +174,9 @@ function App() {
                       font-size: 14px;
                     `}
                   >
-                    Cash Revenue:
+                    Cash Revenue:{" "}
                     <b>
+                      {" "}
                       <big>KES60,000 </big>
                     </b>
                   </p>
@@ -171,8 +187,9 @@ function App() {
                       font-size: 14px;
                     `}
                   >
-                    Buy Goods 4367606 Revenue:
+                    Buy Goods 4367606 Revenue :{" "}
                     <b>
+                      {" "}
                       <big>KES210,000 </big>
                     </b>
                   </p>
@@ -183,9 +200,10 @@ function App() {
                       font-size: 14px;
                     `}
                   >
-                    Stanbic Bank:
+                    Stanbic Revenue:{" "}
                     <b>
-                      <big>KES60,000 </big>
+                      {" "}
+                      <big>KES70,000 </big>
                     </b>
                   </p>
                 </div>
