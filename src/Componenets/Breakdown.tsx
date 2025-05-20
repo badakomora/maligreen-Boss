@@ -5,8 +5,15 @@ import { useEffect, useState } from "react";
 import { serverUrl } from "../AppConfig";
 
 const breakdownStyles = css`
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    sans-serif;
+  --primary-color: #486c1b;
+  --primary-bg: #f0f4eb;
+  --text-color: #486c1b;
+  --text-light: #666666;
+  --border-color: #d0d0d0;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --notification-color: black;
+
+  font-family: monaco;
   margin: 30px 0;
 
   .container {
@@ -20,15 +27,27 @@ const breakdownStyles = css`
     margin-bottom: 20px;
   }
 
+  .links-section > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .links-section span {
+    color: var(--notification-color);
+    font-weight: 500;
+  }
+
   .action-link {
-    color: #486c1b;
+    color: var(--primary-color);
     font-size: 0.9em;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
     display: inline-block;
-    padding: 4px 0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-decoration: none;
 
     &:hover {
-      color: #5a8824;
       text-decoration: underline;
     }
   }
@@ -38,7 +57,7 @@ const breakdownStyles = css`
   }
 
   .section-title {
-    color: #486c1b;
+    color: var(--primary-color);
     font-size: 1.3em;
     font-weight: 700;
     margin-top: 0;
@@ -47,10 +66,10 @@ const breakdownStyles = css`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
   }
 
   .section-subtitle {
-    color: #5a8824;
     font-size: 1.1em;
     font-weight: 600;
     margin-top: 0;
@@ -85,15 +104,17 @@ const breakdownStyles = css`
   .card {
     width: 100%;
     background: white;
-    border-radius: 6px;
-    padding: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.3s ease;
+    overflow: hidden;
   }
 
   .card-header {
     margin-bottom: 15px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #486c1b;
+    padding: 12px 15px;
+    border-bottom: 1px solid #486c1b;
+    color: #486c1b;
   }
 
   .items-list {
@@ -108,28 +129,26 @@ const breakdownStyles = css`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #486c1b;
-    padding: 6px 8px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+    color: var(--text-color);
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
 
     &:hover {
-      background-color: #f8f9fa;
+      border-left-color: var(--primary-color);
     }
   }
 
   .important-item {
-    background-color: #486c1b;
+    background-color: var(--primary-color);
     color: #ffffff;
-    padding: 8px;
-    border-radius: 4px;
-
-    &:hover {
-      background-color: #5a8824;
-    }
+    padding: 10px 12px;
+    border-radius: 6px;
+    border-left: none;
 
     .note {
-      color: #ffffff !important;
+      color: rgba(255, 255, 255, 0.9) !important;
       font-weight: 500;
     }
   }
@@ -169,12 +188,13 @@ const breakdownStyles = css`
   }
 
   .date-badge {
-    background-color: #f0f4eb;
-    color: #486c1b;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.8em;
+    background-color: var(--primary-bg);
+    color: var(--primary-color);
+    padding: 6px 8px;
+    border-radius: 10px;
+    font-size: 1em;
     font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   @media (max-width: 992px) {
@@ -219,13 +239,13 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
   const [budgetMonthsData, setBudgetMonthsData] = useState<Items[]>([]);
   const [incurred, setIncurred] = useState(0);
   const [datecreated, setCreateddate] = useState("");
-  const [todaysExpenses, setTodaysExpenses] = useState({
+  const [todaysExpenses] = useState({
     biggestExpense: 78457,
     totalExpense: 178457,
     runningBalance: 271543,
     recentFunding: 450000,
   });
-  const [overallExpenses, setOverallExpenses] = useState({
+  const [overallExpenses] = useState({
     totalExpense: 2450000,
     totalFunding: 3120309,
     totalRevenue: 670309,
@@ -295,39 +315,48 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
     <section css={breakdownStyles}>
       <div className="container">
         <div className="links-section">
-          <a
-            href="."
-            className="action-link"
-            onClick={(e) => {
-              e.preventDefault();
-              setActiveTab("Pending Incurred Costs");
-            }}
-          >
-            <b style={{ color: "#17a2b8" }}>New</b> Inccurred Cost KES{" "}
-            {incurred} - {datecreated} Submitted for approval
-            {"\u00BB"}
-          </a>
-          {budgetMonthsData.map((month, index) => (
-            <a
-              key={index}
-              href="."
-              className="action-link"
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveTab("Budget");
-                setBudgetId(Number(month.id));
-              }}
-            >
-              <b style={{ color: "#17a2b8" }}>New</b> {month.name} budget
-              Submitted for approval{"\u00BB"}
-            </a>
-          ))}
+          {incurred ? (
+            <div style={{ display: "flex" }}>
+              <span className="date-badge">New</span>
+              <a
+                href="."
+                className="action-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveTab("Pending Incurred Costs");
+                }}
+              >
+                Inccurred Cost KES {incurred.toLocaleString()} - {datecreated}{" "}
+                Submitted for approval
+                {"\u00BB"}
+              </a>
+            </div>
+          ) : (
+            ""
+          )}
+
+          {budgetMonthsData.length >= 1
+            ? budgetMonthsData.map((month, index) => (
+                <div style={{ display: "flex" }} key={index}>
+                  <span className="date-badge">New</span>
+                  <a
+                    key={index}
+                    href="."
+                    className="action-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveTab("Budget");
+                      setBudgetId(Number(month.id));
+                    }}
+                  >
+                    {month.name} budget Submitted for approval {"\u00BB"}
+                  </a>
+                </div>
+              ))
+            : ""}
         </div>
 
         <div className="section-container">
-          <div className="section-title">
-            <span className="date-badge">{today}</span>
-          </div>
           <hr className="divider" />
 
           {/* Flex container for Today's and Overall Expenses */}
@@ -336,7 +365,10 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
             <div className="expense-section">
               <div className="card">
                 <div className="card-header">
-                  <h4 className="section-subtitle">Today's Expense Summary</h4>
+                  <h4 className="section-subtitle">
+                    Today's Expense Summary{" "}
+                    <span className="date-badge"> {today}</span>
+                  </h4>
                 </div>
                 <ul className="items-list">
                   <li className="list-item">

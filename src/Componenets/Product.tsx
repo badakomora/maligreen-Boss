@@ -1,63 +1,118 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import type React from "react";
 import { Chart } from "./Chart";
 
 const productStyles = css`
   section {
     background: #ffffff;
     width: 100%;
-    border-radius: 5px;
-    padding: 20px;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(72, 108, 27, 0.1);
+    margin: 20px 0;
   }
 
   .content {
     display: flex;
     justify-content: space-between;
+    gap: 30px;
   }
 
   .left {
     width: 20%;
+    display: flex;
+    flex-direction: column;
   }
 
   .product_img {
     height: 250px;
-    width: 230px;
+    width: 100%;
     margin-top: 20px;
-    border-radius: 5px;
+    border-radius: 10px;
     background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR17rLWpUemc2N_ScqpAr-NX1OOKWUQmQwdyXWDf1U0o6XpdFhm1mSI1GIzVFAVjxwahb0&usqp=CAU")
       no-repeat center;
     background-size: cover;
+    box-shadow: 0 6px 15px rgba(72, 108, 27, 0.15);
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.02);
+    }
   }
 
   .product_details {
     text-align: left;
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(72, 108, 27, 0.05);
+    border-radius: 10px;
   }
 
   .product_details .title {
     font-size: 1.3em;
     color: #486c1b;
-    font-weight: 900;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
   }
 
   .product_details .discription,
   .product_details .price,
   .product_details .other {
-    font-size: 0.8em;
-    color: #486c1b;
+    font-size: 0.9em;
+    color: #5a7a2e;
+    margin: 5px 0;
   }
 
   .product_details .price {
     font-size: 1.1em;
     font-weight: 600;
+    margin: 10px 0;
+  }
+
+  .product_details .offer {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .product_details .discription {
+    font-size: 0.8em;
+    opacity: 0.8;
   }
 
   .right {
     width: 80%;
-    margin: 2px;
+    background: rgba(72, 108, 27, 0.03);
+    border-radius: 10px;
+    padding: 20px;
   }
 
   .product_description {
     text-align: left;
+    height: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .content {
+      flex-direction: column;
+    }
+
+    .left,
+    .right {
+      width: 100%;
+    }
+
+    .product_img {
+      height: 220px;
+      max-width: 230px;
+      margin: 20px auto;
+    }
+
+    .product_details {
+      text-align: center;
+    }
   }
 `;
 
@@ -81,7 +136,8 @@ export const Product: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
             <h4 className="title">Goat Milk 1L</h4>
             <p className="price">
               <span className="offer">
-                <span className="discription">Market Prize </span>KES200
+                <span className="discription">Market Price</span>
+                KES 200
               </span>
             </p>
             <p className="other">Inclusive of all taxes</p>
@@ -91,5 +147,3 @@ export const Product: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
     </section>
   );
 };
-
-// https://codepen.io/TunderScripts/pen/JdeeQX

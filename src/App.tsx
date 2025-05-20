@@ -8,7 +8,7 @@ import { Form } from "./Componenets/Form";
 import { View } from "./Componenets/View";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { serverUrl } from "./AppConfig";
 import { Breakdown } from "./Componenets/Breakdown";
@@ -23,175 +23,85 @@ interface MeetingModalProps {
   onSubmit: (dateTime: string, purpose: string) => void;
 }
 
+// Update the modalOverlayStyles with a smooth animation
 const modalOverlayStyles = css`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   width: 100%;
+  animation: fadeIn 0.2s ease-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
+// Update the modalContentStyles with better styling and animation
 const modalContentStyles = css`
   background: white;
-  padding: 2rem;
-  border-radius: 8px;
+  padding: 0;
+  border-radius: 12px;
   width: 100%;
-  max-width: 500px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 550px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   position: relative;
   max-height: 90vh;
   margin: auto;
-`;
+  overflow: hidden;
+  animation: slideUp 0.3s ease-out;
 
-const formGroupStyles = css`
-  margin-bottom: 1.5rem;
-`;
-
-const labelStyles = css`
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #486c1b;
-`;
-
-const inputStyles = css`
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: Monaco;
-  &:focus {
-    outline: none;
-    border-color: #486c1b;
-  }
-`;
-
-const textareaStyles = css`
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: Monaco;
-  min-height: 100px;
-  resize: vertical;
-  &:focus {
-    outline: none;
-    border-color: #486c1b;
-  }
-`;
-
-const buttonContainerStyles = css`
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1.5rem;
-`;
-
-const MeetingModal = ({ isOpen, onClose }: MeetingModalProps) => {
-  const [dateTime, setDateTime] = useState("");
-  const [purpose, setPurpose] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      // Call the backend API to schedule a meeting
-      const response = await axios.post(`${serverUrl}item/scheduleMeeting`, {
-        dateTime: dateTime,
-        purpose: purpose,
-      });
-
-      // Reset form
-      setDateTime("");
-      setPurpose("");
-
-      toast.success("Meeting scheduled successfully!");
-      onClose();
-    } catch (error) {
-      console.error("Error scheduling meeting:", error);
-      toast.error("Failed to schedule meeting. Please try again.");
+  @keyframes slideUp {
+    from {
+      transform: translateY(30px);
+      opacity: 0;
     }
-  };
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+`;
 
-  if (!isOpen) return null;
-
-  return (
-    <div css={modalOverlayStyles}>
-      <div css={modalContentStyles}>
-        <h2 style={{ color: "#486c1b", marginTop: 0 }}>Schedule a Meeting</h2>
-        <form onSubmit={handleSubmit}>
-          <div css={formGroupStyles}>
-            <label css={labelStyles} htmlFor="dateTime">
-              Date & Time
-            </label>
-            <input
-              type="text"
-              id="dateTime"
-              css={inputStyles}
-              value={dateTime}
-              onChange={(e) => setDateTime(e.target.value)}
-              placeholder="Enter date and time (e.g., May 25, 2025 3:00 PM)"
-              required
-            />
-          </div>
-          <div css={formGroupStyles}>
-            <label css={labelStyles} htmlFor="purpose">
-              Purpose
-            </label>
-            <textarea
-              id="purpose"
-              css={textareaStyles}
-              value={purpose}
-              onChange={(e) => setPurpose(e.target.value)}
-              placeholder="Describe the purpose of this meeting..."
-            />
-          </div>
-          <div css={buttonContainerStyles}>
-            <button type="button" css={btnSecondary} onClick={onClose}>
-              Cancel
-            </button>
-            <button type="submit" css={btnPrimary}>
-              Schedule Meeting
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-// PayrollModal Component
-interface PayrollModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (month: string, note: string) => void;
-}
-
-const PayrollModal = ({ isOpen, onClose }: PayrollModalProps) => {
-  const [month, setMonth] = useState("");
+// Replace the MeetingModal component with this improved version
+const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
+  const [purpose, setPurpose] = useState("");
+  const [date, setDate] = useState("");
+  const [venue, setVenue] = useState("");
   const [note, setNote] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      // Call the backend API to schedule a meeting
+      // Call the backend API to schedule a meeting with the correct parameter names
       const response = await axios.post(`${serverUrl}item/scheduleMeeting`, {
-        dateTime: month,
-        purpose: note,
+        purpose,
+        datescheduled: date, // Changed from 'date' to 'datescheduled' to match backend
+        venue,
+        note,
       });
 
       // Reset form
-      setMonth("");
+      setPurpose("");
+      setDate("");
+      setVenue("");
       setNote("");
 
-      toast.success("Meeting scheduled successfully!");
+      toast.success(response.data.tab);
+      onClose();
+      onSubmit(date, purpose); // Call the onSubmit prop with the form data
     } catch (error) {
       console.error("Error scheduling meeting:", error);
       toast.error("Failed to schedule meeting. Please try again.");
@@ -200,46 +110,187 @@ const PayrollModal = ({ isOpen, onClose }: PayrollModalProps) => {
 
   if (!isOpen) return null;
 
+  // Theme Colors
+  const colors = {
+    primary: "#486c1b",
+    white: "#ffffff",
+    background: "#f8f9fa",
+    border: "#e2e8f0",
+    text: "#333333",
+    lightGreen: "#ecf4e4",
+  };
+
+  // Styles
+  const styles = {
+    header: css`
+      background-color: ${colors.lightGreen};
+      padding: 20px 30px;
+      border-bottom: 1px solid ${colors.border};
+    `,
+    container: css`
+      padding: 30px;
+      background-color: ${colors.white};
+    `,
+    heading: css`
+      color: ${colors.primary};
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+    `,
+    subheading: css`
+      color: ${colors.text};
+      font-size: 14px;
+      margin-top: 5px;
+      opacity: 0.8;
+    `,
+    label: css`
+      font-size: 14px;
+      font-weight: 600;
+      color: ${colors.primary};
+      margin-bottom: 8px;
+      display: block;
+    `,
+    inputcontainer: css`
+      width: 100%;
+      margin-bottom: 20px;
+    `,
+    input: css`
+      font-size: 15px;
+      color: ${colors.text};
+      background-color: ${colors.white};
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid ${colors.border};
+      border-radius: 8px;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+
+      &::placeholder {
+        color: #a0aec0;
+      }
+      &:focus {
+        border-color: ${colors.primary};
+        box-shadow: 0 0 0 3px rgba(72, 108, 27, 0.15);
+        outline: none;
+      }
+    `,
+    row: css`
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+
+      @media (max-width: 600px) {
+        flex-direction: column;
+        gap: 0;
+      }
+    `,
+    buttonContainer: css`
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 10px;
+    `,
+    submitButton: css`
+      ${btnPrimary}
+      padding: 12px 24px;
+      font-size: 15px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(72, 108, 27, 0.2);
+      }
+    `,
+    cancelButton: css`
+      ${btnSecondary}
+      padding: 12px 24px;
+      font-size: 15px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+    `,
+  };
+
   return (
-    <div css={modalOverlayStyles}>
+    <div
+      css={modalOverlayStyles}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div css={modalContentStyles}>
-        <h2 style={{ color: "#486c1b", marginTop: 0 }}>Schedule a Meeting</h2>
-        <form onSubmit={handleSubmit}>
-          <div css={formGroupStyles}>
-            <label css={labelStyles} htmlFor="month">
-              Date & Time
-            </label>
-            <input
-              type="text"
-              id="month"
-              css={inputStyles}
-              value={month}
-              onChange={(e) => setMonth(e.target.value)}
-              placeholder="Enter date and time (e.g., May 25, 2025 3:00 PM)"
-              required
-            />
-          </div>
-          <div css={formGroupStyles}>
-            <label css={labelStyles} htmlFor="note">
-              Purpose
-            </label>
-            <textarea
-              id="note"
-              css={textareaStyles}
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Describe the purpose of this meeting..."
-            />
-          </div>
-          <div css={buttonContainerStyles}>
-            <button type="button" css={btnSecondary} onClick={onClose}>
-              Cancel
-            </button>
-            <button type="submit" css={btnPrimary}>
-              Schedule Meeting
-            </button>
-          </div>
-        </form>
+        <div css={styles.header}>
+          <h1 css={styles.heading}>Schedule a Meeting</h1>
+          <p css={styles.subheading}>
+            Fill in the details to schedule your meeting
+          </p>
+        </div>
+        <div css={styles.container}>
+          <form onSubmit={handleSubmit}>
+            <div css={styles.inputcontainer}>
+              <label css={styles.label}>Purpose</label>
+              <input
+                css={styles.input}
+                type="text"
+                placeholder="What is this meeting about?"
+                value={purpose}
+                onChange={(e) => setPurpose(e.target.value)}
+                required
+              />
+            </div>
+
+            <div css={styles.row}>
+              <div css={styles.inputcontainer}>
+                <label css={styles.label}>Date</label>
+                <input
+                  css={styles.input}
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  required
+                />
+              </div>
+              <div css={styles.inputcontainer}>
+                <label css={styles.label}>Venue</label>
+                <input
+                  css={styles.input}
+                  type="text"
+                  placeholder="Meeting location"
+                  value={venue}
+                  onChange={(e) => setVenue(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div css={styles.inputcontainer}>
+              <label css={styles.label}>Additional Notes</label>
+              <textarea
+                css={[
+                  styles.input,
+                  css`
+                    min-height: 100px;
+                    resize: vertical;
+                  `,
+                ]}
+                placeholder="Any additional information about the meeting"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+              />
+            </div>
+
+            <div css={styles.buttonContainer}>
+              <button type="button" css={styles.cancelButton} onClick={onClose}>
+                Cancel
+              </button>
+              <button type="submit" css={styles.submitButton}>
+                Schedule Meeting
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
@@ -323,6 +374,7 @@ interface items {
   id: number;
   name: string;
   status: number;
+  venue: string;
 }
 
 const months = [
@@ -346,21 +398,14 @@ function App() {
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem("activeTab") || "Dashboard";
   });
-  const [invoiceId, setInvoiceId] = useState(0);
-  const [customerId, setCustomerId] = useState(0);
-  const [expenseId, setExpenseId] = useState(0);
-  const [livestockId, setLivestockId] = useState(0);
+  const [invoiceId] = useState(0);
+  const [expenseId] = useState(0);
+  const [livestockId] = useState(0);
   const [staffId, setStaffId] = useState(0);
   const [budgetId, setBudgetId] = useState<number | string>(0);
   const [receiptId, setreceiptId] = useState<number | string>(0);
   const [payrollId, setPayrollId] = useState<number | string>(0);
-  const [isPayrollModalOpen, setIsPayrollModalOpen] = useState(false);
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
-
-  // useEffect(() => {
-  //   setCustomerId(0);
-  //   setInvoiceId(0);
-  // }, [activeTab]);
 
   useEffect(() => {
     localStorage.setItem("activeTab", activeTab);
@@ -371,11 +416,13 @@ function App() {
     fetchInccurredItems();
     fetchMonths();
     prevpayroll();
+    fetchmeeting();
   }, [activeTab]);
 
   const [budgetMonthsData, setBudgetMonthsData] = useState<items[]>([]);
   const [totalsales, setTotalSalesData] = useState(0);
   const [payrollmonths, setPayrollMonths] = useState<items[]>([]);
+  const [scheduledmeeting, setScheduledMeeting] = useState<items[]>([]);
 
   const [receipts, setReceiptsData] = useState<receiptsType[]>([]);
   const [productionperiodData, setproductionPeriodData] = useState<items[]>([]);
@@ -398,6 +445,33 @@ function App() {
       setBudgetMonthsData(shelterList);
     } catch (error) {
       console.error("Error fetching shelter:", error);
+    }
+  };
+
+  const fetchmeeting = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}item/meeting/list`);
+      const meetingList = response.data.list.map(
+        (item: {
+          id: number;
+          purpose: string;
+          datescheduled: string;
+          venue: string;
+          note: string;
+          status: number;
+          datecreated: string;
+        }) => ({
+          id: item.id,
+          name: `${item.datescheduled} - ${item.purpose}`, // or any preferred label
+          status: item.status,
+          venue: item.venue,
+          note: item.note,
+          datecreated: item.datecreated,
+        })
+      );
+      setScheduledMeeting(meetingList); // Rename this to setMeetingData for clarity?
+    } catch (error) {
+      console.error("Error fetching meeting list:", error);
     }
   };
 
@@ -551,6 +625,17 @@ function App() {
         <header css={headerStyles}>
           <h1 style={{ color: "#486c1b" }}>{activeTab}</h1>
           <div>
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
             {activeTab === "Sales" ? (
               <>
                 <div
@@ -731,18 +816,6 @@ function App() {
                 >
                   <b>Livestock Report {"\u00BB"}</b>{" "}
                 </span>
-                {/* <button
-                  css={btnSecondary}
-                  onClick={() => setActiveTab("Production")}
-                >
-                  Log Production
-                </button>
-                <button
-                  css={btnSecondary}
-                  onClick={() => setActiveTab("Livestock")}
-                >
-                  Livestock Entry
-                </button> */}
               </>
             ) : activeTab === "Staff Management" ? (
               <>
@@ -752,12 +825,6 @@ function App() {
                     <big>KES {totalsalary.toLocaleString()}</big>
                   </b>
                 </span>
-                {/* <button
-                  css={btnSecondary}
-                  onClick={() => setActiveTab("Hire staff")}
-                >
-                  Onboard New Staff
-                </button> */}
               </>
             ) : activeTab === "Livestock Report" ||
               activeTab === "Receipt Breakdown" ||
@@ -815,12 +882,13 @@ function App() {
                   }}
                 >
                   <option>Budgets</option>
-                  {budgetMonthsData.map((month, index) => (
-                    <option key={index} value={month.id}>
-                      {month.name}{" "}
-                      {month.status === 1 ? "Budget Awaits Funding" : ""}
-                    </option>
-                  ))}
+                  {budgetMonthsData.map((month, index) =>
+                    month.status === 1 ? null : (
+                      <option key={index} value={month.id}>
+                        {month.name}
+                      </option>
+                    )
+                  )}
                 </select>
               </>
             ) : activeTab === "Livestock & Production" ? (
@@ -850,9 +918,7 @@ function App() {
                 onChange={(e) => {
                   const value = e.target.value;
                   setSelectedMonth(value);
-                  if (value === "new") {
-                    setIsPayrollModalOpen(true);
-                  } else if (value) {
+                  if (value) {
                     setPayrollId(value);
                     setActiveTab("Payroll Report");
                   }
@@ -881,12 +947,13 @@ function App() {
                 }}
               >
                 <option>Budgets</option>
-                {budgetMonthsData.map((month, index) => (
-                  <option key={index} value={month.id}>
-                    {month.name}{" "}
-                    {month.status === 1 ? "Budget Awaits Funding" : ""}
-                  </option>
-                ))}
+                {budgetMonthsData.map((month, index) =>
+                  month.status === 1 ? null : (
+                    <option key={index} value={month.id}>
+                      {month.name}
+                    </option>
+                  )
+                )}
               </select>
             ) : activeTab === "Production Report" ? (
               <select
@@ -1022,7 +1089,7 @@ function App() {
                         padding: 8px 12px;
                         z-index: 1;
                         box-shadow: 0px 0px 10px -6px #486c1b;
-                        width: 150px;
+                        width: 200px;
                         margin-top: 8px;
                         transition: opacity 0.2s ease-in-out;
                         visibility: hidden;
@@ -1035,30 +1102,46 @@ function App() {
                         }
                       `}
                     >
-                      <p
-                        css={css`
-                          margin: 0;
-                          font-size: 14px;
-                        `}
-                      >
-                        Meeting Scheduled for{" "}
-                        <b>
-                          <big>3:00 PM Monday 18th</big>
-                        </b>{" "}
-                        at the HQ Riverside Main Office
-                      </p>
-                      <p
-                        css={css`
-                          margin: 0;
-                          font-size: 14px;
-                        `}
-                      >
-                        Purpose: Financials Reconciliation
-                      </p>
+                      {scheduledmeeting.length > 0 ? (
+                        scheduledmeeting.map((meeting, index) => (
+                          <div key={index}>
+                            <p
+                              css={css`
+                                margin: 0;
+                                font-size: 14px;
+                              `}
+                            >
+                              Meeting Scheduled for{" "}
+                              <b>
+                                <big>{meeting.name.split(" - ")[0]}</big>
+                              </b>{" "}
+                              at {meeting.venue}
+                            </p>
+                            <p
+                              css={css`
+                                margin: 0;
+                                font-size: 14px;
+                              `}
+                            >
+                              Purpose: {meeting.name.split(" - ")[1]}
+                            </p>
+                            {index < scheduledmeeting.length - 1 && <hr />}
+                          </div>
+                        ))
+                      ) : (
+                        <p
+                          css={css`
+                            margin: 0;
+                            font-size: 14px;
+                          `}
+                        >
+                          No meetings scheduled
+                        </p>
+                      )}
                       <hr />
                       <p onClick={() => setActiveTab("Pending Incurred Costs")}>
-                        Fund Incurred cost KES {incurred.toLocaleString()} –{" "}
-                        {datecreated}
+                        Incurred cost KES {incurred.toLocaleString()}
+                        {" submitted  on "} {datecreated} {" for approval"}
                       </p>
                       <hr />
                       {budgetMonthsData.map((month, index) => (
@@ -1070,8 +1153,8 @@ function App() {
                           }}
                         >
                           {month.status === 1
-                            ? month.name + "Budget Awaits Funding"
-                            : ""}
+                            ? ""
+                            : month.name + " Budget submitted for approval"}
                         </p>
                       ))}
                     </div>
@@ -1120,20 +1203,6 @@ function App() {
           {getFilteredComponent(activeTab, setActiveTab)}
         </div>
       </main>
-      <PayrollModal
-        isOpen={isPayrollModalOpen}
-        onClose={() => {
-          setIsPayrollModalOpen(false);
-          setSelectedMonth("");
-        }}
-        onSubmit={(month, note) => {
-          // The API call is now handled inside the PayrollModal component
-          setIsPayrollModalOpen(false);
-          setSelectedMonth("");
-          // Navigate to the payroll report for the new month
-          setActiveTab("Payroll Report");
-        }}
-      />
       <MeetingModal
         isOpen={isMeetingModalOpen}
         onClose={() => {
