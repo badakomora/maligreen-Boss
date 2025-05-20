@@ -43,7 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
     { label: "Sales" },
     { label: "Expenses & Budget" },
     { label: "Livestock & Production" },
-    { label: "Payroll" },
+    { label: "Staff Management" },
     { label: "Logout" }
   ];
   

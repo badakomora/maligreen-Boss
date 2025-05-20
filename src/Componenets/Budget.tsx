@@ -1,9 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { Dynamics } from "./Dynamics";
+import { serverUrl } from "../AppConfig";
 
 const styles = {
   container: css`
-    font-family: "Lato", sans-serif;
+    font-family: Monaco;
     background: #ffffff;
     width: 95%;
     margin: auto;
@@ -12,7 +16,7 @@ const styles = {
     border: 2px solid #486c1b;
     background: #ffffff;
     padding: 2rem;
-    border-radius: 10px;
+    border-radius: 8px;
     box-shadow: 0 4px 10px rgba(72, 108, 27, 0.2);
   `,
   headerContainer: css`
@@ -54,61 +58,52 @@ const styles = {
     width: 100%;
     border-radius: 8px;
   `,
-  table: css`
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
-    background: #ffffff;
-    margin-bottom: 2rem;
-    table-layout: fixed;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #486c1b;
-  `,
+
   caption: css`
     color: #486c1b;
-    font-size: 1.4em;
-    font-weight: bold;
-    margin-bottom: 1rem;
     text-align: left;
     padding: 0.5rem 0;
-    border-bottom: 2px solid #486c1b;
   `,
-  thead: css`
-    background: #486c1b;
-    th {
-      padding: 1rem 1.25rem;
+  table: css`
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    color: #486c1b;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 0px 10px -6px #486c1b;
+    margin-top: 4px;
+
+    th,
+    td {
+      padding: 0.4rem;
       text-align: left;
-      color: #ffffff;
-      font-weight: 600;
-      font-size: 1.05rem;
     }
+
+    td:last-child,
     th:last-child {
       text-align: right;
     }
-  `,
-  tbody: css`
-    td,
-    th {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid #486c1b;
-      color: #486c1b;
-      background: #ffffff;
-    }
-    th {
+
+    td a {
+      padding: 0.4rem;
       text-align: left;
-      font-weight: 500;
+      color: #486c1b;
+      &:hover {
+        color: #ffffff;
+        text-decoration: underline;
+      }
     }
-    td:last-child {
-      text-align: right;
-      font-weight: 600;
+
+    thead {
+      background: #486c1b;
+      color: #ffffff;
+      border-bottom: 2px solid #ffffff;
     }
-    tr:hover td,
-    tr:hover th {
-    }
-    tr:last-child td,
-    tr:last-child th {
-      border-bottom: none;
+
+    tr {
+      border-bottom: 1px solid #486c1b;
+      font-weight: none;
     }
   `,
   summaryText: css`
@@ -116,7 +111,6 @@ const styles = {
     font-size: 1.05rem;
     display: flex;
     justify-content: space-between;
-    align-items: center;
     color: #486c1b;
 
     b {
@@ -130,7 +124,6 @@ const styles = {
     border-radius: 8px;
     margin-top: 1.5rem;
     background: #ffffff;
-    // border: 1px solid #486c1b;
 
     h2 {
       margin-top: 0;
@@ -138,42 +131,62 @@ const styles = {
       font-weight: 700;
     }
   `,
-  importantRow: css`
-    font-weight: bold;
-
-    td,
-    th {
-      color: #486c1b;
-      font-weight: 700;
-    }
-
-    &:hover td,
-    &:hover th {
-      color: #486c1b !important;
-      font-weight: bold;
-      opacity: 0.9;
-    }
-  `,
 };
+
 interface NavbarProps {
   activeTab: string;
 }
 
-export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
+interface IdProps {
+  budgetId: number | string;
+  receiptId: number | string;
+  invoiceId: number;
+  productionId: number | string;
+  payrollId: number | string;
+}
+
+interface TableDataProps {
+  id: number;
+  name: string;
+  value: number;
+  date: string;
+}
+
+interface payrollProps {
+  id: number;
+  name: string;
+  designation: string;
+  salary: number;
+  status: number;
+}
+
+interface ProductionProps {
+  morning: string;
+  evening: string;
+  date: string;
+  overal: string;
+}
+
+interface BudgetData {
+  [account: string]: TableDataProps[];
+}
+
+export const Budget: React.FC<NavbarProps & IdProps> = ({
+  activeTab,
+  budgetId,
+  receiptId,
+  payrollId,
+  productionId,
+}) => {
   const farmMetrics = {
     herdMetrics: [
-      {
-        name: "Initial Goat Stock (2/4/2025)",
-        value: "8,000",
-        important: true,
-      },
-      { name: "Second Goat Stock (2/4/2025)", value: "8,000", important: true },
+      { name: "Initial Goat Stock", value: "8,000", important: true },
+      { name: "Total Goat Count", value: "5,000", important: true },
       { name: "Lactating Goats", value: "2,039", important: true },
       { name: "Kids Count", value: "8,457" },
       { name: "Pregnant Goats", value: "457" },
       { name: "Bucks", value: "457" },
       { name: "Breeds", value: "1,209" },
-      { name: "Total Goat Count", value: "5,000", important: true },
     ],
     healthStatus: [
       { name: "Healthy", value: "457", important: true },
@@ -190,132 +203,229 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
     ],
   };
 
-  const itemsRequired = {
-    General: [
-      { name: "Salaries", value: "300000", important: true },
-      { name: "Kitchen Shopping", value: "25000", important: true },
-      { name: "WIFI Bill", value: "3000" },
-      { name: "Electricity Bill", value: "5000" },
-      { name: "Miscellaneous", value: "10,000" },
-    ],
-    farm: [
-      { name: "Dairy Meal", value: "250000", important: true },
-      { name: "Goat Salt", value: "12000" },
-      { name: "Mollusses", value: "50000" },
-      { name: "Dog Meal", value: "2,039" },
-    ],
+  const [budgetData, setBudgetData] = useState<BudgetData>({});
+  const [incurreddata, setInccurredCostsData] = useState<BudgetData>({});
+  const [receiptData, setReceiptsData] = useState<BudgetData>({});
+  const [receipt, setReceipt] = useState(0);
+  const [balanceafter, setBalanceAfter] = useState(0);
+  const [date, setDate] = useState();
+
+  const [production, setProduction] = useState<ProductionProps[]>([]);
+  const [totals, setTotals] = useState({ morning: 0, evening: 0, overall: 0 });
+  const { runningBalance } = Dynamics();
+  const [perioddates, setperioddates] = useState("");
+  const [payrolldata, setPayrollData] = useState<payrollProps[]>([]);
+  const [payrollmonth, setPayrollMonth] = useState("");
+  const [totalsalary, setTotalSalary] = useState(0);
+  useEffect(() => {
+    const fetchBudgetMonthsItems = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}budget/${budgetId}`);
+        const groupedBudget: BudgetData = {};
+
+        response.data.list.forEach(
+          (item: {
+            id: number;
+            description: string;
+            cost: number;
+            monthadded: string;
+            account: string;
+          }) => {
+            const entry = {
+              id: item.id,
+              name: item.description,
+              value: item.cost,
+              date: item.monthadded,
+            };
+
+            if (!groupedBudget[item.account]) {
+              groupedBudget[item.account] = [];
+            }
+            groupedBudget[item.account].push(entry);
+          }
+        );
+
+        setBudgetData(groupedBudget);
+      } catch (error) {
+        console.error("Error fetching budget:", error);
+      }
+    };
+
+    const fetchInccurredCostsItems = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}incurredcost/list`);
+        const groupedIncurredCosts: BudgetData = {};
+
+        response.data.list.forEach(
+          (item: {
+            id: number;
+            description: string;
+            cost: number;
+            datecreated: string;
+            account: string;
+          }) => {
+            const entry = {
+              id: item.id,
+              name: item.description,
+              value: item.cost,
+              date: item.datecreated,
+            };
+
+            if (!groupedIncurredCosts[item.account]) {
+              groupedIncurredCosts[item.account] = [];
+            }
+            groupedIncurredCosts[item.account].push(entry);
+          }
+        );
+
+        setInccurredCostsData(groupedIncurredCosts);
+      } catch (error) {
+        console.error("Error fetching incurred costs:", error);
+      }
+    };
+
+    const fetchProduction = async () => {
+      try {
+        const response = await axios.get(
+          `${serverUrl}production/${productionId}`
+        );
+
+        const productionList = response.data.list.map((item: any) => ({
+          date: new Date(item.dateadded).toLocaleDateString("en-GB"),
+          morning: item.morningproduction.toString(),
+          evening: item.eveningproduction.toString(),
+        }));
+
+        const totals = {
+          morning: response.data.totals.total_morning,
+          evening: response.data.totals.total_evening,
+          overall: response.data.totals.total_production,
+        };
+
+        setProduction(productionList);
+        setTotals(totals); // useState({ morning: 0, evening: 0, overall: 0 })
+        setperioddates(response.data.perioddate);
+      } catch (error) {
+        console.error("Error fetching production:", error);
+      }
+    };
+
+    const fetchReceipts = async () => {
+      try {
+        const response = await axios.get(
+          `${serverUrl}expense/receipt/${receiptId}`
+        );
+        const groupedReceipts: BudgetData = {};
+
+        response.data.list.forEach(
+          (item: {
+            amount: number;
+            itemdescription: string;
+            account: string;
+            cost: number;
+            date: string;
+          }) => {
+            const entry = {
+              id: item.amount,
+              name: item.itemdescription,
+              value: item.cost,
+              date: "",
+            };
+
+            if (!groupedReceipts[item.account]) {
+              groupedReceipts[item.account] = [];
+            }
+            groupedReceipts[item.account].push(entry);
+          }
+        );
+
+        setReceiptsData(groupedReceipts);
+        setReceipt(response.data.receipt);
+        setDate(response.data.date);
+        setBalanceAfter(response.data.currentBalance);
+      } catch (error) {
+        console.error("Error fetching budget:", error);
+      }
+    };
+
+    const fetchPayroll = async () => {
+      try {
+        const response = await axios.get(
+          `${serverUrl}staff/payroll/${payrollId}`
+        );
+
+        const payroll = response.data.payroll.map(
+          (
+            item: {
+              name: string;
+              designation: string;
+              salary: string;
+              status: number; // assuming status is a number (1, 2, or something else)
+            },
+            id: number
+          ) => ({
+            id: id + 1,
+            name: item.name,
+            designation: item.designation,
+            salary: item.salary,
+            status:
+              item.status === 0
+                ? "Dismissed"
+                : item.status === 1
+                ? "Awaiting Confirmation"
+                : item.status === 2
+                ? "Permanent and Pensionable"
+                : item.status === 3
+                ? "Casual"
+                : item.status === 4
+                ? "Inter"
+                : "",
+          })
+        );
+
+        setPayrollData(payroll);
+        setTotalSalary(response.data.totalSalary);
+        setPayrollMonth(response.data.monthadded);
+      } catch (error) {
+        console.error("Error fetching budget:", error);
+      }
+    };
+
+    fetchPayroll();
+    fetchInccurredCostsItems();
+    fetchProduction();
+    fetchReceipts();
+    fetchBudgetMonthsItems();
+  }, [budgetId, payrollId, productionId, receiptId]);
+
+  const invoices = [
+    {
+      date: "1/2/2025",
+      product: "Goat Milk",
+      quantity: "6L",
+      grand: "5000",
+    },
+    {
+      date: "1/2/2025",
+      product: "Goat Yoghurt",
+      quantity: "300g",
+      grand: "5000",
+    },
+    {
+      date: "1/2/2025",
+      product: "Goat Soap",
+      quantity: "100g",
+      grand: "5000",
+    },
+  ];
+
+  // Format currency values consistently
+  const formatCurrency = (value: string) => {
+    // Remove commas and convert to number
+    const numValue = Number(value.replace(/,/g, ""));
+    // Format with commas
+    return numValue.toLocaleString();
   };
-
-  const financials = [
-    {
-      item: "Funding",
-      value: "500,345",
-      important: true,
-    },
-    {
-      item: "Cost of Goods Sold (COGS)",
-      value: "500,345",
-    },
-    {
-      item: "Operating Expenses(OPEX)",
-      value: "500,345",
-    },
-    {
-      item: "Other Income & Expenses",
-      value: "500,345",
-    },
-  ];
-
-  const sales = [
-    {
-      item: "Cash Revenue",
-      value: "500,345",
-      important: true,
-    },
-    {
-      item: "Buy Goods Revenue",
-      value: "500,345",
-      important: true,
-    },
-    {
-      item: "Stanbic Bank Revenue",
-      value: "500,345",
-      important: true,
-    },
-    {
-      item: "Unit Sold",
-      value: "500,345",
-    },
-    {
-      item: "Trends (Month-over-Month)",
-      value: `50% \u2191`,
-    },
-  ];
-
-  const salaries = [
-    {
-      name: "Andrew Bada",
-      designation: "Administrator",
-      allowance: "300000",
-      salary: "200000",
-    },
-    {
-      name: "Andrew Bada",
-      designation: "Administrator",
-      allowance: "300000",
-      salary: "200000",
-    },
-    {
-      name: "Andrew Bada",
-      designation: "Administrator",
-      allowance: "300000",
-      salary: "200000",
-    },
-    {
-      name: "Andrew Bada",
-      designation: "Administrator",
-      allowance: "300000",
-      salary: "200000",
-    },
-    {
-      name: "Andrew Bada",
-      designation: "Administrator",
-      allowance: "300000",
-      salary: "200000",
-    },
-    {
-      name: "Andrew Bada",
-      designation: "Administrator",
-      allowance: "300000",
-      salary: "200000",
-    },
-  ];
-
-  const recipts = {
-    General: [
-      { name: "Electricity Bill", value: "300000", important: true },
-      { name: "Kitchen Shopping", value: "25000", important: true },
-      { name: "WIFI Bill", value: "3000" },
-      { name: "Electricity Bill", value: "5000" },
-      { name: "Miscellaneous", value: "10,000" },
-    ],
-    farm: [
-      { name: "Dairy Meal", value: "250000", important: true },
-      { name: "Goat Salt", value: "12000" },
-      { name: "Mollusses", value: "50000" },
-      { name: "Dog Meal", value: "2,039" },
-    ],
-  };
-
-  const production = [
-    { date: "1/2/2025", morning: "300000", evening: "2000" },
-    { date: "1/2/2025", morning: "300000", evening: "2000" },
-    { date: "1/2/2025", morning: "300000", evening: "2000" },
-    { date: "1/2/2025", morning: "300000", evening: "2000" },
-    { date: "1/2/2025", morning: "300000", evening: "2000" },
-    { date: "1/2/2025", morning: "300000", evening: "2000" },
-    { date: "1/2/2025", morning: "300000", evening: "2000" },
-  ];
 
   return (
     <main css={styles.container}>
@@ -323,39 +433,98 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
         <div css={styles.headerContainer}>
           <img src="/2.png" alt="Company Logo" width="200px" height="80px" />
           <h4 css={styles.header}>
-            {activeTab === "Profit & Loss" ? (
+            {activeTab === "Budget" ? (
               <>
-                <span css={styles.spanFirst}>March 2025</span>
-                <span css={styles.spanLast}>Profit & Loss Report</span>
-              </>
-            ) : activeTab === "Sales Report" ? (
-              <>
-                <span css={styles.spanFirst}>March 2025</span>
-                <span css={styles.spanLast}>Sales Report</span>
-              </>
-            ) : activeTab === "Budget" ? (
-              <>
-                <span css={styles.spanFirst}>March 2025</span>
+                {Object.entries(budgetData)
+                  .slice(0, 1)
+                  .map(([account, items], index) => (
+                    <div key={index}>
+                      {items.map((item, index) => (
+                        <span key={index} css={styles.spanFirst}>
+                          {item.date}
+                        </span>
+                      ))}
+                    </div>
+                  ))}
+
                 <span css={styles.spanLast}>Monthly Budget</span>
               </>
             ) : activeTab === "Receipt Breakdown" ? (
               <>
-                <span css={styles.spanFirst}>13/3/2025</span>
-                <span css={styles.spanLast}>Receipt KES 435,876 Breakdown</span>
+                <span css={styles.spanFirst}>{date}</span>
+                <span
+                  style={{
+                    display: "flex",
+                    gap: "0.5rem",
+                    alignItems: "center",
+                    color: "#486c1b",
+                  }}
+                >
+                  Ref.
+                  <b css={styles.spanLast}>KES {receipt}</b>
+                </span>
+              </>
+            ) : activeTab === "Pending Incurred Costs" ? (
+              <>
+                <span css={styles.spanFirst}>
+                  {
+                    Object.entries(incurreddata).flatMap(
+                      ([_, items]) => items
+                    )[0]?.date
+                  }
+                </span>
+                <span
+                  style={{
+                    display: "flex",
+                    gap: "0.5rem",
+                    alignItems: "center",
+                    color: "#486c1b",
+                  }}
+                >
+                  Ref.
+                  <b css={styles.spanLast}>
+                    KES{" "}
+                    {Object.entries(incurreddata)
+                      .flatMap(([_, items]) => items)
+                      .reduce((sum, item) => sum + Number(item.value || 0), 0)
+                      .toLocaleString()}
+                  </b>
+                </span>
               </>
             ) : activeTab === "Livestock Report" ? (
               <>
-                <span css={styles.spanFirst}>March 2025</span>
+                <span css={styles.spanFirst}>March 2025 - January 2030</span>
                 <span css={styles.spanLast}>Livestock Report</span>
               </>
             ) : activeTab === "Production Report" ? (
               <>
-                <span css={styles.spanFirst}>March 2025</span>
+                <span css={styles.spanFirst}>{perioddates}</span>
                 <span css={styles.spanLast}>Production Report</span>
+              </>
+            ) : activeTab === "Invoice Details" ||
+              activeTab === "Credit Note" ? (
+              <>
+                <span
+                  style={{
+                    color: "#486c1b",
+                    display: "block",
+                  }}
+                >
+                  March 2025
+                </span>
+                <span
+                  style={{
+                    color: "#486c1b",
+                    display: "block",
+                    fontWeight: "800",
+                  }}
+                >
+                  Andrew Bada Komora
+                </span>
               </>
             ) : (
               <>
-                <span css={styles.spanFirst}>March 2025</span>
+                <span css={styles.spanFirst}>{payrollmonth}</span>
                 <span css={styles.spanLast}>Payroll Report</span>
               </>
             )}
@@ -363,103 +532,19 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
         </div>
 
         <div css={styles.tableWrap}>
-          {activeTab === "Profit & Loss" ? (
-            <>
-              <table css={styles.table}>
-                <thead css={styles.thead}>
-                  <tr>
-                    <th>Details</th>
-                    <th>Cost</th>
-                  </tr>
-                </thead>
-                <tbody css={styles.tbody}>
-                  {financials.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.item}</th>
-                      <td>KES{item.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <div css={styles.summaryContainer}>
-                <h2>P&L Report Summary</h2>
-                <hr style={{ border: "1px dotted #486c1b" }} />
-                <p css={styles.summaryText}>
-                  <span>Gross Profit:</span>
-                  <b>KES 500,000</b>
-                </p>
-
-                <p css={styles.summaryText}>
-                  <span>Operating Profit:</span>
-                  <b>KES 259,598</b>
-                </p>
-
-                <p css={styles.summaryText}>
-                  <span>Net Profit:</span>
-                  <b>KES 43,587</b>
-                </p>
-
-                <hr style={{ border: "1px dotted #486c1b" }} />
-              </div>
-            </>
-          ) : activeTab === "Sales Report" ? (
-            <>
-              <table css={styles.table}>
-                <thead css={styles.thead}>
-                  <tr>
-                    <th>Details</th>
-                    <th>Cost</th>
-                  </tr>
-                </thead>
-                <tbody css={styles.tbody}>
-                  {sales.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.item}</th>
-                      <td>KES{item.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <div css={styles.summaryContainer}>
-                <h2>Sales Summary</h2>
-                <hr style={{ border: "1px dotted #486c1b" }} />
-                <p css={styles.summaryText}>
-                  <span>Profit(Month-over-Month):</span>
-                  <b>KES 500,000</b>
-                </p>
-
-                <p css={styles.summaryText}>
-                  <span>Total Sales Revenue:</span>
-                  <b>KES 43,587</b>
-                </p>
-
-                <hr style={{ border: "1px dotted #486c1b" }} />
-              </div>
-            </>
-          ) : activeTab === "Livestock Report" ? (
+          {activeTab === "Livestock Report" ? (
             <>
               <table css={styles.table}>
                 <caption css={styles.caption}>Herd Metrics</caption>
-                <thead css={styles.thead}>
+                <thead>
                   <tr>
                     <th>Details</th>
                     <th>No.</th>
                   </tr>
                 </thead>
-                <tbody css={styles.tbody}>
+                <tbody>
                   {farmMetrics.herdMetrics.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
+                    <tr key={i}>
                       <th>{item.name}</th>
                       <td>{item.value}</td>
                     </tr>
@@ -469,20 +554,17 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
 
               <table css={styles.table}>
                 <caption css={styles.caption}>Health Status</caption>
-                <thead css={styles.thead}>
+                <thead>
                   <tr>
                     <th>Details</th>
                     <th>No.</th>
                   </tr>
                 </thead>
-                <tbody css={styles.tbody}>
+                <tbody>
                   {farmMetrics.healthStatus.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
+                    <tr key={i}>
                       <th>{item.name}</th>
-                      <td>{item.value}</td>
+                      <td>{formatCurrency(item.value)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -490,108 +572,113 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
             </>
           ) : activeTab === "Receipt Breakdown" ? (
             <>
-              <table css={styles.table}>
-                <caption css={styles.caption}>Utilities & Services</caption>
-                <thead css={styles.thead}>
-                  <tr>
-                    <th>Details</th>
-                    <th>Cost</th>
-                  </tr>
-                </thead>
-                <tbody css={styles.tbody}>
-                  {recipts.General.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.name}</th>
-                      <td>{item.value}</td>
+              {Object.entries(receiptData).map(([account, items], index) => (
+                <table css={styles.table} key={index}>
+                  <caption css={styles.caption}>{account}</caption>
+                  <thead>
+                    <tr>
+                      <th>Details</th>
+                      <th>Cost</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <table css={styles.table}>
-                <caption css={styles.caption}>Consumables & Supplies</caption>
-                <thead css={styles.thead}>
-                  <tr>
-                    <th>Details</th>
-                    <th>Cost</th>
-                  </tr>
-                </thead>
-                <tbody css={styles.tbody}>
-                  {itemsRequired.farm.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.name}</th>
-                      <td>{item.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <table css={styles.table}>
-                <caption css={styles.caption}>Equipment & Maintenance</caption>
-                <thead css={styles.thead}>
-                  <tr>
-                    <th>Details</th>
-                    <th>Cost</th>
-                  </tr>
-                </thead>
-                <tbody css={styles.tbody}>
-                  {itemsRequired.farm.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.name}</th>
-                      <td>{item.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <table css={styles.table}>
-                <caption css={styles.caption}>
-                  Salaries & Operational Costs
-                </caption>
-                <thead css={styles.thead}>
-                  <tr>
-                    <th>Details</th>
-                    <th>Cost</th>
-                  </tr>
-                </thead>
-                <tbody css={styles.tbody}>
-                  {itemsRequired.farm.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.name}</th>
-                      <td>{item.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {items.map((item) => (
+                      <tr key={item.id}>
+                        <th>{item.name}</th>
+                        <td>KES {item.value.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ))}
 
               <div css={styles.summaryContainer}>
                 <h2>Receipt Summary</h2>
                 <hr style={{ border: "1px dotted #486c1b" }} />
                 <p css={styles.summaryText}>
                   <span>Receipt Funding:</span>
-                  <b>KES 500,000</b>
+                  <b>KES {Number(receipt).toLocaleString()}</b>
+                </p>
+
+                <p css={styles.summaryText}>
+                  <span>Surplus:</span>
+                  <b>KES {Number(balanceafter).toLocaleString()}</b>
                 </p>
 
                 <p css={styles.summaryText}>
                   <span>Total Expenses:</span>
-                  <b>KES 259,598</b>
+                  <b>
+                    KES{" "}
+                    {Number(
+                      Object.values(receiptData)
+                        .flat()
+                        .reduce(
+                          (total, item) => total + (Number(item.value) || 0),
+                          0
+                        )
+                    ).toLocaleString()}
+                  </b>
                 </p>
 
                 <p css={styles.summaryText}>
                   <span>Running Balance:</span>
-                  <b>KES 43,587</b>
+                  <b>
+                    KES{" "}
+                    {(
+                      balanceafter -
+                      Object.values(receiptData)
+                        .flat()
+                        .reduce(
+                          (total, item) => total + (Number(item.value) || 0),
+                          0
+                        )
+                    ).toLocaleString()}
+                  </b>
+                </p>
+
+                <hr style={{ border: "1px dotted #486c1b" }} />
+              </div>
+            </>
+          ) : activeTab === "Pending Incurred Costs" ? (
+            <>
+              {Object.entries(incurreddata).map(([account, items], index) => (
+                <table css={styles.table} key={index}>
+                  <caption css={styles.caption}>{account}</caption>
+                  <thead>
+                    <tr>
+                      <th>Details</th>
+                      <th>Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map((item) => (
+                      <tr key={item.id}>
+                        <th>{item.name}</th>
+                        <td>KES {item.value.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ))}
+
+              <div css={styles.summaryContainer}>
+                <h2>Summary</h2>
+                <hr style={{ border: "1px dotted #486c1b" }} />
+
+                <p css={styles.summaryText}>
+                  <span>Total Incurred Costs:</span>
+                  <b>
+                    KES{" "}
+                    {Object.entries(incurreddata)
+                      .flatMap(([_, items]) => items)
+                      .reduce((sum, item) => sum + Number(item.value || 0), 0)
+                      .toLocaleString()}
+                  </b>
+                </p>
+
+                <p css={styles.summaryText}>
+                  <span>Running Balance:</span>
+                  <b>KES {runningBalance.toLocaleString()}</b>
                 </p>
 
                 <hr style={{ border: "1px dotted #486c1b" }} />
@@ -600,7 +687,7 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
           ) : activeTab === "Production Report" ? (
             <>
               <table css={styles.table}>
-                <thead css={styles.thead}>
+                <thead>
                   <tr>
                     <th>Date</th>
                     <th>Morning Production</th>
@@ -608,33 +695,34 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
                     <th>Total Production</th>
                   </tr>
                 </thead>
-                <tbody css={styles.tbody}>
+                <tbody>
                   {production.map((item, i) => (
                     <tr key={i}>
                       <th>{item.date}</th>
                       <td>{item.morning} Litres</td>
                       <td>{item.evening} Litres</td>
-                      <td>50000 Litres</td>
+                      <td>
+                        {Number(item.morning) + Number(item.evening)} Litres
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
               <div css={styles.summaryContainer}>
-                <h2>Production Summary</h2>
                 <hr style={{ border: "1px dotted #486c1b" }} />
                 <p css={styles.summaryText}>
                   <span>Total Morning Production:</span>
-                  <b>43587 Litres</b>
+                  <b>{totals.morning} Litres</b>
                 </p>
 
                 <p css={styles.summaryText}>
                   <span>Total Evening Production:</span>
-                  <b>43587 Litres</b>
+                  <b>{totals.evening} Litres</b>
                 </p>
 
                 <p css={styles.summaryText}>
                   <span>Total Production:</span>
-                  <b>43587 Litres</b>
+                  <b>{totals.overall} Litres</b>
                 </p>
 
                 <hr style={{ border: "1px dotted #486c1b" }} />
@@ -642,103 +730,101 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
             </>
           ) : activeTab === "Budget" ? (
             <>
-              <table css={styles.table}>
-                <caption css={styles.caption}>Utilities & Services</caption>
-                <thead css={styles.thead}>
-                  <tr>
-                    <th>Details</th>
-                    <th>Cost</th>
-                  </tr>
-                </thead>
-                <tbody css={styles.tbody}>
-                  {recipts.General.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.name}</th>
-                      <td>KES{item.value}</td>
+              {Object.entries(budgetData).map(([account, items], index) => (
+                <table css={styles.table} key={index}>
+                  <caption css={styles.caption}>{account}</caption>
+                  <thead>
+                    <tr>
+                      <th>Details</th>
+                      <th>Cost</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <table css={styles.table}>
-                <caption css={styles.caption}>Consumables & Supplies</caption>
-                <thead css={styles.thead}>
-                  <tr>
-                    <th>Details</th>
-                    <th>Cost</th>
-                  </tr>
-                </thead>
-                <tbody css={styles.tbody}>
-                  {itemsRequired.farm.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.name}</th>
-                      <td>KES{item.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <table css={styles.table}>
-                <caption css={styles.caption}>Equipment & Maintenance</caption>
-                <thead css={styles.thead}>
-                  <tr>
-                    <th>Details</th>
-                    <th>Cost</th>
-                  </tr>
-                </thead>
-                <tbody css={styles.tbody}>
-                  {itemsRequired.farm.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.name}</th>
-                      <td>KES{item.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <table css={styles.table}>
-                <caption css={styles.caption}>
-                  Salaries & Operational Costs
-                </caption>
-                <thead css={styles.thead}>
-                  <tr>
-                    <th>Details</th>
-                    <th>Cost</th>
-                  </tr>
-                </thead>
-                <tbody css={styles.tbody}>
-                  {itemsRequired.farm.map((item, i) => (
-                    <tr
-                      key={i}
-                      css={item.important ? styles.importantRow : undefined}
-                    >
-                      <th>{item.name}</th>
-                      <td>KES{item.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {items.map((item) => (
+                      <tr key={item.id}>
+                        <th>{item.name}</th>
+                        <td>KES {item.value.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ))}
 
               <div css={styles.summaryContainer}>
                 <h2>Budget Summary</h2>
                 <hr style={{ border: "1px dotted #486c1b" }} />
                 <p css={styles.summaryText}>
-                  <span>Budget Funding:</span>
+                  <span>Total Budget:</span>
+                  <b>
+                    KES{" "}
+                    {Object.values(budgetData)
+                      .flat()
+                      .reduce(
+                        (total, item) => total + (Number(item.value) || 0),
+                        0
+                      )
+                      .toFixed(2)}
+                  </b>
+                </p>
+
+                {/* <p css={styles.summaryText}>
+                  <span>Running Balance:</span>
+                  <b>KES {runningBalance.toFixed(2)}</b>
+                </p> */}
+
+                <hr style={{ border: "1px dotted #486c1b" }} />
+              </div>
+            </>
+          ) : activeTab === "Invoice Details" || activeTab === "Credit Note" ? (
+            <>
+              <table css={styles.table}>
+                <caption css={styles.caption}>
+                  {activeTab === "Invoice Details"
+                    ? "Customer Receipt"
+                    : "Credit Note"}
+                </caption>
+                <thead>
+                  <tr>
+                    <th>Invoice</th>
+                    <th>Item</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoices.map((item, i) => (
+                    <tr key={i}>
+                      <th>Invoice2534</th>
+                      <td>
+                        {item.product}({item.quantity})
+                      </td>
+                      <th>KES {item.grand}</th>
+                      <td>{item.date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div css={styles.summaryContainer}>
+                <h2>Receipt Summary</h2>
+                <hr style={{ border: "1px dotted #486c1b" }} />
+                <p css={styles.summaryText}>
+                  <span>Payment Method</span>
+                  <b>Buy Goods</b>
+                </p>
+
+                <p css={styles.summaryText}>
+                  <span>Amount Paid</span>
                   <b>KES 500,000</b>
                 </p>
 
                 <p css={styles.summaryText}>
-                  <span>Running Balance:</span>
+                  <span>Total Owed</span>
                   <b>KES 43,587</b>
+                </p>
+
+                <p css={styles.summaryText}>
+                  <span>Balance</span>
+                  <b>KES 503,587</b>
                 </p>
 
                 <hr style={{ border: "1px dotted #486c1b" }} />
@@ -747,21 +833,21 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
           ) : (
             <>
               <table css={styles.table}>
-                <thead css={styles.thead}>
+                <thead>
                   <tr>
-                    <th>Details</th>
+                    <th>Name</th>
                     <th>Designation</th>
-                    <th>Allowances </th>
+                    <th>Employment Term </th>
                     <th>Basic Salary</th>
                   </tr>
                 </thead>
-                <tbody css={styles.tbody}>
-                  {salaries.map((item, i) => (
+                <tbody>
+                  {payrolldata.map((item, i) => (
                     <tr key={i}>
                       <th>{item.name}</th>
                       <td>{item.designation}</td>
-                      <td>KES{item.allowance}</td>
-                      <td>KES{item.salary}</td>
+                      <td>{item.status}</td>
+                      <td>KES {item.salary.toLocaleString("en-US")}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -771,20 +857,9 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
                 <h2>Payroll Summary</h2>
                 <hr style={{ border: "1px dotted #486c1b" }} />
                 <p css={styles.summaryText}>
-                  <span>Sallaries:</span>
-                  <b>KES 500,000</b>
+                  <span>Total Sallaries:</span>
+                  <b>KES {totalsalary.toLocaleString()}</b>
                 </p>
-
-                <p css={styles.summaryText}>
-                  <span>Allowances:</span>
-                  <b>KES 43,587</b>
-                </p>
-
-                <p css={styles.summaryText}>
-                  <span>Total Funding:</span>
-                  <b>KES 503,587</b>
-                </p>
-
                 <hr style={{ border: "1px dotted #486c1b" }} />
               </div>
             </>
@@ -794,3 +869,12 @@ export const Budget: React.FC<NavbarProps> = ({ activeTab }) => {
     </main>
   );
 };
+// {Object.entries(budgetData).map(([account, items], index) => (
+//                   {items.map((item) => (
+//                   <tr key={i}>
+//                     <th>{item.name}</th>
+//                     <td>{item.designation}</td>
+//                     <td>KES {item.allowance}</td>
+//                     <td>KES {item.salary}</td>
+//                   </tr>
+//                 ))}))}

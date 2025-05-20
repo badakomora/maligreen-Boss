@@ -1,5 +1,7 @@
 import { Global, css } from "@emotion/react";
-// import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { serverUrl } from "../AppConfig";
 
 const globalStyles = css`
   @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
@@ -10,7 +12,7 @@ const globalStyles = css`
     --color2: #ffffff;
     --color5: #ffffff;
     --color6: #486c1b;
-    font-family: "Inria Sans", sans-serif;
+    font-family: Monaco;
   }
 
   .center-container {
@@ -85,8 +87,73 @@ const bgColors = {
 };
 
 export const Grid = () => {
-  // const [showTooltip, setShowTooltip] = useState(false);
+  const [productioncount, setProductionCount] = useState(0);
+  const [livestockcount, setLivestockCount] = useState(0);
+  const [expensecount, setExpenseCount] = useState(0);
+  const [salescount, setSalesCount] = useState(0);
 
+  const [productiondrop, setProductionDrop] = useState(true);
+  // const [livestockdrop, setLivestockDrop] = useState(true);
+  const [expensedrop, setExpenseDrop] = useState(true);
+  const [salesdrop, setSalesDrop] = useState(true);
+  const [valuedCustomer, setValuedCustomer] = useState("");
+
+  const production = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}production/metrics`);
+      setProductionCount(response.data.count);
+      setProductionDrop(response.data.drop);
+    } catch (error) {
+      console.error("Error fetching stock:", error);
+    }
+  };
+
+  const customer = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}customer/list`);
+      setValuedCustomer(response.data.valued);
+    } catch (error) {
+      console.error("Error fetching valued customer:", error);
+    }
+  };
+
+  const livestock = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}livestock/list`);
+      setLivestockCount(response.data.count);
+      // setLivestockDrop(response.data.drop);
+    } catch (error) {
+      console.error("Error fetching stock:", error);
+    }
+  };
+
+  const expense = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}expense/list`);
+      setExpenseCount(response.data.count);
+      setExpenseDrop(response.data.drop);
+    } catch (error) {
+      console.error("Error fetching stock:", error);
+    }
+  };
+
+  const sales = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}invoice/list`);
+      setSalesCount(response.data.count);
+      setSalesDrop(response.data.drop);
+    } catch (error) {
+      console.error("Error fetching stock:", error);
+    }
+  };
+
+  useEffect(() => {
+    customer();
+    production();
+    livestock();
+    expense();
+    sales();
+  }, []);
   return (
     <>
       <Global styles={globalStyles} />
@@ -96,7 +163,7 @@ export const Grid = () => {
             <header className="special3">
               <span>Today's Sales</span>
               <span>
-                <b>KES</b> 36,584 {"\u2191"}
+                <b>KES</b> {salescount} {salesdrop ? "\u2193" : "\u2191"}
               </span>
             </header>
           </section>
@@ -105,23 +172,28 @@ export const Grid = () => {
             style={{ backgroundColor: bgColors.c2 }}
           >
             <span>Today's Production</span>
-            <span>3247 Litres{"\u2193"}</span>
+            <span>
+              {productioncount} Litres{productiondrop ? "\u2193" : "\u2191"}
+            </span>
           </section>
           <section className="section special1">
-            <span style={{ fontSize: "2.5rem" }}>Grey Martin</span>
+            <span style={{ fontSize: "2.5rem" }}>{valuedCustomer}</span>
             <span style={{ fontSize: "1.2rem" }}>⭐Most Valued Customer</span>
           </section>
           <section className="section special2">
-            <span>Today's Incurred Expenses{"\u2191"}</span>
-            <span style={{ fontSize: "4rem" }}>KES 300,064</span>
+            <span>
+              Today's Incurred Expenses {expensedrop ? "\u2193" : "\u2191"}
+            </span>
+            <span style={{ fontSize: "4rem" }}>KES {expensecount}</span>
           </section>
           <section
             className="section special3"
             style={{ backgroundColor: bgColors.c5 }}
           >
-            <span style={{ fontSize: "4rem" }}>Today's Variance </span>
-            <b>KES300,000</b>
-            {"\u2193"}
+            <span>Today's Inventory</span>
+            <br />
+            {/* <span>5 Bags of dairy meal left ...</span> */}
+            <span>Coming soon ...</span>
           </section>
           <section
             className="section special4"
@@ -131,8 +203,8 @@ export const Grid = () => {
               Today's Goat Count on the Farm
             </span>
             <b>
-              <big>4004</big>
-              {"\u2193"}
+              <big>{livestockcount}</big>
+              {/* {livestockdrop ? "\u2193" : "\u2191"} */}
             </b>
           </section>
         </main>
