@@ -370,9 +370,7 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                     </span>
                   </li>
                   <li className="list-item important-item">
-                    <span className="item-name">
-                      Recent Funding
-                    </span>
+                    <span className="item-name">Recent Funding</span>
                     <span className="amount-note">
                       <span className="amount">
                         {formatCurrency(todaysExpenses.recentFunding)}
@@ -393,9 +391,7 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                 </div>
                 <ul className="items-list">
                   <li className="list-item">
-                    <span className="item-name">
-                      Total Expense
-                    </span>
+                    <span className="item-name">Total Expense</span>
                     <span className="amount-note">
                       <span className="amount">
                         {formatCurrency(overallExpenses.totalExpense)}
@@ -403,9 +399,7 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                     </span>
                   </li>
                   <li className="list-item">
-                    <span className="item-name">
-                      Total Funding
-                    </span>
+                    <span className="item-name">Total Funding</span>
                     <span className="amount-note">
                       <span className="amount">
                         {formatCurrency(overallExpenses.totalFunding)}
