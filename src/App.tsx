@@ -6,7 +6,7 @@ import { Block } from "./Componenets/Block";
 import { Budget } from "./Componenets/Budget";
 import { Form } from "./Componenets/Form";
 import { View } from "./Componenets/View";
-import { act, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -817,7 +817,8 @@ function App() {
                   <option>Budgets</option>
                   {budgetMonthsData.map((month, index) => (
                     <option key={index} value={month.id}>
-                      {month.name}
+                      {month.name}{" "}
+                      {month.status === 1 ? "Budget Awaits Funding" : ""}
                     </option>
                   ))}
                 </select>
@@ -882,7 +883,8 @@ function App() {
                 <option>Budgets</option>
                 {budgetMonthsData.map((month, index) => (
                   <option key={index} value={month.id}>
-                    {month.name}
+                    {month.name}{" "}
+                    {month.status === 1 ? "Budget Awaits Funding" : ""}
                   </option>
                 ))}
               </select>
@@ -961,7 +963,8 @@ function App() {
                       display: inline-block;
                       cursor: pointer;
 
-                      &:hover .tooltip-content {
+                      &:hover .tooltip-content,
+                      .tooltip-content:hover {
                         visibility: visible;
                         opacity: 1;
                       }
@@ -996,6 +999,11 @@ function App() {
                         &:hover {
                           animation-play-state: paused;
                         }
+                        &:hover + .tooltip-content {
+                          visibility: visible;
+                          opacity: 1;
+                          pointer-events: auto;
+                        }
                       `}
                     >
                       &#128276;
@@ -1015,10 +1023,16 @@ function App() {
                         z-index: 1;
                         box-shadow: 0px 0px 10px -6px #486c1b;
                         width: 150px;
-                        margin-top: 4px;
+                        margin-top: 8px;
                         transition: opacity 0.2s ease-in-out;
                         visibility: hidden;
                         opacity: 0;
+                        pointer-events: none;
+                        &:hover {
+                          visibility: visible;
+                          opacity: 1;
+                          pointer-events: auto;
+                        }
                       `}
                     >
                       <p
