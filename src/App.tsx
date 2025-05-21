@@ -407,18 +407,6 @@ function App() {
   const [payrollId, setPayrollId] = useState<number | string>(0);
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem("activeTab", activeTab);
-    getreceipts();
-    fetchBudgetMonths();
-    productionperiod();
-    revenue();
-    fetchInccurredItems();
-    fetchMonths();
-    prevpayroll();
-    fetchmeeting();
-  });
-
   const [budgetMonthsData, setBudgetMonthsData] = useState<items[]>([]);
   const [totalsales, setTotalSalesData] = useState(0);
   const [payrollmonths, setPayrollMonths] = useState<items[]>([]);
@@ -435,141 +423,157 @@ function App() {
   const [cashTotal, setCashTotal] = useState(0);
   const [tillTotal, setTillTotal] = useState(0);
   const [bankTotal, setBankTotal] = useState(0);
+  const [unpaidtotal, setUnpaidTotal] = useState(0);
 
-  const fetchBudgetMonths = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}item/budgetList`);
-      const shelterList = response.data.list.map(
-        (item: { id: number; monthadded: string; status: number }) => ({
-          id: item.id,
-          name: item.monthadded,
-          status: item.status,
-        })
-      );
-      setBudgetMonthsData(shelterList);
-    } catch (error) {
-      console.error("Error fetching shelter:", error);
-    }
-  };
+  useEffect(() => {
+    localStorage.setItem("activeTab", activeTab);
+    const fetchBudgetMonths = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}item/budgetList`);
+        const shelterList = response.data.list.map(
+          (item: { id: number; monthadded: string; status: number }) => ({
+            id: item.id,
+            name: item.monthadded,
+            status: item.status,
+          })
+        );
+        setBudgetMonthsData(shelterList);
+      } catch (error) {
+        console.error("Error fetching shelter:", error);
+      }
+    };
 
-  const fetchmeeting = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}item/meeting/list`);
-      const meetingList = response.data.list.map(
-        (item: {
-          id: number;
-          purpose: string;
-          datescheduled: string;
-          venue: string;
-          note: string;
-          status: number;
-          datecreated: string;
-        }) => ({
-          id: item.id,
-          name: `${item.datescheduled} - ${item.purpose}`, // or any preferred label
-          status: item.status,
-          venue: item.venue,
-          note: item.note,
-          datecreated: item.datecreated,
-        })
-      );
-      setScheduledMeeting(meetingList); // Rename this to setMeetingData for clarity?
-    } catch (error) {
-      console.error("Error fetching meeting list:", error);
-    }
-  };
-
-  const productionperiod = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}item/productionperiodlist`);
-      const productionperiodList = response.data.list.map(
-        (item: { id: number; monthadded: string }) => ({
-          id: item.id,
-          name: item.monthadded,
-        })
-      );
-      setproductionPeriodData(productionperiodList);
-    } catch (error) {
-      console.error("Error fetching production periods:", error);
-    }
-  };
-
-  const getreceipts = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}item/receiptList`);
-      const filteredSales = response.data.list.map(
-        (
-          item: {
+    const fetchmeeting = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}item/meeting/list`);
+        const meetingList = response.data.list.map(
+          (item: {
             id: number;
-            amount: number;
-            datesent: string;
-          },
-          i: number
-        ) => ({
-          id: item.id,
-          amount: item.amount,
-          date: new Date(item.datesent).toLocaleDateString(),
-        })
-      );
+            purpose: string;
+            datescheduled: string;
+            venue: string;
+            note: string;
+            status: number;
+            datecreated: string;
+          }) => ({
+            id: item.id,
+            name: `${item.datescheduled} - ${item.purpose}`, // or any preferred label
+            status: item.status,
+            venue: item.venue,
+            note: item.note,
+            datecreated: item.datecreated,
+          })
+        );
+        setScheduledMeeting(meetingList); // Rename this to setMeetingData for clarity?
+      } catch (error) {
+        console.error("Error fetching meeting list:", error);
+      }
+    };
 
-      setReceiptsData(filteredSales);
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
-    }
-  };
+    const productionperiod = async () => {
+      try {
+        const response = await axios.get(
+          `${serverUrl}item/productionperiodlist`
+        );
+        const productionperiodList = response.data.list.map(
+          (item: { id: number; monthadded: string }) => ({
+            id: item.id,
+            name: item.monthadded,
+          })
+        );
+        setproductionPeriodData(productionperiodList);
+      } catch (error) {
+        console.error("Error fetching production periods:", error);
+      }
+    };
 
-  const revenue = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}invoice/list`);
+    const getreceipts = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}item/receiptList`);
+        const filteredSales = response.data.list.map(
+          (
+            item: {
+              id: number;
+              amount: number;
+              datesent: string;
+            },
+            i: number
+          ) => ({
+            id: item.id,
+            amount: item.amount,
+            date: new Date(item.datesent).toLocaleDateString(),
+          })
+        );
 
-      const { chartdata } = response.data;
+        setReceiptsData(filteredSales);
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
+      }
+    };
 
-      // Get the latest row (most recent day)
-      const latest = chartdata?.[0] || {};
-      setTotalSalesData(totalsales);
+    const revenue = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}invoice/list`);
 
-      setCashTotal(latest.cashrevenue.toLocaleString());
-      setTillTotal(latest.tillrevenue.toLocaleString());
-      setBankTotal(latest.bankrevenue.toLocaleString());
-    } catch (error) {
-      console.error("Error fetching invoice revenue breakdown:", error);
-    }
-  };
+        const { chartdata, totalsales, unpaid } = response.data;
 
-  const fetchInccurredItems = async () => {
-    try {
-      const { data } = await axios.get(`${serverUrl}incurredcost/list`);
-      setIncurred(data?.incurred ?? 0); // Use nullish coalescing to avoid setting 0 if incurred is 0
-      setCreateddate(data?.datecreated ?? "");
-    } catch (error) {
-      console.error("Error fetching incurred costs:", error);
-    }
-  };
+        // Get the latest row (most recent day)
+        const latest = chartdata?.[0] || {};
 
-  const fetchMonths = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}item/PayrollList`);
-      const payrollList = response.data.map(
-        (item: { id: number; monthadded: string }) => ({
-          id: item.id,
-          name: item.monthadded,
-        })
-      );
-      setPayrollMonths(payrollList);
-    } catch (error) {
-      console.error("Error fetching payroll:", error);
-    }
-  };
+        setTotalSalesData(totalsales);
 
-  const prevpayroll = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}staff/list`);
-      setTotalSalary(response.data.totalsalary);
-      setPayrollMonth(response.data.monthadded);
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
-    }
-  };
+        setCashTotal(Number(latest.cashrevenue || 0));
+        setTillTotal(Number(latest.tillrevenue || 0));
+        setBankTotal(Number(latest.bankrevenue || 0));
+        setUnpaidTotal(Number(unpaid || 0));
+      } catch (error) {
+        console.error("Error fetching invoice revenue breakdown:", error);
+      }
+    };
+
+    const fetchInccurredItems = async () => {
+      try {
+        const { data } = await axios.get(`${serverUrl}incurredcost/list`);
+        setIncurred(data?.incurred ?? 0); // Use nullish coalescing to avoid setting 0 if incurred is 0
+        setCreateddate(data?.datecreated ?? "");
+      } catch (error) {
+        console.error("Error fetching incurred costs:", error);
+      }
+    };
+
+    const fetchMonths = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}item/PayrollList`);
+        const payrollList = response.data.map(
+          (item: { id: number; monthadded: string }) => ({
+            id: item.id,
+            name: item.monthadded,
+          })
+        );
+        setPayrollMonths(payrollList);
+      } catch (error) {
+        console.error("Error fetching payroll:", error);
+      }
+    };
+
+    const prevpayroll = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}staff/list`);
+        setTotalSalary(response.data.totalsalary);
+        setPayrollMonth(response.data.monthadded);
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
+      }
+    };
+    getreceipts();
+    fetchBudgetMonths();
+    productionperiod();
+    revenue();
+    fetchInccurredItems();
+    fetchMonths();
+    prevpayroll();
+    fetchmeeting();
+  }, [activeTab, totalsales]);
 
   const getFilteredComponent = (
     activeTab: string,
@@ -739,7 +743,7 @@ function App() {
                   <span style={{ color: "#486c1b", cursor: "pointer" }}>
                     Accounts Receivable:{" "}
                     <b>
-                      <big>KES {totalsales.toLocaleString("en-US")} </big>
+                      <big>KES {unpaidtotal.toLocaleString()} </big>
                     </b>
                   </span>
 
@@ -769,7 +773,7 @@ function App() {
                       Unpaid Invoices:{" "}
                       <b>
                         {" "}
-                        <big>KES60,000 </big>
+                        <big>KES {unpaidtotal.toLocaleString()} </big>
                       </b>
                     </p>
                     <hr />
@@ -782,7 +786,7 @@ function App() {
                       Loans :{" "}
                       <b>
                         {" "}
-                        <big>KES210,000 </big>
+                        <big> N/A </big>
                       </b>
                     </p>
                   </div>
@@ -990,32 +994,36 @@ function App() {
               </select>
             ) : activeTab === "Receipt Breakdown" ||
               activeTab === "Pending Incurred Costs" ? (
-              <select
-                css={btnSecondary}
-                value={selectedMonth}
-                onChange={(e) => {
-                  const selectedValue = e.target.value;
+              <>
+                <button css={btnPrimary}>Aprove</button>
+                <button  css={btnSecondary}>Decline</button>
+                {/* <select
+                  css={btnSecondary}
+                  value={selectedMonth}
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
 
-                  if (selectedValue === "new") {
-                    setActiveTab("Request Funding");
-                  } else if (selectedValue === "pending") {
-                    setActiveTab("Pending Incurred Costs");
-                  } else {
-                    setreceiptId(selectedValue);
-                    setActiveTab("Receipt Breakdown");
-                  }
-                  console.log(activeTab);
-                }}
-              >
-                <option value="">Receipts Breakdown</option>
-                <hr style={{ border: "2px dotted #ffffff" }} />
-                {receipts.map((receipt, index) => (
-                  <option key={index} value={receipt.id}>
-                    Receipt {receipt.amount.toLocaleString("en-US")} -{" "}
-                    {receipt.date}
-                  </option>
-                ))}
-              </select>
+                    if (selectedValue === "new") {
+                      setActiveTab("Request Funding");
+                    } else if (selectedValue === "pending") {
+                      setActiveTab("Pending Incurred Costs");
+                    } else {
+                      setreceiptId(selectedValue);
+                      setActiveTab("Receipt Breakdown");
+                    }
+                    console.log(activeTab);
+                  }}
+                >
+                  <option value="">Receipts Breakdown</option>
+                  <hr style={{ border: "2px dotted #ffffff" }} />
+                  {receipts.map((receipt, index) => (
+                    <option key={index} value={receipt.id}>
+                      Receipt {receipt.amount.toLocaleString("en-US")} -{" "}
+                      {receipt.date}
+                    </option>
+                  ))}
+                </select> */}
+              </>
             ) : activeTab === "Production Report" ? (
               <select
                 css={btnPrimary}

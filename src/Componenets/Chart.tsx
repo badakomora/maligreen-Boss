@@ -40,84 +40,114 @@ const chartStyles = css`
     width: 100%;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
       Roboto, sans-serif;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+    margin-bottom: 24px;
   }
 
   .chart-layout {
     display: flex;
     width: 100%;
-    gap: 20px;
+    gap: 30px;
     min-height: 480px;
   }
 
   .chart-sidebar {
     width: 30%;
     padding-right: 20px;
+    border-right: 1px solid #eaeaea;
   }
 
   .chart-main {
     width: 70%;
     height: 480px;
+    position: relative;
   }
 
   .chart-title {
     font-family: inherit;
     color: #486c1b;
-    font-size: 1.3em;
+    font-size: 1.4em;
     font-weight: 700;
     margin-top: 0;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #eaeaea;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f2e9;
+    letter-spacing: -0.01em;
   }
 
   .livestock-count {
     background-color: #f8f9fa;
-    border-radius: 6px;
-    padding: 10px 14px;
-    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 24px;
+    border-left: 4px solid #486c1b;
+    transition: all 0.2s ease;
+  }
+
+  .livestock-count:hover {
+    background-color: #f0f2e9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(72, 108, 27, 0.1);
   }
 
   .livestock-count p {
     color: #486c1b;
-    font-size: 0.9em;
+    font-size: 1em;
     margin: 0;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .livestock-count p::after {
+    content: attr(data-count);
+    font-size: 1.2em;
+    font-weight: 700;
   }
 
   .date-controls {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 20px;
+    background-color: #fafafa;
+    padding: 20px;
+    border-radius: 10px;
   }
 
   .date-field {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
   }
 
   .date-field label {
     display: block;
     color: #486c1b;
-    font-weight: 500;
-    font-size: 0.85em;
+    font-weight: 600;
+    font-size: 0.9em;
+    margin-bottom: 4px;
   }
 
   .date-input {
-    padding: 8px 10px;
-    border-radius: 5px;
+    padding: 12px 14px;
+    border-radius: 8px;
     border: 1px solid #d0d5dd;
     width: 100%;
-    font-size: 0.85em;
+    font-size: 0.9em;
     transition: all 0.2s ease;
     color: #333;
     background-color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
 
   .date-input:focus {
     outline: none;
     border-color: #486c1b;
-    box-shadow: 0 0 0 2px rgba(72, 108, 27, 0.1);
+    box-shadow: 0 0 0 3px rgba(72, 108, 27, 0.15);
   }
 
   .date-input:hover {
@@ -126,6 +156,48 @@ const chartStyles = css`
 
   .chart {
     font-size: 12px;
+    font-family: inherit;
+  }
+
+  /* Improve tooltip styling */
+  .recharts-tooltip-wrapper .recharts-default-tooltip {
+    background-color: rgba(255, 255, 255, 0.98) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+    padding: 12px !important;
+  }
+
+  .recharts-tooltip-label {
+    color: #333 !important;
+    font-weight: 600 !important;
+    margin-bottom: 8px !important;
+    border-bottom: 1px solid #eaeaea !important;
+    padding-bottom: 6px !important;
+  }
+
+  .recharts-tooltip-item {
+    color: #555 !important;
+    padding: 4px 0 !important;
+  }
+
+  /* Improve legend styling */
+  .recharts-default-legend {
+    padding: 10px !important;
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    border-radius: 8px !important;
+    margin-top: 10px !important;
+  }
+
+  .recharts-legend-item {
+    margin-right: 20px !important;
+  }
+
+  /* Responsive styles */
+  @media (max-width: 1200px) {
+    .chart-container {
+      padding: 20px;
+    }
   }
 
   @media (max-width: 992px) {
@@ -140,8 +212,36 @@ const chartStyles = css`
 
     .chart-sidebar {
       padding-right: 0;
-      padding-bottom: 16px;
-      margin-bottom: 16px;
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      border-right: none;
+      border-bottom: 1px solid #eaeaea;
+    }
+
+    .date-controls {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .date-field {
+      flex: 1;
+      min-width: 200px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .chart-container {
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .date-controls {
+      flex-direction: column;
+      padding: 16px;
+    }
+
+    .chart-main {
+      height: 400px;
     }
   }
 `;
@@ -326,7 +426,7 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
           </h2>
           {activeTab === "Livestock & Production" && (
             <div className="livestock-count">
-              <p>Current Livestock Count: {livestockCount}</p>
+              <p data-count={livestockCount}>Current Livestock Count:</p>
             </div>
           )}
           <div className="date-controls">
@@ -378,45 +478,17 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
               <LineChart
                 data={filteredProductionData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
-                syncId="productionChart"
                 className="chart"
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                 <XAxis dataKey="name" height={60} tick={{ fill: "#333" }} />
-                <YAxis
-                  yAxisId="left"
-                  orientation="left"
-                  stroke="#486c1b"
-                  domain={[0, "dataMax + 10"]}
-                  label={{
-                    value: "Livestock Count",
-                    angle: -90,
-                    position: "insideLeft",
-                    fill: "#486c1b",
-                    fontSize: 12,
-                  }}
-                  tick={{ fill: "#486c1b" }}
-                />
-                <YAxis
-                  yAxisId="right"
-                  orientation="right"
-                  stroke="#8884d8"
-                  domain={[0, "dataMax + 5"]}
-                  label={{
-                    value: "Production",
-                    angle: 90,
-                    position: "insideRight",
-                    fill: "#8884d8",
-                    fontSize: 12,
-                  }}
-                  tick={{ fill: "#8884d8" }}
-                />
+                <YAxis tick={{ fill: "#333" }} />
                 <Tooltip
                   formatter={(value, name) => {
                     if (name === "livestock") {
                       return [value, "Livestock Count"];
                     } else if (name === "production") {
-                      return [value, "Total Production"];
+                      return [value, "Total Production (Litres)"];
                     }
                     return [value, name];
                   }}
@@ -433,7 +505,6 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                   iconType="circle"
                 />
                 <Line
-                  yAxisId="left"
                   type="monotone"
                   dataKey="livestock"
                   name="Livestock (count)"
@@ -448,7 +519,6 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                   }}
                 />
                 <Line
-                  yAxisId="right"
                   type="monotone"
                   dataKey="production"
                   name="Total Production (Litres)"

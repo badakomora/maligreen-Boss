@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import { serverUrl } from "../AppConfig";
+import { css } from "@emotion/react"
+import axios from "axios"
+import { useEffect, useState } from "react"
+import { toast, ToastContainer } from "react-toastify"
+import { serverUrl } from "../AppConfig"
 
 // Panel container with softer, rounded styling
 const panelStyle = css`
@@ -23,7 +23,7 @@ const panelStyle = css`
     align-items: center;
     gap: 0.5rem;
   }
-`;
+`
 
 const userListStyle = css`
   padding: 0;
@@ -39,7 +39,6 @@ const userListStyle = css`
     position: relative;
     margin: 0.8rem 0.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease;
 
     &::before {
       content: "";
@@ -106,7 +105,7 @@ const userListStyle = css`
       }
     }
   }
-`;
+`
 
 const departmentHeaderStyle = css`
   display: flex;
@@ -116,7 +115,7 @@ const departmentHeaderStyle = css`
   margin-top: 1rem;
   border-radius: 12px 12px 0 0;
   border-bottom: 1px solid rgba(72, 108, 27, 0.2);
-`;
+`
 
 const statusBadgeStyle = (status: number) => css`
   display: inline-block;
@@ -125,20 +124,24 @@ const statusBadgeStyle = (status: number) => css`
   font-size: 0.8rem;
   font-weight: 600;
   margin-top: 0.3rem;
-  color: ${status === 1
-    ? "#ff6347"
-    : status === 2
-    ? "#486c1b"
-    : status === 3
-    ? "#4169e1"
-    : status === 4
-    ? "#ff8c00"
-    : "#ffc107"};
-`;
+  color: ${
+    status === 1
+      ? "#ff6347"
+      : status === 2
+        ? "#486c1b"
+        : status === 3
+          ? "#4169e1"
+          : status === 4
+            ? "#ff8c00"
+            : "#ffc107"
+  };
+`
 
 const dropdownStyles = css`
   text-align: left;
   color: #486c1b;
+  position: relative;
+  
   span {
     cursor: pointer;
     padding: 0.4rem 0.8rem;
@@ -154,7 +157,9 @@ const dropdownStyles = css`
     border-radius: 6px;
     z-index: 10;
     overflow: hidden;
-    right: 20px;
+    right: 0;
+    top: 100%;
+    min-width: 150px;
     margin-top: 5px;
   }
 
@@ -176,57 +181,54 @@ const dropdownStyles = css`
   &:hover div {
     display: block;
   }
-`;
+`
 
 interface StaffMember {
-  id: number;
-  name: string;
-  date: string;
-  salary: number;
-  designation: string;
-  department: string;
-  img: string;
-  invoiceid?: number;
-  status: number;
+  id: number
+  name: string
+  date: string
+  salary: number
+  designation: string
+  department: string
+  img: string
+  invoiceid?: number
+  status: number
 }
 
 interface NavbarProps {
-  setActiveTab: React.Dispatch<React.SetStateAction<string>>;
-  activeTab?: string;
+  setActiveTab: React.Dispatch<React.SetStateAction<string>>
+  activeTab?: string
 }
 
 interface IdsProps {
-  setStaffId: React.Dispatch<React.SetStateAction<number>>;
+  setStaffId: React.Dispatch<React.SetStateAction<number>>
 }
 
-export const Block: React.FC<NavbarProps & IdsProps> = ({
-  setActiveTab,
-  setStaffId,
-}) => {
-  const [staffData, setStaffData] = useState<StaffMember[]>([]);
-  const [departmentData, setDepartmentData] = useState<StaffMember[]>([]);
+export const Block: React.FC<NavbarProps & IdsProps> = ({ setActiveTab, setStaffId }) => {
+  const [staffData, setStaffData] = useState<StaffMember[]>([])
+  const [departmentData, setDepartmentData] = useState<StaffMember[]>([])
 
   useEffect(() => {
-    fetchStaff();
-    departments();
-  }, []);
+    fetchStaff()
+    departments()
+  }, [])
 
   const fetchStaff = async () => {
     try {
-      const response = await axios.get(`${serverUrl}staff/list`);
+      const response = await axios.get(`${serverUrl}staff/list`)
       const filteredStaff = response.data.list.map(
         (
           item: {
-            name: string;
-            designation: string;
-            salary: number;
-            department: string;
-            datejoined: string;
-            photo: string;
-            id: number;
-            status: number;
+            name: string
+            designation: string
+            salary: number
+            department: string
+            datejoined: string
+            photo: string
+            id: number
+            status: number
           },
-          i: number
+          i: number,
         ) => ({
           id: item.id,
           name: item.name,
@@ -236,65 +238,65 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
           department: item.department,
           img: item.photo,
           status: item.status,
-        })
-      );
+        }),
+      )
 
-      setStaffData(filteredStaff);
+      setStaffData(filteredStaff)
     } catch (error) {
-      console.error("Error fetching staff:", error);
+      console.error("Error fetching staff:", error)
     }
-  };
+  }
 
   const departments = async () => {
     try {
-      const response = await axios.get(`${serverUrl}item/departments`);
+      const response = await axios.get(`${serverUrl}item/departments`)
       const filteredStaff = response.data.list.map(
         (
           item: {
-            id: string;
-            department: string;
+            id: string
+            department: string
           },
-          i: number
+          i: number,
         ) => ({
           id: item.id,
           name: item.department,
-        })
-      );
+        }),
+      )
 
-      setDepartmentData(filteredStaff);
+      setDepartmentData(filteredStaff)
     } catch (error) {
-      console.error("Error fetching staff:", error);
+      console.error("Error fetching staff:", error)
     }
-  };
+  }
 
   const dismiss = async (staffId: number, status: number) => {
     try {
       const response = await axios.put(`${serverUrl}staff/status/${status}`, {
         staffId,
         status,
-      });
-      toast.success(response.data.tab);
-      fetchStaff();
+      })
+      toast.success(response.data.tab)
+      fetchStaff()
     } catch (error) {
-      console.error("Error updating staff status:", error);
+      console.error("Error updating staff status:", error)
     }
-  };
+  }
 
   // Helper function to get status text
   const getStatusText = (status: number) => {
     switch (status) {
       case 1:
-        return "Dismissed";
+        return "Dismissed"
       case 2:
-        return "Permanent and Pensionable";
+        return "Permanent and Pensionable"
       case 3:
-        return "Intern";
+        return "Intern"
       case 4:
-        return "Casual";
+        return "Casual"
       default:
-        return "Awaiting Confirmation";
+        return "Awaiting Confirmation"
     }
-  };
+  }
 
   return (
     <>
@@ -312,11 +314,9 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
         />
 
         {departmentData.map((dept) => {
-          const members = staffData.filter(
-            (staff) => staff.department === dept.name
-          );
+          const members = staffData.filter((staff) => staff.department === dept.name)
 
-          if (members.length === 0) return null;
+          if (members.length === 0) return null
 
           return (
             <div key={dept.name}>
@@ -331,8 +331,7 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                       borderRadius: "12px",
                     }}
                   >
-                    {members.length}{" "}
-                    {members.length === 1 ? "member" : "members"}
+                    {members.length} {members.length === 1 ? "member" : "members"}
                   </span>
                 </div>
               </div>
@@ -343,16 +342,12 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                     <div>
                       <h5>{user.name}</h5>
                       <p className="designation">{user.designation}</p>
-                      <div className="salary">
-                        KES {user.salary.toLocaleString("en-US")}
-                      </div>
+                      <div className="salary">KES {user.salary.toLocaleString("en-US")}</div>
                     </div>
                     <div className="action-wrap">
                       <div>
                         <p>Joined on {user.date}</p>
-                        <div css={statusBadgeStyle(user.status)}>
-                          {getStatusText(user.status)}
-                        </div>
+                        <div css={statusBadgeStyle(user.status)}>{getStatusText(user.status)}</div>
                       </div>
                       <hr />
                       <div css={dropdownStyles}>
@@ -361,9 +356,9 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                           <a
                             href="."
                             onClick={(e) => {
-                              e.preventDefault();
-                              setStaffId(user.id);
-                              setActiveTab("Staff Review");
+                              e.preventDefault()
+                              setStaffId(user.id)
+                              setActiveTab("Staff Review")
                             }}
                           >
                             Review
@@ -372,8 +367,8 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                             <a
                               href="."
                               onClick={(e) => {
-                                e.preventDefault();
-                                dismiss(user.id, user.status);
+                                e.preventDefault()
+                                dismiss(user.id, user.status)
                               }}
                             >
                               Approve Employment
@@ -388,9 +383,9 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                 ))}
               </ul>
             </div>
-          );
+          )
         })}
       </div>
     </>
-  );
-};
+  )
+}
