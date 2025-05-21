@@ -334,7 +334,6 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
           ) : (
             ""
           )}
-
           {budgetMonthsData.length >= 1
             ? budgetMonthsData.map((month, index) => (
                 <div style={{ display: "flex" }} key={index}>

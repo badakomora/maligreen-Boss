@@ -35,18 +35,21 @@ const productStyles = css`
     background-size: cover;
     box-shadow: 0 6px 15px rgba(72, 108, 27, 0.15);
     transition: transform 0.3s ease;
+    border: 3px solid rgba(72, 108, 27, 0.08);
 
     &:hover {
       transform: scale(1.02);
+      border-color: rgba(72, 108, 27, 0.2);
     }
   }
 
   .product_details {
     text-align: left;
     margin-top: 20px;
-    padding: 15px;
+    padding: 18px;
     background: rgba(72, 108, 27, 0.05);
     border-radius: 10px;
+    border-left: 4px solid #486c1b;
   }
 
   .product_details .title {
@@ -68,18 +71,27 @@ const productStyles = css`
   .product_details .price {
     font-size: 1.1em;
     font-weight: 600;
-    margin: 10px 0;
+    margin: 12px 0;
+    color: #3d5c14;
   }
 
   .product_details .offer {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 5px;
   }
 
   .product_details .discription {
     font-size: 0.8em;
     opacity: 0.8;
+    font-weight: 500;
+  }
+
+  .product_details .other {
+    font-size: 0.8em;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(72, 108, 27, 0.2);
   }
 
   .right {
@@ -112,6 +124,8 @@ const productStyles = css`
 
     .product_details {
       text-align: center;
+      border-left: none;
+      border-top: 4px solid #486c1b;
     }
   }
 `;

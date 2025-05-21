@@ -417,7 +417,7 @@ function App() {
     fetchMonths();
     prevpayroll();
     fetchmeeting();
-  }, [activeTab]);
+  });
 
   const [budgetMonthsData, setBudgetMonthsData] = useState<items[]>([]);
   const [totalsales, setTotalSalesData] = useState(0);
@@ -431,6 +431,10 @@ function App() {
   const [datecreated, setCreateddate] = useState("");
   const [payrollmonth, setPayrollMonth] = useState("");
   const [totalsalary, setTotalSalary] = useState(0);
+
+  const [cashTotal, setCashTotal] = useState(0);
+  const [tillTotal, setTillTotal] = useState(0);
+  const [bankTotal, setBankTotal] = useState(0);
 
   const fetchBudgetMonths = async () => {
     try {
@@ -517,11 +521,21 @@ function App() {
   const revenue = async () => {
     try {
       const response = await axios.get(`${serverUrl}invoice/list`);
-      setTotalSalesData(response.data.totalsales);
+
+      const { chartdata } = response.data;
+
+      // Get the latest row (most recent day)
+      const latest = chartdata?.[0] || {};
+      setTotalSalesData(totalsales);
+
+      setCashTotal(latest.cashrevenue.toLocaleString());
+      setTillTotal(latest.tillrevenue.toLocaleString());
+      setBankTotal(latest.bankrevenue.toLocaleString());
     } catch (error) {
-      console.error("Error fetching invoices:", error);
+      console.error("Error fetching invoice revenue breakdown:", error);
     }
   };
+
   const fetchInccurredItems = async () => {
     try {
       const { data } = await axios.get(`${serverUrl}incurredcost/list`);
@@ -681,7 +695,7 @@ function App() {
                       Cash Revenue:{" "}
                       <b>
                         {" "}
-                        <big>KES60,000 </big>
+                        <big>KES {cashTotal}</big>
                       </b>
                     </p>
                     <hr />
@@ -694,7 +708,7 @@ function App() {
                       Buy Goods 4367606 Revenue :{" "}
                       <b>
                         {" "}
-                        <big>KES210,000 </big>
+                        <big>KES {tillTotal} </big>
                       </b>
                     </p>
                     <hr />
@@ -707,7 +721,7 @@ function App() {
                       Stanbic Revenue:{" "}
                       <b>
                         {" "}
-                        <big>KES70,000 </big>
+                        <big>KES {bankTotal} </big>
                       </b>
                     </p>
                   </div>
