@@ -1178,10 +1178,15 @@ function App() {
                         </p>
                       )}
                       <hr />
-                      <p onClick={() => setActiveTab("Incurred Costs")}>
-                        Incurred cost KES {incurred.toLocaleString()}
-                        {" submitted  on "} {datecreated} {" for approval"}
-                      </p>
+                      {incurred ? (
+                        <p onClick={() => setActiveTab("Incurred Costs")}>
+                          Incurred cost KES {incurred.toLocaleString()}
+                          {" submitted  on "} {datecreated} {" for approval"}
+                        </p>
+                      ) : (
+                        ""
+                      )}
+
                       <hr />
                       {budgetMonthsData.map((month, index) => (
                         <p
