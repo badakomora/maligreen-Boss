@@ -1,8 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react"
-import axios from "axios"
-import { useEffect, useState } from "react"
-import { serverUrl } from "../AppConfig"
+import { css } from "@emotion/react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+import { serverUrl } from "../AppConfig";
+import { toast } from "react-toastify";
+import { Dynamics } from "./Dynamics";
 
 const breakdownStyles = css`
   --primary-color: #486c1b;
@@ -18,8 +21,6 @@ const breakdownStyles = css`
 
   .container {
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
   }
 
   .links-section {
@@ -120,7 +121,7 @@ const breakdownStyles = css`
     transition: box-shadow 0.3s ease, transform 0.2s ease;
     overflow: hidden;
     border: 1px solid rgba(72, 108, 27, 0.1);
-    
+
     &:hover {
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
       transform: translateY(-2px);
@@ -173,7 +174,7 @@ const breakdownStyles = css`
       color: rgba(255, 255, 255, 0.9) !important;
       font-weight: 500;
     }
-    
+
     &:hover {
       background-color: #3d5c17;
     }
@@ -245,119 +246,200 @@ const breakdownStyles = css`
     .card {
       max-width: 100%;
     }
-    
+
     .section-subtitle {
       flex-direction: column;
       align-items: flex-start;
       gap: 8px;
     }
   }
-  
+
   @media (max-width: 576px) {
     .list-item {
       flex-direction: column;
       align-items: flex-start;
       gap: 8px;
     }
-    
+
     .amount-note {
       width: 100%;
       justify-content: flex-start;
     }
-    
+
     .amount {
       text-align: left;
     }
   }
-`
+`;
 
 interface Items {
-  id: number
-  name: string
-  status: number
+  id: number;
+  name: string;
+  status: number;
 }
 
 interface IdProps {
-  setBudgetId: React.Dispatch<React.SetStateAction<number | string>>
+  setBudgetId: React.Dispatch<React.SetStateAction<number | string>>;
 }
 
 interface NavbarProps {
-  setActiveTab: React.Dispatch<React.SetStateAction<string>>
+  setActiveTab: React.Dispatch<React.SetStateAction<string>>;
 }
+type TodaysExpenses = {
+  biggestExpense: number;
+  totalExpense: number;
+  runningBalance: number;
+  recentFunding: string;
+};
 
-export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBudgetId }) => {
-  const [budgetMonthsData, setBudgetMonthsData] = useState<Items[]>([])
-  const [incurred, setIncurred] = useState(0)
-  const [datecreated, setCreateddate] = useState("")
-  const [todaysExpenses] = useState({
-    biggestExpense: 78457,
-    totalExpense: 178457,
-    runningBalance: 271543,
-    recentFunding: 450000,
-  })
+export const Breakdown: React.FC<NavbarProps & IdProps> = ({
+  setActiveTab,
+  setBudgetId,
+}) => {
+  const [budgetMonthsData, setBudgetMonthsData] = useState<Items[]>([]);
+  const [incurred, setIncurred] = useState(0);
+  const [incurredstatus, setIncuuredStatus] = useState(0);
+  const [datecreated, setCreateddate] = useState("");
+  const { runningBalance, recentReceipt } = Dynamics();
+  const [biggestexpense, setDailyMax] = useState(0);
+  const [totalexpense, setDailyTotal] = useState(0);
+  const [today, setToday] = useState("");
+  const [totaldaily, setTotalDaily] = useState(0);
+  const [receipttotal, setReceiptTotal] = useState(0);
+  const [totalsales, setTotalsales] = useState(0);
+  const [todaysExpenses] = useState<TodaysExpenses>({
+    biggestExpense: biggestexpense,
+    totalExpense: totalexpense,
+    runningBalance: runningBalance,
+    recentFunding: recentReceipt,
+  });
+
   const [overallExpenses] = useState({
-    totalExpense: 2450000,
-    totalFunding: 3120309,
-    totalRevenue: 670309,
-    variance: 670309,
-  })
+    totalExpense: totaldaily,
+    totalFunding: receipttotal,
+    totalRevenue: totalsales,
+    variance: receipttotal - totalsales,
+  });
 
+  // Add these function declarations at the top of the component body
   const fetchBudgetMonths = async () => {
     try {
-      const response = await axios.get(`${serverUrl}item/budgetList`)
-      const shelterList = response.data.pending.map((item: { id: number; monthadded: string; status: number }) => ({
-        id: item.id,
-        name: item.monthadded,
-        status: item.status,
-      }))
-      setBudgetMonthsData(shelterList)
+      const response = await axios.get(`${serverUrl}item/budgetList`);
+      const shelterList = response.data.list.map(
+        (item: { id: number; monthadded: string; status: number }) => ({
+          id: item.id,
+          name: item.monthadded,
+          status: item.status,
+        })
+      );
+      setBudgetMonthsData(shelterList);
     } catch (error) {
-      console.error("Error fetching shelter:", error)
+      console.error("Error fetching shelter:", error);
     }
-  }
+  };
+  const fetchReceiptTotal = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}item/receiptList`);
+      setReceiptTotal(response.data.totalAllTime);
+    } catch (error) {
+      console.error("Error fetching shelter:", error);
+    }
+  };
+
+  const fetchTotalsales = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}invoice/list`);
+      setTotalsales(response.data.totalsales);
+    } catch (error) {
+      console.error("Error fetching shelter:", error);
+    }
+  };
+
+  const fetchTodaysExpenses = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}expense/list`);
+      setDailyTotal(response.data.dailyTotal);
+      setDailyMax(response.data.biggestExpense);
+      setToday(response.data.lastDate);
+      setTotalDaily(response.data.totalExpenseOvertime);
+    } catch (error) {
+      console.error("Error fetching shelter:", error);
+    }
+  };
 
   const fetchInccurredItems = async () => {
     try {
-      const { data } = await axios.get(`${serverUrl}incurredcost/list`)
-      setIncurred(data?.incurred ?? 0)
-      setCreateddate(data?.datecreated ?? "")
+      const { data } = await axios.get(`${serverUrl}incurredcost/list`);
+      setIncuuredStatus(data?.status ?? 0);
+      setIncurred(data?.incurred ?? 0);
+      setCreateddate(data?.datecreated ?? "");
     } catch (error) {
-      console.error("Error fetching incurred costs:", error)
+      console.error("Error fetching incurred costs:", error);
     }
-  }
+  };
 
-  // This would be replaced with actual API calls to fetch today's and overall expenses
-  const fetchExpenses = async () => {
+  const handleStatus = async (
+    newStatus?: number,
+    type?: "incurred" | "budget"
+  ) => {
     try {
-      // These would be actual API calls in a real implementation
-      // const todaysResponse = await axios.get(`${serverUrl}expenses/today`);
-      // const overallResponse = await axios.get(`${serverUrl}expenses/overall`);
-      // For now, we're using the mock data initialized in state
-      // setTodaysExpenses(todaysResponse.data);
-      // setOverallExpenses(overallResponse.data);
+      // Use the provided status or default to 2 if none is provided
+      const status = newStatus ?? 2;
+
+      // Determine which endpoints to call based on the type parameter
+      const endpoints = [];
+      if (type === "incurred" || !type) {
+        endpoints.push({
+          endpoint: "incurredcost/update",
+          name: "Incurred costs",
+        });
+      }
+      if (type === "budget" || !type) {
+        endpoints.push({ endpoint: "item/budgetUpdate", name: "Budget" });
+      }
+
+      // Process each endpoint
+      for (const req of endpoints) {
+        try {
+          const { data } = await axios.post(`${serverUrl}${req.endpoint}`, {
+            status,
+          });
+
+          if (data?.tab) {
+            toast.success(data.tab);
+          }
+        } catch (error: any) {
+          if (error.response?.data?.error) {
+            toast.error(`${req.name}: ${error.response.data.error}`);
+          } else {
+            toast.error(`Error updating ${req.name.toLowerCase()}`);
+          }
+        }
+      }
+
+      // Refresh data after status update
+      fetchBudgetMonths();
+      fetchInccurredItems();
     } catch (error) {
-      console.error("Error fetching expenses:", error)
+      console.error("Error updating status:", error);
+      toast.error("An unexpected error occurred");
     }
-  }
+  };
 
   useEffect(() => {
-    fetchBudgetMonths()
-    fetchInccurredItems()
-    fetchExpenses()
-  }, [])
+    fetchBudgetMonths();
+    fetchInccurredItems();
+    fetchTodaysExpenses();
+    fetchReceiptTotal();
+    fetchTotalsales();
+  }, []);
 
   // Format currency
   const formatCurrency = (amount: number) => {
-    return `KES${amount.toLocaleString()}`
-  }
+    return `KES${amount.toLocaleString()}`;
+  };
 
   // Get today's date in a readable format
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
 
   return (
     <section css={breakdownStyles}>
@@ -365,41 +447,47 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
         <div className="links-section">
           {incurred ? (
             <div style={{ display: "flex" }}>
-              <span className="date-badge">New</span>
+              <span className="date-badge">
+                {incurredstatus === 1 ? "New" : "In review"}
+              </span>
               <a
                 href="."
                 className="action-link"
                 onClick={(e) => {
-                  e.preventDefault()
-                  setActiveTab("Pending Incurred Costs")
+                  e.preventDefault();
+                  setActiveTab("Incurred Costs");
+                  handleStatus(2, "incurred");
                 }}
               >
-                Inccurred Cost KES {incurred.toLocaleString()} - {datecreated} Submitted for approval
+                Inccurred Cost KES {incurred.toLocaleString()} - {datecreated}{" "}
+                Submitted for approval
                 {"\u00BB"}
               </a>
             </div>
           ) : (
             ""
           )}
-          {budgetMonthsData.length >= 1
-            ? budgetMonthsData.map((month, index) => (
-                <div style={{ display: "flex" }} key={index}>
-                  <span className="date-badge">New</span>
-                  <a
-                    key={index}
-                    href="."
-                    className="action-link"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setActiveTab("Budget")
-                      setBudgetId(Number(month.id))
-                    }}
-                  >
-                    {month.name} budget Submitted for approval {"\u00BB"}
-                  </a>
-                </div>
-              ))
-            : ""}
+          {budgetMonthsData
+            .filter((month) => month.status === 1 || month.status === 2) // ✅ Only status 1 or 2
+            .map((month, index) => (
+              <div style={{ display: "flex" }} key={index}>
+                <span className="date-badge">
+                  {month.status === 1 ? "New" : "In review"}
+                </span>
+                <a
+                  href="."
+                  className="action-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveTab("Budget");
+                    setBudgetId(Number(month.id));
+                    handleStatus(2, "budget");
+                  }}
+                >
+                  {month.name} budget Submitted for approval {"\u00BB"}
+                </a>
+              </div>
+            ))}
         </div>
 
         <div className="section-container">
@@ -412,7 +500,8 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
               <div className="card">
                 <div className="card-header">
                   <h4 className="section-subtitle">
-                    Today's Expense Summary <span className="date-badge"> {today}</span>
+                    Today's Expense Summary{" "}
+                    <span className="date-badge"> {today}</span>
                   </h4>
                 </div>
                 <ul className="items-list">
@@ -422,7 +511,9 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
                       <span className="note">(Today)</span>
                     </span>
                     <span className="amount-note">
-                      <span className="amount">{formatCurrency(todaysExpenses.biggestExpense)}</span>
+                      <span className="amount">
+                        {formatCurrency(todaysExpenses.biggestExpense)}
+                      </span>
                     </span>
                   </li>
                   <li className="list-item">
@@ -431,19 +522,27 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
                       <span className="note">(Today's expenditures)</span>
                     </span>
                     <span className="amount-note">
-                      <span className="amount">{formatCurrency(todaysExpenses.totalExpense)}</span>
+                      <span className="amount">
+                        {formatCurrency(todaysExpenses.totalExpense)}
+                      </span>
                     </span>
                   </li>
                   <li className="list-item">
                     <span className="item-name">Running Balance:</span>
                     <span className="amount-note">
-                      <span className="amount">{formatCurrency(todaysExpenses.runningBalance)}</span>
+                      <span className="amount">
+                        {formatCurrency(todaysExpenses.runningBalance)}
+                      </span>
                     </span>
                   </li>
                   <li className="list-item important-item">
                     <span className="item-name">Recent Funding</span>
                     <span className="amount-note">
-                      <span className="amount">{formatCurrency(todaysExpenses.recentFunding)}</span>
+                      <span className="amount">
+                        {todaysExpenses.recentFunding
+                          ? todaysExpenses.recentFunding
+                          : "N/A"}
+                      </span>
                     </span>
                   </li>
                 </ul>
@@ -454,19 +553,25 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
             <div className="expense-section">
               <div className="card">
                 <div className="card-header">
-                  <h4 className="section-subtitle">Overall Financial Summary</h4>
+                  <h4 className="section-subtitle">
+                    Overall Financial Summary
+                  </h4>
                 </div>
                 <ul className="items-list">
                   <li className="list-item">
                     <span className="item-name">Total Expense</span>
                     <span className="amount-note">
-                      <span className="amount">{formatCurrency(overallExpenses.totalExpense)}</span>
+                      <span className="amount">
+                        {formatCurrency(overallExpenses.totalExpense)}
+                      </span>
                     </span>
                   </li>
                   <li className="list-item">
                     <span className="item-name">Total Funding</span>
                     <span className="amount-note">
-                      <span className="amount">{formatCurrency(overallExpenses.totalFunding)}</span>
+                      <span className="amount">
+                        {formatCurrency(overallExpenses.totalFunding)}
+                      </span>
                     </span>
                   </li>
                   <li className="list-item">
@@ -475,11 +580,15 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
                       <span className="note">(Available income)</span>
                     </span>
                     <span className="amount-note">
-                      <span className="amount">{formatCurrency(overallExpenses.totalRevenue)}</span>
+                      <span className="amount">
+                        {formatCurrency(overallExpenses.totalRevenue)}
+                      </span>
                     </span>
                   </li>
                   <li className="total-row important-item">
-                    <span>Profit:</span>
+                    <span>
+                      {overallExpenses.variance >= 1 ? "Profit" : "Loss"}
+                    </span>
                     <span>{formatCurrency(overallExpenses.variance)}</span>
                   </li>
                 </ul>
@@ -489,5 +598,5 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
         </div>
       </div>
     </section>
-  )
-}
+  );
+};

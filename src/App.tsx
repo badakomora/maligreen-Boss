@@ -406,6 +406,7 @@ function App() {
   const [receiptId, setreceiptId] = useState<number | string>(0);
   const [payrollId, setPayrollId] = useState<number | string>(0);
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const [budgetMonthsData, setBudgetMonthsData] = useState<items[]>([]);
   const [totalsales, setTotalSalesData] = useState(0);
@@ -575,6 +576,29 @@ function App() {
     fetchmeeting();
   }, [activeTab, totalsales]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      const notificationPanel = document.querySelector(".tooltip-content");
+      const bellIcon = document.querySelector(".bell-icon");
+
+      if (
+        isNotificationOpen &&
+        notificationPanel &&
+        bellIcon &&
+        !notificationPanel.contains(target) &&
+        !bellIcon.contains(target)
+      ) {
+        setIsNotificationOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isNotificationOpen]);
+
   const getFilteredComponent = (
     activeTab: string,
     setActiveTab: React.Dispatch<React.SetStateAction<string>>
@@ -606,7 +630,6 @@ function App() {
       case "Livestock Report":
       case "Production Report":
       case "Payroll Report":
-      case "Pending Incurred Costs":
         return (
           <Budget
             activeTab={activeTab}
@@ -809,7 +832,7 @@ function App() {
                     if (selectedValue === "new") {
                       setActiveTab("Request Funding");
                     } else if (selectedValue === "pending") {
-                      setActiveTab("Pending Incurred Costs");
+                      setActiveTab("Incurred Costs");
                     } else {
                       setreceiptId(selectedValue);
                       setActiveTab("Receipt Breakdown");
@@ -850,6 +873,7 @@ function App() {
               activeTab === "Staff Management" ||
               activeTab === "Payroll Report" ||
               activeTab === "Invoice Details" ||
+              activeTab === "Incurred Costs" ||
               activeTab === "Budget" ? (
               <button
                 css={btnSecondary}
@@ -900,13 +924,13 @@ function App() {
                   }}
                 >
                   <option>Budgets</option>
-                  {budgetMonthsData.map((month, index) =>
-                    month.status === 1 ? null : (
+                  {budgetMonthsData
+                    .filter((month) => month.status !== 1 && month.status !== 2)
+                    .map((month, index) => (
                       <option key={index} value={month.id}>
                         {month.name}
                       </option>
-                    )
-                  )}
+                    ))}
                 </select>
               </>
             ) : activeTab === "Livestock & Production" ? (
@@ -950,29 +974,33 @@ function App() {
                 ))}
               </select>
             ) : activeTab === "Budget" ? (
-              <select
-                css={btnPrimary}
-                value={budgetId}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === "new") {
-                    setActiveTab("Create Budget");
-                    setBudgetId(val);
-                  } else {
-                    setActiveTab("Budget");
-                    setBudgetId(Number(val));
-                  }
-                }}
-              >
-                <option>Budgets</option>
-                {budgetMonthsData.map((month, index) =>
-                  month.status === 1 ? null : (
-                    <option key={index} value={month.id}>
-                      {month.name}
-                    </option>
-                  )
-                )}
-              </select>
+              <>
+                <button css={btnPrimary}>Approve</button>
+                <button css={btnSecondary}>Decline</button>
+                <select
+                  css={btnPrimary}
+                  value={budgetId}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === "new") {
+                      setActiveTab("Create Budget");
+                      setBudgetId(val);
+                    } else {
+                      setActiveTab("Budget");
+                      setBudgetId(Number(val));
+                    }
+                  }}
+                >
+                  <option>Budgets</option>
+                  {budgetMonthsData
+                    .filter((month) => month.status !== 1 && month.status !== 2)
+                    .map((month, index) => (
+                      <option key={index} value={month.id}>
+                        {month.name}
+                      </option>
+                    ))}
+                </select>
+              </>
             ) : activeTab === "Production Report" ? (
               <select
                 css={btnPrimary}
@@ -993,10 +1021,11 @@ function App() {
                 ))}
               </select>
             ) : activeTab === "Receipt Breakdown" ||
-              activeTab === "Pending Incurred Costs" ? (
+              activeTab === "Incurred Costs" ||
+              activeTab === "Budget" ? (
               <>
-                <button css={btnPrimary}>Aprove</button>
-                <button  css={btnSecondary}>Decline</button>
+                <button css={btnPrimary}>Approve</button>
+                <button css={btnSecondary}>Decline</button>
                 {/* <select
                   css={btnSecondary}
                   value={selectedMonth}
@@ -1051,15 +1080,10 @@ function App() {
                       position: relative;
                       display: inline-block;
                       cursor: pointer;
-
-                      &:hover .tooltip-content,
-                      .tooltip-content:hover {
-                        visibility: visible;
-                        opacity: 1;
-                      }
                     `}
                   >
                     <span
+                      className="bell-icon"
                       css={css`
                         font-size: 24px;
                         color: blue;
@@ -1088,12 +1112,8 @@ function App() {
                         &:hover {
                           animation-play-state: paused;
                         }
-                        &:hover + .tooltip-content {
-                          visibility: visible;
-                          opacity: 1;
-                          pointer-events: auto;
-                        }
                       `}
+                      onClick={() => setIsNotificationOpen(!isNotificationOpen)}
                     >
                       &#128276;
                     </span>
@@ -1114,14 +1134,11 @@ function App() {
                         width: 200px;
                         margin-top: 8px;
                         transition: opacity 0.2s ease-in-out;
-                        visibility: hidden;
-                        opacity: 0;
-                        pointer-events: none;
-                        &:hover {
-                          visibility: visible;
-                          opacity: 1;
-                          pointer-events: auto;
-                        }
+                        visibility: ${isNotificationOpen
+                          ? "visible"
+                          : "hidden"};
+                        opacity: ${isNotificationOpen ? "1" : "0"};
+                        pointer-events: ${isNotificationOpen ? "auto" : "none"};
                       `}
                     >
                       {scheduledmeeting.length > 0 ? (
@@ -1161,7 +1178,7 @@ function App() {
                         </p>
                       )}
                       <hr />
-                      <p onClick={() => setActiveTab("Pending Incurred Costs")}>
+                      <p onClick={() => setActiveTab("Incurred Costs")}>
                         Incurred cost KES {incurred.toLocaleString()}
                         {" submitted  on "} {datecreated} {" for approval"}
                       </p>

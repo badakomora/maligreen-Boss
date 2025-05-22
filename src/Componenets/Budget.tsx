@@ -9,7 +9,7 @@ const styles = {
   container: css`
     font-family: Monaco;
     background: #ffffff;
-    width: 95%;
+    width: 100%;
     margin: auto;
   `,
   section: css`
@@ -439,11 +439,11 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                   .slice(0, 1)
                   .map(([account, items], index) => (
                     <div key={index}>
-                      {items.map((item, index) => (
-                        <span key={index} css={styles.spanFirst}>
-                          {item.date}
+                      {items.length > 0 && (
+                        <span key={0} css={styles.spanFirst}>
+                          {items[0].date}
                         </span>
-                      ))}
+                      )}
                     </div>
                   ))}
 
@@ -464,7 +464,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                   <b css={styles.spanLast}>KES {receipt}</b>
                 </span>
               </>
-            ) : activeTab === "Pending Incurred Costs" ? (
+            ) : activeTab === "Incurred Costs" ? (
               <>
                 <span css={styles.spanFirst}>
                   {
@@ -639,7 +639,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                 <hr style={{ border: "1px dotted #486c1b" }} />
               </div>
             </>
-          ) : activeTab === "Pending Incurred Costs" ? (
+          ) : activeTab === "Incurred Costs" ? (
             <>
               {Object.entries(incurreddata).map(([account, items], index) => (
                 <table css={styles.table} key={index}>

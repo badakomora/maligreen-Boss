@@ -11,8 +11,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { serverUrl } from "../AppConfig";
 import axios from "axios";
+import { serverUrl } from "../AppConfig";
 
 type SalesDataItem = {
   date: string;
@@ -305,12 +305,28 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
             day: "2-digit",
           });
 
+          // Convert string values to numbers for the chart
+          const cashRevenue =
+            typeof item.cashrevenue === "string"
+              ? Number.parseFloat(item.cashrevenue.replace(/[^0-9.-]+/g, ""))
+              : item.cashrevenue;
+
+          const tillRevenue =
+            typeof item.tillrevenue === "string"
+              ? Number.parseFloat(item.tillrevenue.replace(/[^0-9.-]+/g, ""))
+              : item.tillrevenue;
+
+          const bankRevenue =
+            typeof item.bankrevenue === "string"
+              ? Number.parseFloat(item.bankrevenue.replace(/[^0-9.-]+/g, ""))
+              : item.bankrevenue;
+
           return {
             date: date,
             name: name,
-            cashRevenue: "KES " + item.cashrevenue.toLocaleString(),
-            tillRevenue: "KES " + item.tillrevenue.toLocaleString(),
-            bankRevenue: "KES " + item.bankrevenue.toLocaleString(),
+            cashRevenue: cashRevenue,
+            tillRevenue: tillRevenue,
+            bankRevenue: bankRevenue,
           };
         }
       );
@@ -334,7 +350,7 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
     }
   };
 
-  // 3. Create a separate useEffect for filtering salesData to avoid circular dependencies
+  // Create a separate useEffect for filtering salesData to avoid circular dependencies
   useEffect(() => {
     // Only filter sales data when we have both dates and data
     if (startDate && endDate && salesData.length > 0) {
@@ -346,7 +362,7 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
     }
   }, [startDate, endDate, salesData]);
 
-  // 4. Create a separate useEffect for filtering productionData
+  // Create a separate useEffect for filtering productionData
   useEffect(() => {
     // Only filter production data when we have both dates and data
     if (startDate && endDate && productionData.length > 0) {
@@ -388,8 +404,10 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
 
       // Sort by date to ensure chronological order
       formattedProductionData.sort(
-        (a: { date: string }, b: { date: string }) =>
-          new Date(a.date).getTime() - new Date(b.date).getTime()
+        (
+          a: { date: string | number | Date },
+          b: { date: string | number | Date }
+        ) => new Date(a.date).getTime() - new Date(b.date).getTime()
       );
 
       setProductionData(formattedProductionData);
@@ -414,6 +432,16 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
       setEndDate(salesData[salesData.length - 1]?.date || "");
     }
   }, [activeTab, productionData, salesData]);
+
+  // Format currency for Y-axis
+  const formatCurrency = (value: number): string => {
+    if (value >= 1000000) {
+      return `${(value / 1000000).toFixed(1)}M`;
+    } else if (value >= 1000) {
+      return `${(value / 1000).toFixed(1)}K`;
+    }
+    return value.toString();
+  };
 
   return (
     <div css={chartStyles} className="chart-container">
@@ -477,12 +505,42 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
             {activeTab === "Livestock & Production" ? (
               <LineChart
                 data={filteredProductionData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+                margin={{ top: 20, right: 30, left: 30, bottom: 10 }}
                 className="chart"
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                <XAxis dataKey="name" height={60} tick={{ fill: "#333" }} />
-                <YAxis tick={{ fill: "#333" }} />
+                <XAxis
+                  dataKey="name"
+                  height={60}
+                  tick={{ fill: "#333" }}
+                  tickLine={true}
+                  axisLine={true}
+                />
+                <YAxis
+                  yAxisId="left"
+                  tick={{ fill: "#333" }}
+                  tickLine={true}
+                  axisLine={true}
+                  label={{
+                    value: "Production (Litres)",
+                    angle: -90,
+                    position: "insideLeft",
+                    style: { fill: "#8884d8", textAnchor: "middle" },
+                  }}
+                />
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  tick={{ fill: "#333" }}
+                  tickLine={true}
+                  axisLine={true}
+                  label={{
+                    value: "Livestock Count",
+                    angle: -90,
+                    position: "insideRight",
+                    style: { fill: "#486c1b", textAnchor: "middle" },
+                  }}
+                />
                 <Tooltip
                   formatter={(value, name) => {
                     if (name === "livestock") {
@@ -510,6 +568,7 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                   name="Livestock (count)"
                   stroke="#486c1b"
                   strokeWidth={3}
+                  yAxisId="right"
                   dot={{ r: 4, fill: "#486c1b", strokeWidth: 1 }}
                   activeDot={{
                     r: 7,
@@ -524,6 +583,7 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                   name="Total Production (Litres)"
                   stroke="#8884d8"
                   strokeWidth={3}
+                  yAxisId="left"
                   dot={{ r: 4, fill: "#8884d8", strokeWidth: 1 }}
                   activeDot={{
                     r: 7,
@@ -536,13 +596,49 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
             ) : (
               <LineChart
                 data={filteredSalesData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+                margin={{ top: 20, right: 30, left: 30, bottom: 10 }}
                 className="chart"
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                <XAxis dataKey="name" height={60} tick={{ fill: "#333" }} />
-                <YAxis tick={{ fill: "#333" }} />
+                <XAxis
+                  dataKey="name"
+                  height={60}
+                  tick={{ fill: "#333" }}
+                  tickLine={true}
+                  axisLine={true}
+                />
+                <YAxis
+                  tick={{ fill: "#333" }}
+                  tickFormatter={formatCurrency}
+                  tickLine={true}
+                  axisLine={true}
+                  label={{
+                    value: "Revenue (KES)",
+                    angle: -90,
+                    position: "insideLeft",
+                    style: { fill: "#333", textAnchor: "middle" },
+                  }}
+                />
                 <Tooltip
+                  formatter={(value, name) => {
+                    if (name === "cashRevenue") {
+                      return [
+                        `KES ${Number(value).toLocaleString()}`,
+                        "Cash Revenue",
+                      ];
+                    } else if (name === "tillRevenue") {
+                      return [
+                        `KES ${Number(value).toLocaleString()}`,
+                        "Till Revenue",
+                      ];
+                    } else if (name === "bankRevenue") {
+                      return [
+                        `KES ${Number(value).toLocaleString()}`,
+                        "Bank Revenue",
+                      ];
+                    }
+                    return [value, name];
+                  }}
                   contentStyle={{
                     backgroundColor: "rgba(255, 255, 255, 0.95)",
                     borderRadius: "6px",

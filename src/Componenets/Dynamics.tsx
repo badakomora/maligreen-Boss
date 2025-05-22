@@ -7,10 +7,12 @@ export const Dynamics = () => {
   const [productionStock, setProductionStock] = useState(0);
   const [runningBalance, setRunningBalance] = useState(0);
   const [previousBalance, setPreviousBalance] = useState(0);
+  const [recentReceipt, setRecentReceipt] = useState("");
 
   useEffect(() => {
     fetchStock();
     fetchBalance();
+    fetchRecentReceipts();
   }, []);
 
   const fetchStock = async () => {
@@ -32,5 +34,14 @@ export const Dynamics = () => {
     }
   };
 
-  return { productionStock, runningBalance, previousBalance };
+  const fetchRecentReceipts = async () => {
+    try {
+      const response = await axios.get(`${serverUrl}item/receiptList`);
+      setRecentReceipt(response.data.recent);
+    } catch (error) {
+      console.error("Error fetching stock:", error);
+    }
+  };
+
+  return { productionStock, runningBalance, previousBalance, recentReceipt };
 };
