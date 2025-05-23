@@ -220,6 +220,8 @@ const statusBadgeStyle = (status: number) => css`
     ? "#4169e1"
     : status === 4
     ? "#ff8c00"
+    : status === 5
+    ? "#9932cc"
     : "#ffc107"};
 `;
 
@@ -307,6 +309,11 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
   const [employmentDate, setEmploymentDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [customEmploymentTerm, setCustomEmploymentTerm] = useState("");
+  const [isCustomTerm, setIsCustomTerm] = useState(false);
+  const [employmentTermsData, setEmploymentTermsData] = useState<
+    { id: number; name: string }[]
+  >([]);
 
   useEffect(() => {
     fetchStaff();
@@ -342,6 +349,11 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
       );
 
       setStaffData(filteredStaff);
+
+      // Extract employment terms from the response
+      if (response.data.employmentTerms) {
+        setEmploymentTermsData(response.data.employmentTerms);
+      }
     } catch (error) {
       console.error("Error fetching staff:", error);
     }
@@ -393,20 +405,49 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
   const handleModalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedStaff) {
-      // Use the correct endpoint format with the staffId in the URL
-      axios
-        .put(`${serverUrl}staff/status/${selectedStaff.id}`, {
-          status: Number.parseInt(employmentTerms),
-          date: employmentDate,
-        })
-        .then((response) => {
-          toast.success(response.data.tab || "Status updated successfully");
-          fetchStaff();
-        })
-        .catch((error) => {
-          console.error("Error updating staff status:", error);
-          toast.error("Failed to update employment status");
-        });
+      if (isCustomTerm) {
+        // First create the new employment term
+        axios
+          .post(`${serverUrl}item/newEmploymentterm`, {
+            term: customEmploymentTerm,
+          })
+          .then((createResponse) => {
+            const newTermId = createResponse.data.id;
+            // Set the new term as selected
+            setEmploymentTerms(newTermId.toString());
+            // Now assign the new term to the staff member
+            return axios.put(`${serverUrl}staff/status/${selectedStaff.id}`, {
+              status: newTermId,
+              date: employmentDate,
+            });
+          })
+          .then((response) => {
+            toast.success(response.data.tab || "Status updated successfully");
+            fetchStaff(); // This will also refresh the employment terms
+          })
+          .catch((error) => {
+            console.error(
+              "Error creating employment term or updating staff:",
+              error
+            );
+            toast.error("Failed to create employment term or update status");
+          });
+      } else {
+        // Use existing employment term
+        axios
+          .put(`${serverUrl}staff/status/${selectedStaff.id}`, {
+            status: Number.parseInt(employmentTerms),
+            date: employmentDate,
+          })
+          .then((response) => {
+            toast.success(response.data.tab || "Status updated successfully");
+            fetchStaff();
+          })
+          .catch((error) => {
+            console.error("Error updating staff status:", error);
+            toast.error("Failed to update employment status");
+          });
+      }
 
       setModalOpen(false);
     }
@@ -414,6 +455,12 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
 
   // Helper function to get status text
   const getStatusText = (status: number) => {
+    const term = employmentTermsData.find((t) => t.id === status);
+    if (term) {
+      return term.name;
+    }
+
+    // Fallback for legacy statuses
     switch (status) {
       case 1:
         return "Dismissed";
@@ -423,6 +470,8 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
         return "Intern";
       case 4:
         return "Casual";
+      case 5:
+        return "Contract";
       default:
         return "Awaiting Confirmation";
     }
@@ -566,14 +615,36 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                 <select
                   id="employmentTerms"
                   value={employmentTerms}
-                  onChange={(e) => setEmploymentTerms(e.target.value)}
+                  onChange={(e) => {
+                    setEmploymentTerms(e.target.value);
+                    setIsCustomTerm(e.target.value === "custom");
+                  }}
                   required
                 >
-                  <option value="2">Permanent and Pensionable</option>
-                  <option value="3">Intern</option>
-                  <option value="4">Casual</option>
+                  {employmentTermsData.map((term) => (
+                    <option key={term.id} value={term.id}>
+                      {term.name}
+                    </option>
+                  ))}
+                  <option value="custom">Create New Employment</option>
                 </select>
               </div>
+
+              {isCustomTerm && (
+                <div css={formGroupStyle} style={{ marginTop: "1rem" }}>
+                  <label htmlFor="customEmploymentTerm">
+                    New Employment Term
+                  </label>
+                  <input
+                    type="text"
+                    id="customEmploymentTerm"
+                    value={customEmploymentTerm}
+                    onChange={(e) => setCustomEmploymentTerm(e.target.value)}
+                    placeholder="Enter new employment term"
+                    required={isCustomTerm}
+                  />
+                </div>
+              )}
 
               <div css={formGroupStyle}>
                 <label htmlFor="employmentDate">Date of Employment</label>
