@@ -5,6 +5,95 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { serverUrl } from "../AppConfig";
 
+// Modal styles
+const modalOverlayStyle = css`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const modalContentStyle = css`
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  font-family: Monaco;
+`;
+
+const modalHeaderStyle = css`
+  margin-bottom: 1.5rem;
+
+  h3 {
+    color: #486c1b;
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem 0;
+  }
+
+  p {
+    color: #666;
+    margin: 0;
+  }
+`;
+
+const formGroupStyle = css`
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #486c1b;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: Monaco;
+    font-size: 0.9rem;
+
+    &:focus {
+      outline: none;
+      border-color: #486c1b;
+    }
+  }
+`;
+
+const buttonGroupStyle = css`
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+`;
+
+const buttonStyle = (isPrimary: boolean) => css`
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-family: Monaco;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  background-color: ${isPrimary ? "#486c1b" : "#f5f5f5"};
+  color: ${isPrimary ? "white" : "#333"};
+
+  &:hover {
+    background-color: ${isPrimary ? "#3a5816" : "#e5e5e5"};
+  }
+`;
+
 // Panel container with softer, rounded styling
 const panelStyle = css`
   width: 100%;
@@ -208,6 +297,16 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
 }) => {
   const [staffData, setStaffData] = useState<StaffMember[]>([]);
   const [departmentData, setDepartmentData] = useState<StaffMember[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [name, setName] = useState("");
+  const [employmentTerms, setEmploymentTerms] = useState("2"); // Default to Permanent
+  const [employmentDate, setEmploymentDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
 
   useEffect(() => {
     fetchStaff();
@@ -270,16 +369,36 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
     }
   };
 
-  const dismiss = async (staffId: number, status: number) => {
+  const dismiss = async (staffId: number, status: number, date?: string) => {
     try {
       const response = await axios.put(`${serverUrl}staff/status/${status}`, {
         staffId,
         status,
+        // If your API supports it, you could add: employmentDate: date
       });
       toast.success(response.data.tab);
       fetchStaff();
     } catch (error) {
       console.error("Error updating staff status:", error);
+      toast.error("Failed to update employment status");
+    }
+  };
+
+  const openApprovalModal = (staff: { id: number; name: string }) => {
+    setSelectedStaff(staff);
+    setName(staff.name);
+    setModalOpen(true);
+  };
+
+  const handleModalSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedStaff) {
+      dismiss(
+        selectedStaff.id,
+        Number.parseInt(employmentTerms),
+        employmentDate
+      );
+      setModalOpen(false);
     }
   };
 
@@ -372,23 +491,29 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                             Review
                           </a>
                           {user.status === 0 ? (
-                            <><a
-                              href="."
-                              onClick={(e) => {
-                                e.preventDefault();
-                                dismiss(user.id, user.status);
-                              } }
-                            >
-                              Approve Employment
-                            </a><a
-                              href="."
-                              onClick={(e) => {
-                                e.preventDefault();
-                                dismiss(user.id, user.status);
-                              } }
-                            >
-                                Dissmiss Employment
-                              </a></>
+                            <>
+                              <a
+                                href="."
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  openApprovalModal({
+                                    id: user.id,
+                                    name: user.name,
+                                  });
+                                }}
+                              >
+                                Approve Employment
+                              </a>
+                              <a
+                                href="."
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  dismiss(user.id, 1); // 1 is for Dismissed status
+                                }}
+                              >
+                                Dismiss Employment
+                              </a>
+                            </>
                           ) : (
                             ""
                           )}
@@ -402,6 +527,69 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
           );
         })}
       </div>
+
+      {/* Employment Approval Modal */}
+      {modalOpen && selectedStaff && (
+        <div css={modalOverlayStyle} onClick={() => setModalOpen(false)}>
+          <div css={modalContentStyle} onClick={(e) => e.stopPropagation()}>
+            <div css={modalHeaderStyle}>
+              <h3>Approve Employment</h3>
+              <p>Set employment terms for this staff member</p>
+            </div>
+
+            <form onSubmit={handleModalSubmit}>
+              <div css={formGroupStyle}>
+                <label htmlFor="name">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div css={formGroupStyle}>
+                <label htmlFor="employmentTerms">Employment Terms</label>
+                <select
+                  id="employmentTerms"
+                  value={employmentTerms}
+                  onChange={(e) => setEmploymentTerms(e.target.value)}
+                  required
+                >
+                  <option value="2">Permanent and Pensionable</option>
+                  <option value="3">Intern</option>
+                  <option value="4">Casual</option>
+                </select>
+              </div>
+
+              <div css={formGroupStyle}>
+                <label htmlFor="employmentDate">Date of Employment</label>
+                <input
+                  type="date"
+                  id="employmentDate"
+                  value={employmentDate}
+                  onChange={(e) => setEmploymentDate(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div css={buttonGroupStyle}>
+                <button
+                  type="button"
+                  css={buttonStyle(false)}
+                  onClick={() => setModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" css={buttonStyle(true)}>
+                  Approve
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 };
