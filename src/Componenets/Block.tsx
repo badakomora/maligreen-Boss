@@ -393,11 +393,21 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
   const handleModalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedStaff) {
-      dismiss(
-        selectedStaff.id,
-        Number.parseInt(employmentTerms),
-        employmentDate
-      );
+      // Use the correct endpoint format with the staffId in the URL
+      axios
+        .put(`${serverUrl}staff/status/${selectedStaff.id}`, {
+          status: Number.parseInt(employmentTerms),
+          date: employmentDate,
+        })
+        .then((response) => {
+          toast.success(response.data.tab || "Status updated successfully");
+          fetchStaff();
+        })
+        .catch((error) => {
+          console.error("Error updating staff status:", error);
+          toast.error("Failed to update employment status");
+        });
+
       setModalOpen(false);
     }
   };
@@ -539,12 +549,14 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
 
             <form onSubmit={handleModalSubmit}>
               <div css={formGroupStyle}>
-                <label htmlFor="name">Name</label>
+                <label htmlFor="name">Name: {name}</label>
                 <input
                   type="text"
                   id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  placeholder={name}
+                  value={selectedStaff.id}
+                  disabled
+                  style={{ display: "none" }}
                   required
                 />
               </div>
