@@ -975,8 +975,6 @@ function App() {
               </select>
             ) : activeTab === "Budget" ? (
               <>
-                <button css={btnPrimary}>Approve</button>
-                <button css={btnSecondary}>Decline</button>
                 <select
                   css={btnPrimary}
                   value={budgetId}

@@ -12,7 +12,6 @@ const panelStyle = css`
   background: #ffffff;
   font-family: Monaco;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
 
   h4 {
     color: #486c1b;
@@ -373,15 +372,23 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                             Review
                           </a>
                           {user.status === 0 ? (
-                            <a
+                            <><a
                               href="."
                               onClick={(e) => {
                                 e.preventDefault();
                                 dismiss(user.id, user.status);
-                              }}
+                              } }
                             >
                               Approve Employment
-                            </a>
+                            </a><a
+                              href="."
+                              onClick={(e) => {
+                                e.preventDefault();
+                                dismiss(user.id, user.status);
+                              } }
+                            >
+                                Dissmiss Employment
+                              </a></>
                           ) : (
                             ""
                           )}
