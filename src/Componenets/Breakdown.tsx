@@ -478,7 +478,7 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                   className="action-link"
                   onClick={(e) => {
                     e.preventDefault();
-                    setActiveTab("Proposed budget");
+                    setActiveTab("Proposed Budget");
                     setBudgetId(Number(month.id));
                     handleStatus(2, "budget");
                   }}

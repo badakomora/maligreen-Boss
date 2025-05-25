@@ -452,7 +452,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                   }}
                 >
                   Ref.
-                  <b css={styles.spanLast}>KES {receipt}</b>
+                  <b css={styles.spanLast}>KES {receipt.toLocaleString()}</b>
                 </span>
               </>
             ) : activeTab === "Incurred Costs" ? (
@@ -719,7 +719,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                 <hr style={{ border: "1px dotted #486c1b" }} />
               </div>
             </>
-          ) : activeTab === "Budget"  || activeTab === "Proposed budget"? (
+          ) : activeTab === "Budget" || activeTab === "Proposed Budget" ? (
             <>
               {Object.entries(budgetData).map(([account, items], index) => (
                 <table css={styles.table} key={index}>
