@@ -92,6 +92,11 @@ const buttonStyle = (isPrimary: boolean) => css`
   &:hover {
     background-color: ${isPrimary ? "#3a5816" : "#e5e5e5"};
   }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `;
 
 // Panel container with softer, rounded styling
@@ -282,6 +287,7 @@ interface StaffMember {
   img: string;
   invoiceid?: number;
   status: number;
+  term: string;
 }
 
 interface NavbarProps {
@@ -312,8 +318,9 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
   const [customEmploymentTerm, setCustomEmploymentTerm] = useState("");
   const [isCustomTerm, setIsCustomTerm] = useState(false);
   const [employmentTermsData, setEmploymentTermsData] = useState<
-    { id: number; name: string }[]
+    { id: number; term: string }[]
   >([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     fetchStaff();
@@ -334,6 +341,7 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
             photo: string;
             id: number;
             status: number;
+            term: string;
           },
           i: number
         ) => ({
@@ -345,15 +353,25 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
           department: item.department,
           img: item.photo,
           status: item.status,
+          term: item.term,
         })
       );
 
       setStaffData(filteredStaff);
 
-      // Extract employment terms from the response
-      if (response.data.employmentTerms) {
-        setEmploymentTermsData(response.data.employmentTerms);
-      }
+      const terms = response.data.employmentterms.map(
+        (
+          item: {
+            id: number;
+            term: string;
+          },
+          i: number
+        ) => ({
+          id: item.id,
+          term: item.term,
+        })
+      );
+      setEmploymentTermsData(terms);
     } catch (error) {
       console.error("Error fetching staff:", error);
     }
@@ -381,99 +399,79 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
     }
   };
 
-  const dismiss = async (staffId: number, status: number, date?: string) => {
-    try {
-      const response = await axios.put(`${serverUrl}staff/status/${status}`, {
-        staffId,
-        status,
-        // If your API supports it, you could add: employmentDate: date
-      });
-      toast.success(response.data.tab);
-      fetchStaff();
-    } catch (error) {
-      console.error("Error updating staff status:", error);
-      toast.error("Failed to update employment status");
-    }
-  };
-
   const openApprovalModal = (staff: { id: number; name: string }) => {
     setSelectedStaff(staff);
     setName(staff.name);
     setModalOpen(true);
   };
 
-  const handleModalSubmit = (e: React.FormEvent) => {
+  const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedStaff) {
-      if (isCustomTerm) {
-        // First create the new employment term
-        axios
-          .post(`${serverUrl}item/newEmploymentterm`, {
-            term: customEmploymentTerm,
-          })
-          .then((createResponse) => {
-            const newTermId = createResponse.data.id;
-            // Set the new term as selected
-            setEmploymentTerms(newTermId.toString());
-            // Now assign the new term to the staff member
-            return axios.put(`${serverUrl}staff/status/${selectedStaff.id}`, {
-              status: newTermId,
-              date: employmentDate,
-            });
-          })
-          .then((response) => {
-            toast.success(response.data.tab || "Status updated successfully");
-            fetchStaff(); // This will also refresh the employment terms
-          })
-          .catch((error) => {
-            console.error(
-              "Error creating employment term or updating staff:",
-              error
-            );
-            toast.error("Failed to create employment term or update status");
-          });
-      } else {
-        // Use existing employment term
-        axios
-          .put(`${serverUrl}staff/status/${selectedStaff.id}`, {
-            status: Number.parseInt(employmentTerms),
-            date: employmentDate,
-          })
-          .then((response) => {
-            toast.success(response.data.tab || "Status updated successfully");
-            fetchStaff();
-          })
-          .catch((error) => {
-            console.error("Error updating staff status:", error);
-            toast.error("Failed to update employment status");
-          });
+    if (!selectedStaff) return;
+
+    setIsSubmitting(true);
+
+    try {
+      let termId = employmentTerms;
+
+      // If creating a custom term, create it first and get the ID
+      if (isCustomTerm && customEmploymentTerm.trim()) {
+        const createTermResponse = await axios.post(
+          `${serverUrl}item/newEmploymentterm`,
+          {
+            term: customEmploymentTerm.trim(),
+          }
+        );
+
+        // The backend should return the created term with ID
+        // Update your backend to return: res.status(200).json({tab:"New Employment Term Added!", id: result.rows[0].id});
+        if (createTermResponse.data.id) {
+          termId = createTermResponse.data.id.toString();
+        } else {
+          // If ID is not returned, you might need to fetch the latest terms or handle differently
+          toast.error("Failed to get new employment term ID");
+          setIsSubmitting(false);
+          return;
+        }
+
+        toast.success(createTermResponse.data.tab);
       }
 
+      // Now update the staff status with the term ID and date
+      const updateResponse = await axios.put(
+        `${serverUrl}staff/status/${selectedStaff.id}`,
+        {
+          status: Number.parseInt(termId),
+          date: employmentDate,
+        }
+      );
+
+      toast.success(
+        updateResponse.data.tab || "Staff status updated successfully"
+      );
+
+      // Refresh the staff list and employment terms
+      await fetchStaff();
+
+      // Reset form and close modal
       setModalOpen(false);
-    }
-  };
-
-  // Helper function to get status text
-  const getStatusText = (status: number) => {
-    const term = employmentTermsData.find((t) => t.id === status);
-    if (term) {
-      return term.name;
-    }
-
-    // Fallback for legacy statuses
-    switch (status) {
-      case 1:
-        return "Dismissed";
-      case 2:
-        return "Permanent and Pensionable";
-      case 3:
-        return "Intern";
-      case 4:
-        return "Casual";
-      case 5:
-        return "Contract";
-      default:
-        return "Awaiting Confirmation";
+      setIsCustomTerm(false);
+      setCustomEmploymentTerm("");
+      setEmploymentTerms("2");
+      setEmploymentDate(new Date().toISOString().split("T")[0]);
+    } catch (error) {
+      console.error("Error in employment approval process:", error);
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.error ||
+            error.response?.data?.message ||
+            "Failed to process employment approval"
+        );
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -532,7 +530,9 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                       <div>
                         <p>Joined on {user.date}</p>
                         <div css={statusBadgeStyle(user.status)}>
-                          {getStatusText(user.status)}
+                          {user.status === 0
+                            ? "Awaiting Confirmation"
+                            : user.term}
                         </div>
                       </div>
                       <hr />
@@ -549,33 +549,23 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                           >
                             Review
                           </a>
-                          {user.status === 0 ? (
-                            <>
-                              <a
-                                href="."
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  openApprovalModal({
-                                    id: user.id,
-                                    name: user.name,
-                                  });
-                                }}
-                              >
-                                Approve Employment
-                              </a>
-                              <a
-                                href="."
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  dismiss(user.id, 1); // 1 is for Dismissed status
-                                }}
-                              >
-                                Dismiss Employment
-                              </a>
-                            </>
-                          ) : (
-                            ""
-                          )}
+
+                          <>
+                            <a
+                              href="."
+                              onClick={(e) => {
+                                e.preventDefault();
+                                openApprovalModal({
+                                  id: user.id,
+                                  name: user.name,
+                                });
+                              }}
+                            >
+                              {user.status === 0
+                                ? "Approve Employment "
+                                : "Update Employment Term"}
+                            </a>
+                          </>
                         </div>
                       </div>
                     </div>
@@ -592,25 +582,12 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
         <div css={modalOverlayStyle} onClick={() => setModalOpen(false)}>
           <div css={modalContentStyle} onClick={(e) => e.stopPropagation()}>
             <div css={modalHeaderStyle}>
-              <h3>Approve Employment</h3>
-              <p>Set employment terms for this staff member</p>
+              <h3>Set Employment Terms</h3>
             </div>
 
             <form onSubmit={handleModalSubmit}>
               <div css={formGroupStyle}>
-                <label htmlFor="name">Name: {name}</label>
-                <input
-                  type="text"
-                  id="name"
-                  placeholder={name}
-                  value={selectedStaff.id}
-                  disabled
-                  style={{ display: "none" }}
-                  required
-                />
-              </div>
-
-              <div css={formGroupStyle}>
+                <p>Name: {name}</p>
                 <label htmlFor="employmentTerms">Employment Terms</label>
                 <select
                   id="employmentTerms"
@@ -620,18 +597,20 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                     setIsCustomTerm(e.target.value === "custom");
                   }}
                   required
+                  disabled={isSubmitting}
                 >
+                  <option value="">Select Employment Term</option>
                   {employmentTermsData.map((term) => (
                     <option key={term.id} value={term.id}>
-                      {term.name}
+                      {term.term}
                     </option>
                   ))}
-                  <option value="custom">Create New Employment</option>
+                  <option value="custom">Create New Employment Term</option>
                 </select>
               </div>
 
               {isCustomTerm && (
-                <div css={formGroupStyle} style={{ marginTop: "1rem" }}>
+                <div css={formGroupStyle}>
                   <label htmlFor="customEmploymentTerm">
                     New Employment Term
                   </label>
@@ -640,8 +619,9 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                     id="customEmploymentTerm"
                     value={customEmploymentTerm}
                     onChange={(e) => setCustomEmploymentTerm(e.target.value)}
-                    placeholder="Enter new employment term"
+                    placeholder="e.g Permanent ad Pensionable, Contracted, Internship etc"
                     required={isCustomTerm}
+                    disabled={isSubmitting}
                   />
                 </div>
               )}
@@ -654,6 +634,7 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                   value={employmentDate}
                   onChange={(e) => setEmploymentDate(e.target.value)}
                   required
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -662,11 +643,16 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                   type="button"
                   css={buttonStyle(false)}
                   onClick={() => setModalOpen(false)}
+                  disabled={isSubmitting}
                 >
                   Cancel
                 </button>
-                <button type="submit" css={buttonStyle(true)}>
-                  Approve
+                <button
+                  type="submit"
+                  css={buttonStyle(true)}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Processing..." : "Approve"}
                 </button>
               </div>
             </form>

@@ -158,6 +158,7 @@ interface payrollProps {
   designation: string;
   salary: number;
   status: number;
+  term: string;
 }
 
 interface ProductionProps {
@@ -360,7 +361,8 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
               name: string;
               designation: string;
               salary: string;
-              status: number; // assuming status is a number (1, 2, or something else)
+              status: number;
+              term: string;
             },
             id: number
           ) => ({
@@ -368,18 +370,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
             name: item.name,
             designation: item.designation,
             salary: item.salary,
-            status:
-              item.status === 0
-                ? "Dismissed"
-                : item.status === 1
-                ? "Awaiting Confirmation"
-                : item.status === 2
-                ? "Permanent and Pensionable"
-                : item.status === 3
-                ? "Casual"
-                : item.status === 4
-                ? "Inter"
-                : "",
+            term: item.term,
           })
         );
 
@@ -728,7 +719,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                 <hr style={{ border: "1px dotted #486c1b" }} />
               </div>
             </>
-          ) : activeTab === "Budget" ? (
+          ) : activeTab === "Budget"  || activeTab === "Proposed budget"? (
             <>
               {Object.entries(budgetData).map(([account, items], index) => (
                 <table css={styles.table} key={index}>
@@ -846,7 +837,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                     <tr key={i}>
                       <th>{item.name}</th>
                       <td>{item.designation}</td>
-                      <td>{item.status}</td>
+                      <td>{item.term}</td>
                       <td>KES {item.salary.toLocaleString("en-US")}</td>
                     </tr>
                   ))}

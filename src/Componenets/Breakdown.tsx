@@ -460,8 +460,7 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                 }}
               >
                 Inccurred Cost KES {incurred.toLocaleString()} - {datecreated}{" "}
-                Submitted for approval
-                {"\u00BB"}
+                Submitted for approval {"\u00BB"}
               </a>
             </div>
           ) : (
@@ -479,7 +478,7 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                   className="action-link"
                   onClick={(e) => {
                     e.preventDefault();
-                    setActiveTab("Budget");
+                    setActiveTab("Proposed budget");
                     setBudgetId(Number(month.id));
                     handleStatus(2, "budget");
                   }}
