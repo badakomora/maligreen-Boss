@@ -210,26 +210,6 @@ const downloadButtonStyle = css`
   }
 `
 
-const warningStyle = css`
-  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-  border: 1px solid #ffeaa7;
-  border-left: 4px solid #f39c12;
-  border-radius: 8px;
-  padding: 16px 20px;
-  margin-bottom: 24px;
-  color: #856404;
-  font-size: 14px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  
-  &::before {
-    content: '⚠️';
-    margin-right: 10px;
-    font-size: 16px;
-  }
-`
-
 const salaryContainerStyle = css`
   display: flex;
   align-items: center;
