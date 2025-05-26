@@ -424,7 +424,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
         <div css={styles.headerContainer}>
           <img src="/2.png" alt="Company Logo" width="200px" height="80px" />
           <h4 css={styles.header}>
-            {activeTab === "Budget" ? (
+            {activeTab === "Budget" || activeTab === "Proposed Budget" ? (
               <>
                 {Object.entries(budgetData)
                   .slice(0, 1)
