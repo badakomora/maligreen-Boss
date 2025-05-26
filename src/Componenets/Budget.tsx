@@ -754,7 +754,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                         (total, item) => total + (Number(item.value) || 0),
                         0
                       )
-                      .toFixed(2)}
+                      .toLocaleString()}
                   </b>
                 </p>
 
