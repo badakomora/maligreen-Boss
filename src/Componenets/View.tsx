@@ -668,21 +668,11 @@ export const View: React.FC<NavbarProps & IdsProps> = ({
                   </p>
                   <p>
                     Employment Terms:{" "}
-                    {item.status === 1
-                      ? "Dismissed"
-                      : item.status === 0
-                      ? "Awaiting Confirmation"
-                      : item.status === 2
-                      ? "Permanent and Pensionable"
-                      : item.status === 3
-                      ? "Casual"
-                      : item.status === 4
-                      ? "Inter"
-                      : ""}
+                    {item.status === 0 ? "Awaiting Confirmation" : item.term}
                   </p>
 
                   <a
-                    href={`http://localhost:3001${item.cv}`}
+                    href={`${serverUrl}${item.cv}`}
                     style={{ color: "#ffffff", textDecoration: "none" }}
                     target="_blank"
                     rel="noopener noreferrer"
