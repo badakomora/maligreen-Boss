@@ -325,11 +325,12 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
             account: string;
             cost: number;
             date: string;
+            quantity: number;
           }) => {
             const entry = {
               id: item.amount,
               name: item.itemdescription,
-              value: item.cost,
+              value: item.cost * item.quantity,
               date: "",
             };
 

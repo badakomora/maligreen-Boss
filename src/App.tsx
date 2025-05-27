@@ -1,48 +1,45 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import { Navbar } from "./Componenets/Navbar";
-import { Grid } from "./Componenets/Grid";
-import { Block } from "./Componenets/Block";
-import { Budget } from "./Componenets/Budget";
-import { Form } from "./Componenets/Form";
-import { View } from "./Componenets/View";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { serverUrl } from "./AppConfig";
-import { Breakdown } from "./Componenets/Breakdown";
-import { Chart } from "./Componenets/Chart";
-import { Product } from "./Componenets/Product";
-import { Dynamics } from "./Componenets/Dynamics";
+import { css } from "@emotion/react"
+import { Navbar } from "./Componenets/Navbar"
+import { Grid } from "./Componenets/Grid"
+import { Block } from "./Componenets/Block"
+import { Budget } from "./Componenets/Budget"
+import { Form } from "./Componenets/Form"
+import { View } from "./Componenets/View"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { toast, ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+import { serverUrl } from "./AppConfig"
+import { Breakdown } from "./Componenets/Breakdown"
+import { Chart } from "./Componenets/Chart"
+import { Product } from "./Componenets/Product"
+import { Dynamics } from "./Componenets/Dynamics"
 
 // MeetingModal Component
 interface MeetingModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (dateTime: string, purpose: string) => void;
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (dateTime: string, purpose: string) => void
 }
 
 // ApproveModal Component Interface - Updated to include incurred and datecreated
 interface ApproveModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (
-    amount: number,
-    budgetAmount: number,
-    approvalDate: string
-  ) => void;
-  incurred?: number;
-  datecreated?: string;
-  activeTab?: string;
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (amount: number, budgetAmount: number, approvalDate: string) => void
+  incurred?: number
+  datecreated?: string
+  activeTab?: string
+  budgetAmount?: number | string // Add this line
 }
 
 // DeclineModal Component Interface
 interface DeclineModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (reason: string) => void;
-  activeTab?: string;
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (reason: string) => void
+  activeTab?: string
 }
 
 // Update the modalOverlayStyles with a smooth animation
@@ -68,7 +65,7 @@ const modalOverlayStyles = css`
       opacity: 1;
     }
   }
-`;
+`
 
 // Update the modalContentStyles with better styling and animation
 const modalContentStyles = css`
@@ -94,17 +91,17 @@ const modalContentStyles = css`
       opacity: 1;
     }
   }
-`;
+`
 
 // Replace the MeetingModal component with this improved version
 const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
-  const [purpose, setPurpose] = useState("");
-  const [date, setDate] = useState("");
-  const [venue, setVenue] = useState("");
-  const [note, setNote] = useState("");
+  const [purpose, setPurpose] = useState("")
+  const [date, setDate] = useState("")
+  const [venue, setVenue] = useState("")
+  const [note, setNote] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
       // Call the backend API to schedule a meeting with the correct parameter names
@@ -113,24 +110,24 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
         datescheduled: date, // Changed from 'date' to 'datescheduled' to match backend
         venue,
         note,
-      });
+      })
 
       // Reset form
-      setPurpose("");
-      setDate("");
-      setVenue("");
-      setNote("");
+      setPurpose("")
+      setDate("")
+      setVenue("")
+      setNote("")
 
-      toast.success(response.data.tab);
-      onClose();
-      onSubmit(date, purpose); // Call the onSubmit prop with the form data
+      toast.success(response.data.tab)
+      onClose()
+      onSubmit(date, purpose) // Call the onSubmit prop with the form data
     } catch (error) {
-      console.error("Error scheduling meeting:", error);
-      toast.error("Failed to schedule meeting. Please try again.");
+      console.error("Error scheduling meeting:", error)
+      toast.error("Failed to schedule meeting. Please try again.")
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   // Theme Colors
   const colors = {
@@ -140,7 +137,7 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
     border: "#e2e8f0",
     text: "#333333",
     lightGreen: "#ecf4e4",
-  };
+  }
 
   // Styles
   const styles = {
@@ -233,21 +230,19 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
         transform: translateY(-2px);
       }
     `,
-  };
+  }
 
   return (
     <div
       css={modalOverlayStyles}
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) onClose()
       }}
     >
       <div css={modalContentStyles}>
         <div css={styles.header}>
           <h1 css={styles.heading}>Schedule a Meeting</h1>
-          <p css={styles.subheading}>
-            Fill in the details to schedule your meeting
-          </p>
+          <p css={styles.subheading}>Fill in the details to schedule your meeting</p>
         </div>
         <div css={styles.container}>
           <form onSubmit={handleSubmit}>
@@ -266,13 +261,7 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
             <div css={styles.row}>
               <div css={styles.inputcontainer}>
                 <label css={styles.label}>Date</label>
-                <input
-                  css={styles.input}
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  required
-                />
+                <input css={styles.input} type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
               </div>
               <div css={styles.inputcontainer}>
                 <label css={styles.label}>Venue</label>
@@ -315,8 +304,8 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // ApproveModal Component - Fixed to properly handle incurred and datecreated
 const ApproveModal = ({
@@ -326,38 +315,43 @@ const ApproveModal = ({
   incurred = 0,
   datecreated = "",
   activeTab = "",
+  budgetAmount: propBudgetAmount = "", // Add this line
 }: ApproveModalProps) => {
-  const [amount, setAmount] = useState("");
-  const [budgetAmount, setBudgetAmount] = useState("");
-  const [approvalDate, setApprovalDate] = useState("");
+  const [amount, setAmount] = useState("")
+  const [budgetAmount, setBudgetAmount] = useState(propBudgetAmount?.toString() || "")
+  const [approvalDate, setApprovalDate] = useState("")
 
   // Set default values when modal opens
   useEffect(() => {
     if (isOpen) {
       if (incurred > 0) {
-        setAmount(incurred.toString());
+        setAmount(incurred.toString())
       }
       if (datecreated) {
-        setApprovalDate(datecreated);
+        setApprovalDate(datecreated)
+      }
+      // Add this: Set budget amount from props if available
+      if (propBudgetAmount && propBudgetAmount !== "") {
+        setBudgetAmount(propBudgetAmount.toString())
       }
     }
-  }, [isOpen, incurred, datecreated]);
+  }, [isOpen, incurred, datecreated, propBudgetAmount])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
       // Determine the type and amount based on activeTab
-      let type, finalAmount, note;
+      let type, finalAmount, note
 
       if (activeTab === "Incurred Costs") {
-        type = "Incurred Cost";
-        finalAmount = Number.parseFloat(amount || incurred.toString());
-        note = `Approved incurred cost funding - KES ${finalAmount.toLocaleString()}`;
+        type = "Incurred Cost"
+        finalAmount = Number.parseFloat(amount || incurred.toString())
+        note = `Approved incurred cost funding - KES ${finalAmount.toLocaleString()}`
       } else {
-        type = "Proposed Budget";
-        finalAmount = Number.parseFloat(budgetAmount);
-        note = `Approved budget funding - KES ${finalAmount.toLocaleString()}`;
+        type = "Proposed Budget"
+        finalAmount = Number.parseFloat(budgetAmount)
+        note = `Approved budget funding - KES ${finalAmount.toLocaleString()}`
       }
 
       // Call the newReceipt endpoint with the type
@@ -366,28 +360,24 @@ const ApproveModal = ({
         date: approvalDate,
         note: note,
         type: type,
-      });
+      })
 
-      toast.success(response.data.tab);
+      toast.success(response.data.tab)
 
       // Reset form
-      setAmount("");
-      setBudgetAmount("");
-      setApprovalDate("");
+      setAmount("")
+      setBudgetAmount("")
+      setApprovalDate("")
 
-      onClose();
-      onSubmit(
-        finalAmount,
-        Number.parseFloat(budgetAmount || "0"),
-        approvalDate
-      );
+      onClose()
+      onSubmit(finalAmount, Number.parseFloat(budgetAmount || "0"), approvalDate)
     } catch (error) {
-      console.error("Error submitting approval:", error);
-      toast.error("Failed to submit approval. Please try again.");
+      console.error("Error submitting approval:", error)
+      toast.error("Failed to submit approval. Please try again.")
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   // Theme Colors
   const colors = {
@@ -397,7 +387,7 @@ const ApproveModal = ({
     border: "#e2e8f0",
     text: "#333333",
     lightGreen: "#ecf4e4",
-  };
+  }
 
   // Styles
   const styles = {
@@ -480,13 +470,13 @@ const ApproveModal = ({
         transform: translateY(-2px);
       }
     `,
-  };
+  }
 
   return (
     <div
       css={modalOverlayStyles}
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) onClose()
       }}
     >
       <div css={modalContentStyles}>
@@ -495,12 +485,10 @@ const ApproveModal = ({
             {activeTab === "Incurred Costs"
               ? "Approve Incurred Cost"
               : activeTab === "Proposed Budget"
-              ? "Approve Budget"
-              : "Approve Request"}
+                ? "Approve Budget"
+                : "Approve Request"}
           </h1>
-          <p css={styles.subheading}>
-            Enter the approval details and funding information
-          </p>
+          <p css={styles.subheading}>Enter the approval details and funding information</p>
         </div>
         <div css={styles.container}>
           <form onSubmit={handleSubmit}>
@@ -555,57 +543,52 @@ const ApproveModal = ({
                 {activeTab === "Incurred Costs"
                   ? "Approve & Fund"
                   : activeTab === "Proposed Budget"
-                  ? "Approve Budget"
-                  : "Approve & Send"}
+                    ? "Approve Budget"
+                    : "Approve & Send"}
               </button>
             </div>
           </form>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // DeclineModal Component
-const DeclineModal = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  activeTab = "",
-}: DeclineModalProps) => {
-  const [reason, setReason] = useState("");
+const DeclineModal = ({ isOpen, onClose, onSubmit, activeTab = "" }: DeclineModalProps) => {
+  const [reason, setReason] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
       // Determine the type based on activeTab
-      let type;
+      let type
       if (activeTab === "Incurred Costs") {
-        type = "Incurred Cost";
+        type = "Incurred Cost"
       } else if (activeTab === "Proposed Budget") {
-        type = "Proposed Budget";
+        type = "Proposed Budget"
       }
 
       // Call the backend API to decline with the reason and type
       const response = await axios.post(`${serverUrl}item/decline`, {
         reason,
         type,
-      });
+      })
 
       // Reset form
-      setReason("");
+      setReason("")
 
-      toast.success(response.data.tab);
-      onClose();
-      onSubmit(reason);
+      toast.success(response.data.tab)
+      onClose()
+      onSubmit(reason)
     } catch (error) {
-      console.error("Error submitting decline:", error);
-      toast.error("Failed to submit decline. Please try again.");
+      console.error("Error submitting decline:", error)
+      toast.error("Failed to submit decline. Please try again.")
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   // Theme Colors
   const colors = {
@@ -615,7 +598,7 @@ const DeclineModal = ({
     border: "#e2e8f0",
     text: "#333333",
     lightGreen: "#ecf4e4",
-  };
+  }
 
   // Styles
   const styles = {
@@ -700,13 +683,13 @@ const DeclineModal = ({
         transform: translateY(-2px);
       }
     `,
-  };
+  }
 
   return (
     <div
       css={modalOverlayStyles}
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) onClose()
       }}
     >
       <div css={modalContentStyles}>
@@ -715,12 +698,10 @@ const DeclineModal = ({
             {activeTab === "Incurred Costs"
               ? "Decline Incurred Cost"
               : activeTab === "Proposed Budget"
-              ? "Decline Budget"
-              : "Decline Request"}
+                ? "Decline Budget"
+                : "Decline Request"}
           </h1>
-          <p css={styles.subheading}>
-            Please provide a reason for declining this request
-          </p>
+          <p css={styles.subheading}>Please provide a reason for declining this request</p>
         </div>
         <div css={styles.container}>
           <form onSubmit={handleSubmit}>
@@ -732,8 +713,8 @@ const DeclineModal = ({
                   activeTab === "Incurred Costs"
                     ? "e.g. Insufficient documentation, Amount exceeds limits"
                     : activeTab === "Proposed Budget"
-                    ? "e.g. Budget exceeds allocated limits, Requires revision"
-                    : "e.g. Budget exceeds allocated limits, Requires additional justification"
+                      ? "e.g. Budget exceeds allocated limits, Requires revision"
+                      : "e.g. Budget exceeds allocated limits, Requires additional justification"
                 }
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
@@ -749,16 +730,16 @@ const DeclineModal = ({
                 {activeTab === "Incurred Costs"
                   ? "Decline Cost"
                   : activeTab === "Proposed Budget"
-                  ? "Decline Budget"
-                  : "Decline Request"}
+                    ? "Decline Budget"
+                    : "Decline Request"}
               </button>
             </div>
           </form>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Main App Component
 const layoutStyles = css`
@@ -766,20 +747,20 @@ const layoutStyles = css`
   overflow: hidden;
   font-family: Monaco;
   width: 100%;
-`;
+`
 
 const mainContentStyles = css`
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
   background: white;
-`;
+`
 
 const headerStyles = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
+`
 
 const buttonStyles = css`
   padding: 0.5rem 1rem;
@@ -787,7 +768,7 @@ const buttonStyles = css`
   border-radius: 8px;
   cursor: pointer;
   margin: 5px;
-`;
+`
 
 const btnPrimary = css`
   ${buttonStyles}
@@ -803,7 +784,7 @@ const btnPrimary = css`
     background: #a5b99a;
     cursor: not-allowed;
   }
-`;
+`
 
 const btnSecondary = css`
   ${buttonStyles}
@@ -820,25 +801,25 @@ const btnSecondary = css`
     color: #a5b99a;
     cursor: not-allowed;
   }
-`;
+`
 
 const filtersStyles = css`
   margin-top: 10px;
   display: block;
   justify-content: space-between;
-`;
+`
 
 interface receiptsType {
-  id: number;
-  amount: number;
-  date: string;
+  id: number
+  amount: number
+  date: string
 }
 
 interface items {
-  id: number;
-  name: string;
-  status: number;
-  venue: string;
+  id: number
+  name: string
+  status: number
+  venue: string
 }
 
 const months = [
@@ -854,74 +835,75 @@ const months = [
   { value: "10", label: "October" },
   { value: "11", label: "November" },
   { value: "12", label: "December" },
-];
+]
 
 function App() {
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const { runningBalance } = Dynamics();
+  const [selectedMonth, setSelectedMonth] = useState("")
+  const { runningBalance } = Dynamics()
   const [activeTab, setActiveTab] = useState(() => {
-    return localStorage.getItem("activeTab") || "Dashboard";
-  });
-  const [invoiceId] = useState(0);
-  const [expenseId] = useState(0);
-  const [livestockId] = useState(0);
-  const [staffId, setStaffId] = useState(0);
-  const [budgetId, setBudgetId] = useState<number | string>(0);
-  const [receiptId, setreceiptId] = useState<number | string>(0);
-  const [payrollId, setPayrollId] = useState<number | string>(0);
-  const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
-  const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
+    return localStorage.getItem("activeTab") || "Dashboard"
+  })
+  const [invoiceId] = useState(0)
+  const [expenseId] = useState(0)
+  const [livestockId] = useState(0)
+  const [staffId, setStaffId] = useState(0)
+  const [budgetId, setBudgetId] = useState<number | string>(0)
+  const [receiptId, setreceiptId] = useState<number | string>(0)
+  const [payrollId, setPayrollId] = useState<number | string>(0)
+  const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false)
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false)
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false)
+  const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false)
 
-  const [budgetMonthsData, setBudgetMonthsData] = useState<items[]>([]);
-  const [totalsales, setTotalSalesData] = useState(0);
-  const [payrollmonths, setPayrollMonths] = useState<items[]>([]);
-  const [scheduledmeeting, setScheduledMeeting] = useState<items[]>([]);
+  // FIX: Added the missing budgetAmount state
+  const [budgetAmount, setBudgetAmount] = useState<number | string>("")
 
-  const [receipts, setReceiptsData] = useState<receiptsType[]>([]);
-  const [productionperiodData, setproductionPeriodData] = useState<items[]>([]);
-  const [productionId, setProductionId] = useState<string | number>(0);
-  const [incurred, setIncurred] = useState(0);
-  const [datecreated, setCreateddate] = useState("");
-  const [payrollmonth, setPayrollMonth] = useState("");
-  const [totalsalary, setTotalSalary] = useState(0);
+  const [budgetMonthsData, setBudgetMonthsData] = useState<items[]>([])
+  const [totalsales, setTotalSalesData] = useState(0)
+  const [payrollmonths, setPayrollMonths] = useState<items[]>([])
+  const [scheduledmeeting, setScheduledMeeting] = useState<items[]>([])
 
-  const [cashTotal, setCashTotal] = useState(0);
-  const [tillTotal, setTillTotal] = useState(0);
-  const [bankTotal, setBankTotal] = useState(0);
-  const [unpaidtotal, setUnpaidTotal] = useState(0);
+  const [receipts, setReceiptsData] = useState<receiptsType[]>([])
+  const [productionperiodData, setproductionPeriodData] = useState<items[]>([])
+  const [productionId, setProductionId] = useState<string | number>(0)
+  const [incurred, setIncurred] = useState(0)
+  const [datecreated, setCreateddate] = useState("")
+  const [payrollmonth, setPayrollMonth] = useState("")
+  const [totalsalary, setTotalSalary] = useState(0)
+
+  const [cashTotal, setCashTotal] = useState(0)
+  const [tillTotal, setTillTotal] = useState(0)
+  const [bankTotal, setBankTotal] = useState(0)
+  const [unpaidtotal, setUnpaidTotal] = useState(0)
 
   useEffect(() => {
-    localStorage.setItem("activeTab", activeTab);
+    localStorage.setItem("activeTab", activeTab)
     const fetchBudgetMonths = async () => {
       try {
-        const response = await axios.get(`${serverUrl}item/budgetList`);
-        const shelterList = response.data.list.map(
-          (item: { id: number; monthadded: string; status: number }) => ({
-            id: item.id,
-            name: item.monthadded,
-            status: item.status,
-          })
-        );
-        setBudgetMonthsData(shelterList);
+        const response = await axios.get(`${serverUrl}item/budgetList`)
+        const shelterList = response.data.list.map((item: { id: number; monthadded: string; status: number }) => ({
+          id: item.id,
+          name: item.monthadded,
+          status: item.status,
+        }))
+        setBudgetMonthsData(shelterList)
       } catch (error) {
-        console.error("Error fetching shelter:", error);
+        console.error("Error fetching shelter:", error)
       }
-    };
+    }
 
     const fetchmeeting = async () => {
       try {
-        const response = await axios.get(`${serverUrl}item/meeting/list`);
+        const response = await axios.get(`${serverUrl}item/meeting/list`)
         const meetingList = response.data.list.map(
           (item: {
-            id: number;
-            purpose: string;
-            datescheduled: string;
-            venue: string;
-            note: string;
-            status: number;
-            datecreated: string;
+            id: number
+            purpose: string
+            datescheduled: string
+            venue: string
+            note: string
+            status: number
+            datecreated: string
           }) => ({
             id: item.id,
             name: `${item.datescheduled} - ${item.purpose}`, // or any preferred label
@@ -929,124 +911,129 @@ function App() {
             venue: item.venue,
             note: item.note,
             datecreated: item.datecreated,
-          })
-        );
-        setScheduledMeeting(meetingList); // Rename this to setMeetingData for clarity?
+          }),
+        )
+        setScheduledMeeting(meetingList) // Rename this to setMeetingData for clarity?
       } catch (error) {
-        console.error("Error fetching meeting list:", error);
+        console.error("Error fetching meeting list:", error)
       }
-    };
+    }
+
+    const totalbudgetcost = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}budget/${budgetId}`)
+        const cost = response.data.totalCost
+        setBudgetAmount(cost || "") // FIX: Now this will work correctly
+      } catch (error) {
+        console.error("Error fetching budget total cost:", error)
+      }
+    }
 
     const productionperiod = async () => {
       try {
-        const response = await axios.get(
-          `${serverUrl}item/productionperiodlist`
-        );
-        const productionperiodList = response.data.list.map(
-          (item: { id: number; monthadded: string }) => ({
-            id: item.id,
-            name: item.monthadded,
-          })
-        );
-        setproductionPeriodData(productionperiodList);
+        const response = await axios.get(`${serverUrl}item/productionperiodlist`)
+        const productionperiodList = response.data.list.map((item: { id: number; monthadded: string }) => ({
+          id: item.id,
+          name: item.monthadded,
+        }))
+        setproductionPeriodData(productionperiodList)
       } catch (error) {
-        console.error("Error fetching production periods:", error);
+        console.error("Error fetching production periods:", error)
       }
-    };
+    }
 
     const getreceipts = async () => {
       try {
-        const response = await axios.get(`${serverUrl}item/receiptList`);
+        const response = await axios.get(`${serverUrl}item/receiptList`)
         const filteredSales = response.data.list.map(
           (
             item: {
-              id: number;
-              amount: number;
-              datesent: string;
+              id: number
+              amount: number
+              datesent: string
             },
-            i: number
+            i: number,
           ) => ({
             id: item.id,
             amount: item.amount,
             date: new Date(item.datesent).toLocaleDateString(),
-          })
-        );
+          }),
+        )
 
-        setReceiptsData(filteredSales);
+        setReceiptsData(filteredSales)
       } catch (error) {
-        console.error("Error fetching invoices:", error);
+        console.error("Error fetching invoices:", error)
       }
-    };
+    }
 
     const revenue = async () => {
       try {
-        const response = await axios.get(`${serverUrl}invoice/list`);
+        const response = await axios.get(`${serverUrl}invoice/list`)
 
-        const { chartdata, totalsales, unpaid } = response.data;
+        const { chartdata, totalsales, unpaid } = response.data
 
         // Get the latest row (most recent day)
-        const latest = chartdata?.[0] || {};
+        const latest = chartdata?.[0] || {}
 
-        setTotalSalesData(totalsales);
+        setTotalSalesData(totalsales)
 
-        setCashTotal(Number(latest.cashrevenue || 0));
-        setTillTotal(Number(latest.tillrevenue || 0));
-        setBankTotal(Number(latest.bankrevenue || 0));
-        setUnpaidTotal(Number(unpaid || 0));
+        setCashTotal(Number(latest.cashrevenue || 0))
+        setTillTotal(Number(latest.tillrevenue || 0))
+        setBankTotal(Number(latest.bankrevenue || 0))
+        setUnpaidTotal(Number(unpaid || 0))
       } catch (error) {
-        console.error("Error fetching invoice revenue breakdown:", error);
+        console.error("Error fetching invoice revenue breakdown:", error)
       }
-    };
+    }
 
     const fetchInccurredItems = async () => {
       try {
-        const { data } = await axios.get(`${serverUrl}incurredcost/list`);
-        setIncurred(data?.incurred ?? 0); // Use nullish coalescing to avoid setting 0 if incurred is 0
-        setCreateddate(data?.datecreated ?? "");
+        const { data } = await axios.get(`${serverUrl}incurredcost/list`)
+        setIncurred(data?.incurred ?? 0) // Use nullish coalescing to avoid setting 0 if incurred is 0
+        setCreateddate(data?.datecreated ?? "")
       } catch (error) {
-        console.error("Error fetching incurred costs:", error);
+        console.error("Error fetching incurred costs:", error)
       }
-    };
+    }
 
     const fetchMonths = async () => {
       try {
-        const response = await axios.get(`${serverUrl}item/PayrollList`);
-        const payrollList = response.data.map(
-          (item: { id: number; monthadded: string }) => ({
-            id: item.id,
-            name: item.monthadded,
-          })
-        );
-        setPayrollMonths(payrollList);
+        const response = await axios.get(`${serverUrl}item/PayrollList`)
+        const payrollList = response.data.map((item: { id: number; monthadded: string }) => ({
+          id: item.id,
+          name: item.monthadded,
+        }))
+        setPayrollMonths(payrollList)
       } catch (error) {
-        console.error("Error fetching payroll:", error);
+        console.error("Error fetching payroll:", error)
       }
-    };
+    }
 
     const prevpayroll = async () => {
       try {
-        const response = await axios.get(`${serverUrl}staff/list`);
-        setTotalSalary(response.data.totalsalary);
-        setPayrollMonth(response.data.monthadded);
+        const response = await axios.get(`${serverUrl}staff/list`)
+        setTotalSalary(response.data.totalsalary)
+        setPayrollMonth(response.data.monthadded)
       } catch (error) {
-        console.error("Error fetching invoices:", error);
+        console.error("Error fetching invoices:", error)
       }
-    };
-    getreceipts();
-    fetchBudgetMonths();
-    productionperiod();
-    revenue();
-    fetchInccurredItems();
-    fetchMonths();
-    prevpayroll();
-    fetchmeeting();
-  }, [activeTab, totalsales]);
+    }
+    getreceipts()
+    fetchBudgetMonths()
+    productionperiod()
+    revenue()
+    fetchInccurredItems()
+    fetchMonths()
+    prevpayroll()
+    fetchmeeting()
+    totalbudgetcost()
+  }, [activeTab, budgetId, totalsales])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-      const notificationPanel = document.querySelector(".tooltip-content");
-      const bellIcon = document.querySelector(".bell-icon");
+      const target = event.target as Node
+      const notificationPanel = document.querySelector(".tooltip-content")
+      const bellIcon = document.querySelector(".bell-icon")
 
       if (
         isNotificationOpen &&
@@ -1055,39 +1042,28 @@ function App() {
         !notificationPanel.contains(target) &&
         !bellIcon.contains(target)
       ) {
-        setIsNotificationOpen(false);
+        setIsNotificationOpen(false)
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isNotificationOpen]);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isNotificationOpen])
 
-  const getFilteredComponent = (
-    activeTab: string,
-    setActiveTab: React.Dispatch<React.SetStateAction<string>>
-  ) => {
+  const getFilteredComponent = (activeTab: string, setActiveTab: React.Dispatch<React.SetStateAction<string>>) => {
     switch (activeTab) {
       case "Dashboard":
-        return <Grid />;
+        return <Grid />
       case "Sales":
-        return <Chart activeTab={activeTab} setActiveTab={setActiveTab} />;
+        return <Chart activeTab={activeTab} setActiveTab={setActiveTab} />
       case "Expenses & Budget":
-        return (
-          <Breakdown setActiveTab={setActiveTab} setBudgetId={setBudgetId} />
-        );
+        return <Breakdown setActiveTab={setActiveTab} setBudgetId={setBudgetId} />
       case "Livestock & Production":
-        return <Product activeTab={activeTab} setActiveTab={setActiveTab} />;
+        return <Product activeTab={activeTab} setActiveTab={setActiveTab} />
       case "Staff Management":
-        return (
-          <Block
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            setStaffId={setStaffId}
-          />
-        );
+        return <Block activeTab={activeTab} setActiveTab={setActiveTab} setStaffId={setStaffId} />
       case "Profit & Loss":
       case "Budget":
       case "Sales Report":
@@ -1106,22 +1082,15 @@ function App() {
             productionId={productionId}
             payrollId={payrollId}
           />
-        );
+        )
       case "Staff Review":
-        return (
-          <View
-            activeTab={activeTab}
-            expenseId={expenseId}
-            livestockId={livestockId}
-            staffId={staffId}
-          />
-        );
+        return <View activeTab={activeTab} expenseId={expenseId} livestockId={livestockId} staffId={staffId} />
       case "Scheule a meeting":
-        return <Form activeTab={activeTab} />;
+        return <Form activeTab={activeTab} />
       default:
-        return <p>No data available</p>;
+        return <p>No data available</p>
     }
-  };
+  }
 
   return (
     <div css={layoutStyles}>
@@ -1294,15 +1263,15 @@ function App() {
                   css={btnSecondary}
                   value={selectedMonth}
                   onChange={(e) => {
-                    const selectedValue = e.target.value;
+                    const selectedValue = e.target.value
 
                     if (selectedValue === "new") {
-                      setActiveTab("Request Funding");
+                      setActiveTab("Request Funding")
                     } else if (selectedValue === "pending") {
-                      setActiveTab("Incurred Costs");
+                      setActiveTab("Incurred Costs")
                     } else {
-                      setreceiptId(selectedValue);
-                      setActiveTab("Receipt Breakdown");
+                      setreceiptId(selectedValue)
+                      setActiveTab("Receipt Breakdown")
                     }
                   }}
                 >
@@ -1310,18 +1279,14 @@ function App() {
                   <hr style={{ border: "2px dotted #ffffff" }} />
                   {receipts.map((receipt, index) => (
                     <option key={index} value={receipt.id}>
-                      Receipt KES {receipt.amount.toLocaleString("en-US")} -{" "}
-                      {receipt.date}
+                      Receipt KES {receipt.amount.toLocaleString("en-US")} - {receipt.date}
                     </option>
                   ))}
                 </select>
               </>
             ) : activeTab === "Livestock & Production" ? (
               <>
-                <span
-                  style={{ color: "#486c1b", cursor: "pointer" }}
-                  onClick={() => setActiveTab("Livestock Report")}
-                >
+                <span style={{ color: "#486c1b", cursor: "pointer" }} onClick={() => setActiveTab("Livestock Report")}>
                   <b>Livestock Report {"\u00BB"}</b>{" "}
                 </span>
               </>
@@ -1346,9 +1311,9 @@ function App() {
                   css={btnPrimary}
                   value={selectedMonth}
                   onChange={(e) => {
-                    setSelectedMonth(e.target.value);
+                    setSelectedMonth(e.target.value)
                     if (e.target.value) {
-                      setActiveTab("Sales Report");
+                      setActiveTab("Sales Report")
                     }
                   }}
                 >
@@ -1366,13 +1331,13 @@ function App() {
                   css={btnPrimary}
                   value={budgetId}
                   onChange={(e) => {
-                    const val = e.target.value;
+                    const val = e.target.value
                     if (val === "new") {
-                      setActiveTab("Create Budget");
-                      setBudgetId(val);
+                      setActiveTab("Create Budget")
+                      setBudgetId(val)
                     } else {
-                      setActiveTab("Budget");
-                      setBudgetId(Number(val));
+                      setActiveTab("Budget")
+                      setBudgetId(Number(val))
                     }
                   }}
                 >
@@ -1391,10 +1356,10 @@ function App() {
                 css={btnPrimary}
                 value={selectedMonth}
                 onChange={(e) => {
-                  setSelectedMonth(e.target.value);
+                  setSelectedMonth(e.target.value)
                   if (e.target.value) {
-                    setProductionId(e.target.value);
-                    setActiveTab("Production Report");
+                    setProductionId(e.target.value)
+                    setActiveTab("Production Report")
                   }
                 }}
               >
@@ -1405,17 +1370,16 @@ function App() {
                   </option>
                 ))}
               </select>
-            ) : activeTab === "Staff Management" ||
-              activeTab === "Payroll Report" ? (
+            ) : activeTab === "Staff Management" || activeTab === "Payroll Report" ? (
               <select
                 css={btnPrimary}
                 value={selectedMonth}
                 onChange={(e) => {
-                  const value = e.target.value;
-                  setSelectedMonth(value);
+                  const value = e.target.value
+                  setSelectedMonth(value)
                   if (value) {
-                    setPayrollId(value);
-                    setActiveTab("Payroll Report");
+                    setPayrollId(value)
+                    setActiveTab("Payroll Report")
                   }
                 }}
               >
@@ -1432,13 +1396,13 @@ function App() {
                   css={btnPrimary}
                   value={budgetId}
                   onChange={(e) => {
-                    const val = e.target.value;
+                    const val = e.target.value
                     if (val === "new") {
-                      setActiveTab("Create Budget");
-                      setBudgetId(val);
+                      setActiveTab("Create Budget")
+                      setBudgetId(val)
                     } else {
-                      setActiveTab("Budget");
-                      setBudgetId(Number(val));
+                      setActiveTab("Budget")
+                      setBudgetId(Number(val))
                     }
                   }}
                 >
@@ -1456,14 +1420,14 @@ function App() {
               <>
                 <button
                   css={btnSecondary}
-                  onClick={() => setIsApproveModalOpen(true)}
+                  onClick={() => {
+                    setIsApproveModalOpen(true)
+                    setBudgetId(budgetId)
+                  }}
                 >
                   Approve
                 </button>
-                <button
-                  css={btnPrimary}
-                  onClick={() => setIsDeclineModalOpen(true)}
-                >
+                <button css={btnPrimary} onClick={() => setIsDeclineModalOpen(true)}>
                   Decline
                 </button>
               </>
@@ -1472,10 +1436,10 @@ function App() {
                 css={btnPrimary}
                 value={selectedMonth}
                 onChange={(e) => {
-                  setSelectedMonth(e.target.value);
+                  setSelectedMonth(e.target.value)
                   if (e.target.value) {
-                    setProductionId(e.target.value);
-                    setActiveTab("Production Report");
+                    setProductionId(e.target.value)
+                    setActiveTab("Production Report")
                   }
                 }}
               >
@@ -1488,16 +1452,10 @@ function App() {
               </select>
             ) : activeTab === "Incurred Costs" ? (
               <>
-                <button
-                  css={btnPrimary}
-                  onClick={() => setIsApproveModalOpen(true)}
-                >
+                <button css={btnPrimary} onClick={() => setIsApproveModalOpen(true)}>
                   Approve
                 </button>
-                <button
-                  css={btnSecondary}
-                  onClick={() => setIsDeclineModalOpen(true)}
-                >
+                <button css={btnSecondary} onClick={() => setIsDeclineModalOpen(true)}>
                   Decline
                 </button>
               </>
@@ -1506,10 +1464,10 @@ function App() {
                 css={btnPrimary}
                 value={selectedMonth}
                 onChange={(e) => {
-                  setSelectedMonth(e.target.value);
+                  setSelectedMonth(e.target.value)
                   if (e.target.value) {
-                    setProductionId(e.target.value);
-                    setActiveTab("Production Report");
+                    setProductionId(e.target.value)
+                    setActiveTab("Production Report")
                   }
                 }}
               >
@@ -1582,9 +1540,7 @@ function App() {
                         width: 200px;
                         margin-top: 8px;
                         transition: opacity 0.2s ease-in-out;
-                        visibility: ${isNotificationOpen
-                          ? "visible"
-                          : "hidden"};
+                        visibility: ${isNotificationOpen ? "visible" : "hidden"};
                         opacity: ${isNotificationOpen ? "1" : "0"};
                         pointer-events: ${isNotificationOpen ? "auto" : "none"};
                       `}
@@ -1640,13 +1596,11 @@ function App() {
                         <p
                           key={index}
                           onClick={() => {
-                            setActiveTab("Budget");
-                            setBudgetId(Number(month.id));
+                            setActiveTab("Budget")
+                            setBudgetId(Number(month.id))
                           }}
                         >
-                          {month.status === 1
-                            ? ""
-                            : month.name + " Budget submitted for approval"}
+                          {month.status === 1 ? "" : month.name + " Budget submitted for approval"}
                         </p>
                       ))}
                     </div>
@@ -1654,10 +1608,7 @@ function App() {
                 ) : (
                   ""
                 )}
-                <button
-                  css={btnSecondary}
-                  onClick={() => setIsMeetingModalOpen(true)}
-                >
+                <button css={btnSecondary} onClick={() => setIsMeetingModalOpen(true)}>
                   Schedule a meeting
                 </button>
 
@@ -1665,9 +1616,9 @@ function App() {
                   css={btnPrimary}
                   value={selectedMonth}
                   onChange={(e) => {
-                    setSelectedMonth(e.target.value);
+                    setSelectedMonth(e.target.value)
                     if (e.target.value) {
-                      setActiveTab("Profit & Loss");
+                      setActiveTab("Profit & Loss")
                     }
                   }}
                 >
@@ -1684,42 +1635,41 @@ function App() {
         </header>
 
         {/* Filters */}
-        <div css={filtersStyles}>
-          {getFilteredComponent(activeTab, setActiveTab)}
-        </div>
+        <div css={filtersStyles}>{getFilteredComponent(activeTab, setActiveTab)}</div>
       </main>
       <MeetingModal
         isOpen={isMeetingModalOpen}
         onClose={() => {
-          setIsMeetingModalOpen(false);
+          setIsMeetingModalOpen(false)
         }}
         onSubmit={(dateTime, purpose) => {
           // The API call is now handled inside the MeetingModal component
-          setIsMeetingModalOpen(false);
+          setIsMeetingModalOpen(false)
         }}
       />
       <ApproveModal
         isOpen={isApproveModalOpen}
         onClose={() => setIsApproveModalOpen(false)}
         onSubmit={(amount, budgetAmount, approvalDate) => {
-          console.log("Approved:", { amount, budgetAmount, approvalDate });
-          setIsApproveModalOpen(false);
+          console.log("Approved:", { amount, budgetAmount, approvalDate })
+          setIsApproveModalOpen(false)
         }}
         incurred={incurred}
         datecreated={datecreated}
         activeTab={activeTab}
+        budgetAmount={budgetAmount} // Add this line
       />
       <DeclineModal
         isOpen={isDeclineModalOpen}
         onClose={() => setIsDeclineModalOpen(false)}
         onSubmit={(reason) => {
-          console.log("Declined with reason:", reason);
-          setIsDeclineModalOpen(false);
+          console.log("Declined with reason:", reason)
+          setIsDeclineModalOpen(false)
         }}
         activeTab={activeTab}
       />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
