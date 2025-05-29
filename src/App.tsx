@@ -1350,7 +1350,7 @@ function App() {
             ) : activeTab === "Staff Management" ? (
               <>
                 <span style={{ color: "#486c1b" }}>
-                  {payrollmonth} Salary:{" "}
+                  {payrollmonth ? payrollmonth : "Monthly "} Salary:{" "}
                   <b>
                     <big>KES {totalsalary.toLocaleString()}</big>
                   </b>
