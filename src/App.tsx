@@ -1588,7 +1588,14 @@ function App() {
                       `}
                       onClick={() => setIsNotificationOpen(!isNotificationOpen)}
                     >
-                      &#128276;
+                      {/* scheduledmeeting.length > 0 */}
+                      {/* incurred */}
+                      {/* budgetMonthsData */}
+                      {scheduledmeeting.length > 0 ||
+                      budgetMonthsData.length > 0 ||
+                      incurred
+                        ? "\u{1F514}"
+                        : ""}
                     </span>
 
                     <div
