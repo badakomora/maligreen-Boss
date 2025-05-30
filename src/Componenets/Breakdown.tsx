@@ -435,15 +435,22 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
   const formatCurrency = (amount: number) => {
     return `KES${amount.toLocaleString()}`;
   };
+  const statusLabels: Record<number, string> = {
+    1: "New",
+    2: "In review",
+    3: "Running Funds",
+  };
 
   return (
     <section css={breakdownStyles}>
       <div className="container">
         <div className="links-section">
-          {incurred ? (
+          {incurredstatus === 4 ? (
+            ""
+          ) : incurred ? (
             <div style={{ display: "flex" }}>
               <span className="date-badge">
-                {incurredstatus === 1 ? "New" : "In review"}
+                {statusLabels[incurredstatus] || ""}
               </span>
               <a
                 href="."
@@ -455,7 +462,14 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                 }}
               >
                 Incurred Cost KES {incurred.toLocaleString()} - {datecreated}{" "}
-                Submitted for approval {"\u00BB"}
+                {incurredstatus === 1
+                  ? "Submitted for approval"
+                  : incurredstatus === 2
+                  ? "In Review"
+                  : incurredstatus === 3
+                  ? "Approved"
+                  : ""}{" "}
+                {"\u00BB"}
               </a>
             </div>
           ) : (
