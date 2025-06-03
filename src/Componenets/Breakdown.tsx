@@ -437,9 +437,11 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
   };
   const statusLabels: Record<number, string> = {
     1: "New",
-    2: "In review",
+    2: "Opened",
     3: "Running Funds",
   };
+
+  const todayString = new Date().toISOString().split("T")[0];
 
   return (
     <section css={breakdownStyles}>
@@ -461,13 +463,14 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                   handleStatus(2, "incurred");
                 }}
               >
-                Incurred Cost KES {incurred.toLocaleString()} - {datecreated}{" "}
+                Incurred Cost {formatCurrency(incurred).toLocaleString()} -{" "}
+                {datecreated}{" "}
                 {incurredstatus === 1
-                  ? "Submitted for approval"
+                  ? " submitted for approval"
                   : incurredstatus === 2
-                  ? "In Review"
+                  ? " in Review"
                   : incurredstatus === 3
-                  ? "Approved"
+                  ? " approved"
                   : ""}{" "}
                 {"\u00BB"}
               </a>
@@ -507,7 +510,7 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
               <div className="card">
                 <div className="card-header">
                   <h4 className="section-subtitle">
-                    Today's Expense Summary{" "}
+                    {today === todayString ? "Today's" : "Last"} Expense Summary{" "}
                     <span className="date-badge">{today}</span>
                   </h4>
                 </div>
@@ -519,7 +522,9 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                     </span>
                     <span className="amount-note">
                       <span className="amount">
-                        {formatCurrency(todaysExpenses.biggestExpense)}
+                        {formatCurrency(
+                          todaysExpenses.biggestExpense
+                        ).toLocaleString()}
                       </span>
                     </span>
                   </li>
@@ -530,11 +535,13 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                     </span>
                     <span className="amount-note">
                       <span className="amount">
-                        {formatCurrency(todaysExpenses.totalExpense)}
+                        {formatCurrency(
+                          todaysExpenses.totalExpense
+                        ).toLocaleString()}
                       </span>
                     </span>
                   </li>
-                  <li className="list-item">
+                  {/* <li className="list-item">
                     <span className="item-name">Running Balance:</span>
                     <span className="amount-note">
                       <span className="amount">
@@ -549,7 +556,7 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                         {todaysExpenses.recentFunding || "N/A"}
                       </span>
                     </span>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>
@@ -567,7 +574,9 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                     <span className="item-name">Total Expense</span>
                     <span className="amount-note">
                       <span className="amount">
-                        {formatCurrency(overallExpenses.totalExpense)}
+                        {formatCurrency(
+                          overallExpenses.totalExpense
+                        ).toLocaleString()}
                       </span>
                     </span>
                   </li>
@@ -575,7 +584,9 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                     <span className="item-name">Total Funding</span>
                     <span className="amount-note">
                       <span className="amount">
-                        {formatCurrency(overallExpenses.totalFunding)}
+                        {formatCurrency(
+                          overallExpenses.totalFunding
+                        ).toLocaleString()}
                       </span>
                     </span>
                   </li>
@@ -586,7 +597,9 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                     </span>
                     <span className="amount-note">
                       <span className="amount">
-                        {formatCurrency(overallExpenses.totalRevenue)}
+                        {formatCurrency(
+                          overallExpenses.totalRevenue
+                        ).toLocaleString()}
                       </span>
                     </span>
                   </li>
@@ -594,7 +607,11 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                     <span>
                       {overallExpenses.variance >= 0 ? "Profit" : "Loss"}
                     </span>
-                    <span>{formatCurrency(overallExpenses.variance)}</span>
+                    <span>
+                      {formatCurrency(
+                        overallExpenses.variance
+                      ).toLocaleString()}
+                    </span>
                   </li>
                 </ul>
               </div>
