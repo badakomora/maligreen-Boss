@@ -342,7 +342,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
         );
 
         setReceiptsData(groupedReceipts);
-        setReceipt(response.data.receipt);
+        setReceipt(response.data.receipt || 0);
         setDate(response.data.date);
         setBalanceAfter(response.data.currentBalance);
       } catch (error) {
