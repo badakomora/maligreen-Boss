@@ -454,26 +454,28 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
               <span className="date-badge">
                 {statusLabels[incurredstatus] || ""}
               </span>
-              <a
-                href="."
-                className="action-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab("Incurred Costs");
-                  handleStatus(2, "incurred");
-                }}
-              >
-                Incurred Cost {formatCurrency(incurred).toLocaleString()} -{" "}
-                {datecreated}{" "}
-                {incurredstatus === 1
-                  ? " submitted for approval"
-                  : incurredstatus === 2
-                  ? " in Review"
-                  : incurredstatus === 3
-                  ? " approved"
-                  : ""}{" "}
-                {"\u00BB"}
-              </a>
+             <a
+  href="."
+  className="action-link"
+  onClick={(e) => {
+    e.preventDefault();
+    setActiveTab("Incurred Costs");
+    if (incurredstatus === 1) {
+      handleStatus(2, "incurred");
+    }
+  }}
+>
+  Incurred Cost {formatCurrency(incurred).toLocaleString()} - {datecreated}{" "}
+  {incurredstatus === 1
+    ? "submitted for approval"
+    : incurredstatus === 2
+    ? "in Review"
+    : incurredstatus === 3
+    ? "approved"
+    : ""}{" "}
+  &raquo;
+</a>
+
             </div>
           ) : (
             ""

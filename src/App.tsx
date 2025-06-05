@@ -1,51 +1,47 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import { Navbar } from "./Componenets/Navbar";
-import { Grid } from "./Componenets/Grid";
-import { Block } from "./Componenets/Block";
-import { Budget } from "./Componenets/Budget";
-import { Form } from "./Componenets/Form";
-import { View } from "./Componenets/View";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { serverUrl } from "./AppConfig";
-import { Breakdown } from "./Componenets/Breakdown";
-import { Chart } from "./Componenets/Chart";
-import { Product } from "./Componenets/Product";
-import { Dynamics } from "./Componenets/Dynamics";
+import { css } from "@emotion/react"
+import { Navbar } from "./Componenets/Navbar"
+import { Grid } from "./Componenets/Grid"
+import { Block } from "./Componenets/Block"
+import { Budget } from "./Componenets/Budget"
+import { Form } from "./Componenets/Form"
+import { View } from "./Componenets/View"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { toast, ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+import { serverUrl } from "./AppConfig"
+import { Breakdown } from "./Componenets/Breakdown"
+import { Chart } from "./Componenets/Chart"
+import { Product } from "./Componenets/Product"
+import { Dynamics } from "./Componenets/Dynamics"
 
 // MeetingModal Component
 interface MeetingModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (dateTime: string, purpose: string) => void;
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (dateTime: string, purpose: string) => void
 }
 
 // ApproveModal Component Interface - Updated to include incurred and datecreated
 interface ApproveModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (
-    amount: number,
-    budgetAmount: number,
-    approvalDate: string
-  ) => void;
-  incurred?: number;
-  datecreated?: string;
-  activeTab?: string;
-  budgetAmount?: number | string; // Add this line
-  refreshData?: () => Promise<void>; // Add this line
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (amount: number, budgetAmount: number, approvalDate: string) => void
+  incurred?: number
+  datecreated?: string
+  activeTab?: string
+  budgetAmount?: number | string // Add this line
+  refreshData?: () => Promise<void> // Add this line
 }
 
 // DeclineModal Component Interface
 interface DeclineModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (reason: string) => void;
-  activeTab?: string;
-  refreshData?: () => Promise<void>; // Add this line
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (reason: string) => void
+  activeTab?: string
+  refreshData?: () => Promise<void> // Add this line
 }
 
 // Update the modalOverlayStyles with a smooth animation
@@ -71,7 +67,7 @@ const modalOverlayStyles = css`
       opacity: 1;
     }
   }
-`;
+`
 
 // Update the modalContentStyles with better styling and animation
 const modalContentStyles = css`
@@ -97,17 +93,17 @@ const modalContentStyles = css`
       opacity: 1;
     }
   }
-`;
+`
 
 // Replace the MeetingModal component with this improved version
 const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
-  const [purpose, setPurpose] = useState("");
-  const [date, setDate] = useState("");
-  const [venue, setVenue] = useState("");
-  const [note, setNote] = useState("");
+  const [purpose, setPurpose] = useState("")
+  const [date, setDate] = useState("")
+  const [venue, setVenue] = useState("")
+  const [note, setNote] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
       // Call the backend API to schedule a meeting with the correct parameter names
@@ -116,24 +112,24 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
         datescheduled: date, // Changed from 'date' to 'datescheduled' to match backend
         venue,
         note,
-      });
+      })
 
       // Reset form
-      setPurpose("");
-      setDate("");
-      setVenue("");
-      setNote("");
+      setPurpose("")
+      setDate("")
+      setVenue("")
+      setNote("")
 
-      toast.success(response.data.tab);
-      onClose();
-      onSubmit(date, purpose); // Call the onSubmit prop with the form data
+      toast.success(response.data.tab)
+      onClose()
+      onSubmit(date, purpose) // Call the onSubmit prop with the form data
     } catch (error) {
-      console.error("Error scheduling meeting:", error);
-      toast.error("Failed to schedule meeting. Please try again.");
+      console.error("Error scheduling meeting:", error)
+      toast.error("Failed to schedule meeting. Please try again.")
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   // Theme Colors
   const colors = {
@@ -143,7 +139,7 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
     border: "#e2e8f0",
     text: "#333333",
     lightGreen: "#ecf4e4",
-  };
+  }
 
   // Styles
   const styles = {
@@ -236,21 +232,19 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
         transform: translateY(-2px);
       }
     `,
-  };
+  }
 
   return (
     <div
       css={modalOverlayStyles}
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) onClose()
       }}
     >
       <div css={modalContentStyles}>
         <div css={styles.header}>
           <h1 css={styles.heading}>Schedule a Meeting</h1>
-          <p css={styles.subheading}>
-            Fill in the details to schedule your meeting
-          </p>
+          <p css={styles.subheading}>Fill in the details to schedule your meeting</p>
         </div>
         <div css={styles.container}>
           <form onSubmit={handleSubmit}>
@@ -269,13 +263,7 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
             <div css={styles.row}>
               <div css={styles.inputcontainer}>
                 <label css={styles.label}>Date</label>
-                <input
-                  css={styles.input}
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  required
-                />
+                <input css={styles.input} type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
               </div>
               <div css={styles.inputcontainer}>
                 <label css={styles.label}>Venue</label>
@@ -318,8 +306,8 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // ApproveModal Component - Fixed to properly handle incurred and datecreated
 const ApproveModal = ({
@@ -332,43 +320,41 @@ const ApproveModal = ({
   budgetAmount: propBudgetAmount = "", // Add this line
   refreshData, // Add this line
 }: ApproveModalProps) => {
-  const [amount, setAmount] = useState("");
-  const [budgetAmount, setBudgetAmount] = useState(
-    propBudgetAmount?.toString() || ""
-  );
-  const [approvalDate, setApprovalDate] = useState("");
+  const [amount, setAmount] = useState("")
+  const [budgetAmount, setBudgetAmount] = useState(propBudgetAmount?.toString() || "")
+  const [approvalDate, setApprovalDate] = useState("")
 
   // Set default values when modal opens
   useEffect(() => {
     if (isOpen) {
       if (incurred > 0) {
-        setAmount(incurred.toString());
+        setAmount(incurred.toString())
       }
       if (datecreated) {
-        setApprovalDate(datecreated);
+        setApprovalDate(datecreated)
       }
       // Add this: Set budget amount from props if available
       if (propBudgetAmount && propBudgetAmount !== "") {
-        setBudgetAmount(propBudgetAmount.toString());
+        setBudgetAmount(propBudgetAmount.toString())
       }
     }
-  }, [isOpen, incurred, datecreated, propBudgetAmount]);
+  }, [isOpen, incurred, datecreated, propBudgetAmount])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
       // Determine the type and amount based on activeTab
-      let type, finalAmount, note;
+      let type, finalAmount, note
 
       if (activeTab === "Incurred Costs") {
-        type = "Incurred Cost";
-        finalAmount = Number.parseFloat(amount || incurred.toString());
-        note = `Approved incurred cost funding - KES ${finalAmount.toLocaleString()}`;
+        type = "Incurred Cost"
+        finalAmount = Number.parseFloat(amount || incurred.toString())
+        note = `Approved incurred cost funding - KES ${finalAmount.toLocaleString()}`
       } else {
-        type = "Proposed Budget";
-        finalAmount = Number.parseFloat(budgetAmount);
-        note = `Approved budget funding - KES ${finalAmount.toLocaleString()}`;
+        type = "Proposed Budget"
+        finalAmount = Number.parseFloat(budgetAmount)
+        note = `Approved budget funding - KES ${finalAmount.toLocaleString()}`
       }
 
       // Call the newReceipt endpoint with the type
@@ -377,34 +363,30 @@ const ApproveModal = ({
         date: approvalDate,
         note: note,
         type: type,
-      });
+      })
 
-      toast.success(response.data.tab);
+      toast.success(response.data.tab)
 
       // Reset form
-      setAmount("");
-      setBudgetAmount("");
-      setApprovalDate("");
+      setAmount("")
+      setBudgetAmount("")
+      setApprovalDate("")
 
-      onClose();
-      onSubmit(
-        finalAmount,
-        Number.parseFloat(budgetAmount || "0"),
-        approvalDate
-      );
+      onClose()
+      onSubmit(finalAmount, Number.parseFloat(budgetAmount || "0"), approvalDate)
 
       // After toast.success(response.data.tab); and before onClose();
       // Add data refresh
       if (refreshData) {
-        await refreshData();
+        await refreshData()
       }
     } catch (error) {
-      console.error("Error submitting approval:", error);
-      toast.error("Failed to submit approval. Please try again.");
+      console.error("Error submitting approval:", error)
+      toast.error("Failed to submit approval. Please try again.")
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   // Theme Colors
   const colors = {
@@ -414,7 +396,7 @@ const ApproveModal = ({
     border: "#e2e8f0",
     text: "#333333",
     lightGreen: "#ecf4e4",
-  };
+  }
 
   // Styles
   const styles = {
@@ -497,13 +479,13 @@ const ApproveModal = ({
         transform: translateY(-2px);
       }
     `,
-  };
+  }
 
   return (
     <div
       css={modalOverlayStyles}
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) onClose()
       }}
     >
       <div css={modalContentStyles}>
@@ -512,12 +494,10 @@ const ApproveModal = ({
             {activeTab === "Incurred Costs"
               ? "Approve Incurred Cost"
               : activeTab === "Proposed Budget"
-              ? "Approve Budget"
-              : "Approve Request"}
+                ? "Approve Budget"
+                : "Approve Request"}
           </h1>
-          <p css={styles.subheading}>
-            Enter the approval details and funding information
-          </p>
+          <p css={styles.subheading}>Enter the approval details and funding information</p>
         </div>
         <div css={styles.container}>
           <form onSubmit={handleSubmit}>
@@ -572,16 +552,16 @@ const ApproveModal = ({
                 {activeTab === "Incurred Costs"
                   ? "Approve & Fund"
                   : activeTab === "Proposed Budget"
-                  ? "Approve Budget"
-                  : "Approve & Send"}
+                    ? "Approve Budget"
+                    : "Approve & Send"}
               </button>
             </div>
           </form>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // DeclineModal Component
 const DeclineModal = ({
@@ -591,45 +571,45 @@ const DeclineModal = ({
   activeTab = "",
   refreshData, // Add this line
 }: DeclineModalProps) => {
-  const [reason, setReason] = useState("");
+  const [reason, setReason] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
       // Determine the type based on activeTab
-      let type;
+      let type
       if (activeTab === "Incurred Costs") {
-        type = "Incurred Cost";
+        type = "Incurred Cost"
       } else if (activeTab === "Proposed Budget") {
-        type = "Proposed Budget";
+        type = "Proposed Budget"
       }
 
       // Call the backend API to decline with the reason and type
       const response = await axios.post(`${serverUrl}item/decline`, {
         reason,
         type,
-      });
+      })
 
       // Reset form
-      setReason("");
+      setReason("")
 
-      toast.success(response.data.tab);
-      onClose();
-      onSubmit(reason);
+      toast.success(response.data.tab)
+      onClose()
+      onSubmit(reason)
 
       // After toast.success(response.data.tab); and before onClose();
       // Add data refresh
       if (refreshData) {
-        await refreshData();
+        await refreshData()
       }
     } catch (error) {
-      console.error("Error submitting decline:", error);
-      toast.error("Failed to submit decline. Please try again.");
+      console.error("Error submitting decline:", error)
+      toast.error("Failed to submit decline. Please try again.")
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   // Theme Colors
   const colors = {
@@ -639,7 +619,7 @@ const DeclineModal = ({
     border: "#e2e8f0",
     text: "#333333",
     lightGreen: "#ecf4e4",
-  };
+  }
 
   // Styles
   const styles = {
@@ -724,13 +704,13 @@ const DeclineModal = ({
         transform: translateY(-2px);
       }
     `,
-  };
+  }
 
   return (
     <div
       css={modalOverlayStyles}
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) onClose()
       }}
     >
       <div css={modalContentStyles}>
@@ -739,12 +719,10 @@ const DeclineModal = ({
             {activeTab === "Incurred Costs"
               ? "Decline Incurred Cost"
               : activeTab === "Proposed Budget"
-              ? "Decline Budget"
-              : "Decline Request"}
+                ? "Decline Budget"
+                : "Decline Request"}
           </h1>
-          <p css={styles.subheading}>
-            Please provide a reason for declining this request
-          </p>
+          <p css={styles.subheading}>Please provide a reason for declining this request</p>
         </div>
         <div css={styles.container}>
           <form onSubmit={handleSubmit}>
@@ -756,8 +734,8 @@ const DeclineModal = ({
                   activeTab === "Incurred Costs"
                     ? "e.g. Insufficient documentation, Amount exceeds limits"
                     : activeTab === "Proposed Budget"
-                    ? "e.g. Budget exceeds allocated limits, Requires revision"
-                    : "e.g. Budget exceeds allocated limits, Requires additional justification"
+                      ? "e.g. Budget exceeds allocated limits, Requires revision"
+                      : "e.g. Budget exceeds allocated limits, Requires additional justification"
                 }
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
@@ -773,16 +751,16 @@ const DeclineModal = ({
                 {activeTab === "Incurred Costs"
                   ? "Decline Cost"
                   : activeTab === "Proposed Budget"
-                  ? "Decline Budget"
-                  : "Decline Request"}
+                    ? "Decline Budget"
+                    : "Decline Request"}
               </button>
             </div>
           </form>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Main App Component
 const layoutStyles = css`
@@ -790,20 +768,20 @@ const layoutStyles = css`
   overflow: hidden;
   font-family: Monaco;
   width: 100%;
-`;
+`
 
 const mainContentStyles = css`
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
   background: white;
-`;
+`
 
 const headerStyles = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
+`
 
 const buttonStyles = css`
   padding: 0.5rem 1rem;
@@ -811,7 +789,7 @@ const buttonStyles = css`
   border-radius: 8px;
   cursor: pointer;
   margin: 5px;
-`;
+`
 
 const btnPrimary = css`
   ${buttonStyles}
@@ -827,7 +805,7 @@ const btnPrimary = css`
     background: #a5b99a;
     cursor: not-allowed;
   }
-`;
+`
 
 const btnSecondary = css`
   ${buttonStyles}
@@ -844,25 +822,25 @@ const btnSecondary = css`
     color: #a5b99a;
     cursor: not-allowed;
   }
-`;
+`
 
 const filtersStyles = css`
   margin-top: 10px;
   display: block;
   justify-content: space-between;
-`;
+`
 
 interface receiptsType {
-  id: number;
-  amount: number;
-  date: string;
+  id: number
+  amount: number
+  date: string
 }
 
 interface items {
-  id: number;
-  name: string;
-  status: number;
-  venue: string;
+  id: number
+  name: string
+  status: number
+  venue: string
 }
 
 const months = [
@@ -878,8 +856,7 @@ const months = [
   { value: "10", label: "October" },
   { value: "11", label: "November" },
   { value: "12", label: "December" },
-];
-
+]
 
 export default function App() {
   const [selectedMonth, setSelectedMonth] = useState("")
