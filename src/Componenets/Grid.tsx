@@ -31,7 +31,7 @@ const globalStyles = css`
     display: grid;
     grid-template-columns: 2fr 2fr 1fr 1fr;
     grid-template-rows: 2fr 1fr;
-    box-shadow: 0px 0px 10px -6px #ffffff;
+    box-shadow: 0px 0px 10px -6px #9ecc46;
   }
 
   .section {
@@ -57,7 +57,7 @@ const globalStyles = css`
   }
 
   .special3 b {
-    color: #2a61ae;
+    color: #2d5110;
     font-weight: bold;
     font-size: 1.2rem;
   }
@@ -163,7 +163,7 @@ export const Grid = () => {
             <header className="special3">
               <span>Today's Sales</span>
               <span>
-                <b>KES</b> {salescount} {salesdrop ? "\u2193" : "\u2191"}
+                <b style={{color:"#2a61ae"}}>KES</b> {salescount} {salesdrop ? "\u2193" : "\u2191"}
               </span>
             </header>
           </section>

@@ -8,9 +8,9 @@ import { toast } from "react-toastify";
 import { Dynamics } from "./Dynamics";
 
 const breakdownStyles = css`
-  --primary-color: #486c1b;
-  --primary-bg: #f0f4eb;
-  --text-color: #486c1b;
+  --primary-color: #2a61ae;
+  --primary-bg: #9ecc46;
+  --text-color: #2a61ae;
   --text-light: #666666;
   --border-color: #d0d0d0;
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -131,8 +131,8 @@ const breakdownStyles = css`
   .card-header {
     margin-bottom: 15px;
     padding: 16px 20px;
-    border-bottom: 2px solid #486c1b;
-    color: #486c1b;
+    border-bottom: 2px solid #2a61ae;
+    color: #2a61ae;
     background-color: rgba(72, 108, 27, 0.05);
   }
 
@@ -173,10 +173,6 @@ const breakdownStyles = css`
     .note {
       color: rgba(255, 255, 255, 0.9) !important;
       font-weight: 500;
-    }
-
-    &:hover {
-      background-color: #3d5c17;
     }
   }
 
@@ -454,28 +450,28 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
               <span className="date-badge">
                 {statusLabels[incurredstatus] || ""}
               </span>
-             <a
-  href="."
-  className="action-link"
-  onClick={(e) => {
-    e.preventDefault();
-    setActiveTab("Incurred Costs");
-    if (incurredstatus === 1) {
-      handleStatus(2, "incurred");
-    }
-  }}
->
-  Incurred Cost {formatCurrency(incurred).toLocaleString()} - {datecreated}{" "}
-  {incurredstatus === 1
-    ? "submitted for approval"
-    : incurredstatus === 2
-    ? "in Review"
-    : incurredstatus === 3
-    ? "approved"
-    : ""}{" "}
-  &raquo;
-</a>
-
+              <a
+                href="."
+                className="action-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveTab("Incurred Costs");
+                  if (incurredstatus === 1) {
+                    handleStatus(2, "incurred");
+                  }
+                }}
+              >
+                Incurred Cost {formatCurrency(incurred).toLocaleString()} -{" "}
+                {datecreated}{" "}
+                {incurredstatus === 1
+                  ? "submitted for approval"
+                  : incurredstatus === 2
+                  ? "in Review"
+                  : incurredstatus === 3
+                  ? "approved"
+                  : ""}{" "}
+                &raquo;
+              </a>
             </div>
           ) : (
             ""

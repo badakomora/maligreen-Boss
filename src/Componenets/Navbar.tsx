@@ -6,6 +6,7 @@ const sidebarStyles = css`
   color: #2a61ae;
   width: 250px;
   padding: 1rem;
+  margin-top:20px;
 
   nav {
     margin-top: 50px;

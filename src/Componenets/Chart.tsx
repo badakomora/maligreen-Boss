@@ -68,7 +68,7 @@ const chartStyles = css`
 
   .chart-title {
     font-family: inherit;
-    color: #486c1b;
+    color: #2a61ae;
     font-size: 1.4em;
     font-weight: 700;
     margin-top: 0;
@@ -83,7 +83,7 @@ const chartStyles = css`
     border-radius: 10px;
     padding: 16px;
     margin-bottom: 24px;
-    border-left: 4px solid #486c1b;
+    border-left: 4px solid #2a61ae;
     transition: all 0.2s ease;
   }
 
@@ -94,7 +94,7 @@ const chartStyles = css`
   }
 
   .livestock-count p {
-    color: #486c1b;
+    color: #2a61ae;
     font-size: 1em;
     margin: 0;
     font-weight: 600;
@@ -126,7 +126,7 @@ const chartStyles = css`
 
   .date-field label {
     display: block;
-    color: #486c1b;
+    color: #2a61ae;
     font-weight: 600;
     font-size: 0.9em;
     margin-bottom: 4px;
@@ -146,12 +146,12 @@ const chartStyles = css`
 
   .date-input:focus {
     outline: none;
-    border-color: #486c1b;
+    border-color: #2a61ae;
     box-shadow: 0 0 0 3px rgba(72, 108, 27, 0.15);
   }
 
   .date-input:hover {
-    border-color: #486c1b;
+    border-color: #2a61ae;
   }
 
   .chart {
@@ -538,7 +538,7 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                     value: "Livestock Count",
                     angle: -90,
                     position: "insideRight",
-                    style: { fill: "#486c1b", textAnchor: "middle" },
+                    style: { fill: "#2a61ae", textAnchor: "middle" },
                   }}
                 />
                 <Tooltip
@@ -566,13 +566,13 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                   type="monotone"
                   dataKey="livestock"
                   name="Livestock (count)"
-                  stroke="#486c1b"
+                  stroke="#2a61ae"
                   strokeWidth={3}
                   yAxisId="right"
-                  dot={{ r: 4, fill: "#486c1b", strokeWidth: 1 }}
+                  dot={{ r: 4, fill: "#2a61ae", strokeWidth: 1 }}
                   activeDot={{
                     r: 7,
-                    fill: "#486c1b",
+                    fill: "#2a61ae",
                     stroke: "#fff",
                     strokeWidth: 2,
                   }}
@@ -581,13 +581,13 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                   type="monotone"
                   dataKey="production"
                   name="Total Production (Litres)"
-                  stroke="#8884d8"
+                  stroke="#9ecc46"
                   strokeWidth={3}
                   yAxisId="left"
-                  dot={{ r: 4, fill: "#8884d8", strokeWidth: 1 }}
+                  dot={{ r: 4, fill: "#9ecc46", strokeWidth: 1 }}
                   activeDot={{
                     r: 7,
-                    fill: "#8884d8",
+                    fill: "#9ecc46",
                     stroke: "#fff",
                     strokeWidth: 2,
                   }}
@@ -655,12 +655,12 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                   type="monotone"
                   dataKey="cashRevenue"
                   name="Cash Revenue"
-                  stroke="#486c1b"
+                  stroke="#2a61ae"
                   strokeWidth={3}
-                  dot={{ r: 4, fill: "#486c1b", strokeWidth: 1 }}
+                  dot={{ r: 4, fill: "#2a61ae", strokeWidth: 1 }}
                   activeDot={{
                     r: 7,
-                    fill: "#486c1b",
+                    fill: "#2a61ae",
                     stroke: "#fff",
                     strokeWidth: 2,
                   }}

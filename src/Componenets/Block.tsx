@@ -33,7 +33,7 @@ const modalHeaderStyle = css`
   margin-bottom: 1.5rem;
 
   h3 {
-    color: #486c1b;
+    color: #2a61ae;
     font-size: 1.5rem;
     margin: 0 0 0.5rem 0;
   }
@@ -51,7 +51,7 @@ const formGroupStyle = css`
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    color: #486c1b;
+    color: #2a61ae;
   }
 
   input,
@@ -65,7 +65,7 @@ const formGroupStyle = css`
 
     &:focus {
       outline: none;
-      border-color: #486c1b;
+      border-color: #2a61ae;
     }
   }
 `;
@@ -86,7 +86,7 @@ const buttonStyle = (isPrimary: boolean) => css`
   cursor: pointer;
   transition: background-color 0.2s;
 
-  background-color: ${isPrimary ? "#486c1b" : "#f5f5f5"};
+  background-color: ${isPrimary ? "#2a61ae" : "#f5f5f5"};
   color: ${isPrimary ? "white" : "#333"};
 
   &:hover {
@@ -108,7 +108,7 @@ const panelStyle = css`
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 
   h4 {
-    color: #486c1b;
+    color: #2a61ae;
     font-size: 1.4rem;
     font-weight: 600;
     margin-bottom: 1rem;
@@ -137,7 +137,7 @@ const userListStyle = css`
       content: "";
       width: 4px;
       height: 70%;
-      background-color: #486c1b;
+      background-color: #2a61ae;
       position: absolute;
       left: 0;
       border-radius: 20px;
@@ -154,19 +154,19 @@ const userListStyle = css`
     h5 {
       margin: 0;
       font-size: 1.2rem;
-      color: #486c1b;
+      color: #2a61ae;
       font-weight: 700;
     }
 
     p {
       margin: 3px 0;
-      color: #486c1b;
+      color: #2a61ae;
       font-size: 0.95rem;
     }
 
     .designation {
       font-style: italic;
-      color: #486c1b;
+      color: #2a61ae;
       display: inline-block;
       font-size: 0.85rem;
     }
@@ -175,7 +175,7 @@ const userListStyle = css`
       font-weight: 700;
       display: inline-block;
       margin-top: 0.3rem;
-      color: #486c1b;
+      color: #2a61ae;
     }
 
     .action-wrap {
@@ -186,14 +186,14 @@ const userListStyle = css`
 
       p {
         font-size: 0.85rem;
-        color: #486c1b;
+        color: #2a61ae;
         line-height: 1.4;
       }
 
       hr {
         border: none;
         height: 30px;
-        border-left: 1px solid #486c1b;
+        border-left: 1px solid #2a61ae;
         opacity: 0.3;
       }
     }
@@ -220,7 +220,7 @@ const statusBadgeStyle = (status: number) => css`
   color: ${status === 1
     ? "#ff6347"
     : status === 2
-    ? "#486c1b"
+    ? "#2a61ae"
     : status === 3
     ? "#4169e1"
     : status === 4
@@ -232,7 +232,7 @@ const statusBadgeStyle = (status: number) => css`
 
 const dropdownStyles = css`
   text-align: left;
-  color: #486c1b;
+  color: #2a61ae;
   position: relative;
   z-index: 2;
 
@@ -263,11 +263,11 @@ const dropdownStyles = css`
     border-bottom: 1px solid #eee;
     text-align: left;
     text-decoration: none;
-    color: #486c1b;
+    color: #2a61ae;
     font-size: 0.9rem;
 
     &:hover {
-      background: #486c1b;
+      background: #2a61ae;
       color: #ffffff;
     }
   }
@@ -505,7 +505,7 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                   <span
                     style={{
                       fontSize: "0.8rem",
-                      border: "1px solid #486c1b",
+                      border: "1px solid #2a61ae",
                       padding: "0.3rem 0.6rem",
                       borderRadius: "12px",
                     }}

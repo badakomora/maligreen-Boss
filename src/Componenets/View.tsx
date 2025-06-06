@@ -44,7 +44,7 @@ const whiteInputStyle = css`
   font: inherit;
   padding: 0;
   cursor: text;
-  color: #486c1b;
+  color: #2a61ae;
   overflow: visible;
   text-overflow: clip;
   white-space: normal;
@@ -590,7 +590,7 @@ export const View: React.FC<NavbarProps & IdsProps> = ({
       {activeTab === "Staff Review"
         ? staffData.map((item, index) => (
             <div key={index} css={containerStyle}>
-              <div css={columnStyle("#486c1b")}>
+              <div css={columnStyle("#2a61ae")}>
                 <div style={{ color: "#ffffff" }}>
                   <p>
                     Name:{" "}
@@ -627,7 +627,7 @@ export const View: React.FC<NavbarProps & IdsProps> = ({
                 </div>
               </div>
               <div css={columnStyle("#ffffff")}>
-                <div style={{ color: "#486c1b" }}>
+                <div style={{ color: "#2a61ae" }}>
                   <p>
                     Designation: <b>{item.designation}</b>,
                     <b> {item.department}</b>
@@ -648,7 +648,7 @@ export const View: React.FC<NavbarProps & IdsProps> = ({
                   <button
                     onClick={() => setIsRaiseModalOpen(true)}
                     style={{
-                      background: "#486c1b",
+                      background: "#2a61ae",
                       color: "white",
                       border: "none",
                       padding: "8px 16px",
@@ -661,7 +661,7 @@ export const View: React.FC<NavbarProps & IdsProps> = ({
                   </button>
                 </div>
               </div>
-              <div css={columnStyle("#486c1b")}>
+              <div css={columnStyle("#2a61ae")}>
                 <div style={{ color: "#ffffff" }}>
                   <p>
                     Started work on: <b>{item.date}</b>

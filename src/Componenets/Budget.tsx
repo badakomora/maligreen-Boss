@@ -13,7 +13,7 @@ const styles = {
     margin: auto;
   `,
   section: css`
-    border: 2px solid #486c1b;
+    border: 2px solid #2a61ae;
     background: #ffffff;
     padding: 2rem;
     border-radius: 8px;
@@ -42,13 +42,13 @@ const styles = {
   `,
   spanFirst: css`
     font-size: 1em;
-    color: #486c1b;
+    color: #2a61ae;
     display: block;
     margin-bottom: 0.5rem;
   `,
   spanLast: css`
     font-size: 1.6em;
-    color: #486c1b;
+    color: #2a61ae;
     display: block;
     font-weight: 800;
   `,
@@ -60,7 +60,7 @@ const styles = {
   `,
 
   caption: css`
-    color: #486c1b;
+    color: #2a61ae;
     text-align: left;
     padding: 0.5rem 0;
   `,
@@ -68,10 +68,10 @@ const styles = {
     width: 100%;
     border-collapse: collapse;
     background: #ffffff;
-    color: #486c1b;
+    color: #2a61ae;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0px 0px 10px -6px #486c1b;
+    box-shadow: 0px 0px 10px -6px #2a61ae;
     margin-top: 4px;
 
     th,
@@ -88,7 +88,7 @@ const styles = {
     td a {
       padding: 0.4rem;
       text-align: left;
-      color: #486c1b;
+      color: #2a61ae;
       &:hover {
         color: #ffffff;
         text-decoration: underline;
@@ -96,13 +96,13 @@ const styles = {
     }
 
     thead {
-      background: #486c1b;
+      background: #2a61ae;
       color: #ffffff;
       border-bottom: 2px solid #ffffff;
     }
 
     tr {
-      border-bottom: 1px solid #486c1b;
+      border-bottom: 1px solid #2a61ae;
       font-weight: none;
     }
   `,
@@ -111,7 +111,7 @@ const styles = {
     font-size: 1.05rem;
     display: flex;
     justify-content: space-between;
-    color: #486c1b;
+    color: #2a61ae;
 
     b {
       font-weight: 700;
@@ -119,7 +119,7 @@ const styles = {
     }
   `,
   summaryContainer: css`
-    color: #486c1b;
+    color: #2a61ae;
     padding: 1.5rem;
     border-radius: 8px;
     margin-top: 1.5rem;
@@ -423,7 +423,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
     <main css={styles.container}>
       <section css={styles.section}>
         <div css={styles.headerContainer}>
-          <img src="/2.png" alt="Company Logo" width="200px" height="80px" />
+          <img src="/logo.png" alt="Company Logo" width="200px" height="80px" />
           <h4 css={styles.header}>
             {activeTab === "Budget" || activeTab === "Proposed Budget" ? (
               <>
@@ -449,7 +449,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                     display: "flex",
                     gap: "0.5rem",
                     alignItems: "center",
-                    color: "#486c1b",
+                    color: "#2a61ae",
                   }}
                 >
                   Ref.
@@ -470,7 +470,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                     display: "flex",
                     gap: "0.5rem",
                     alignItems: "center",
-                    color: "#486c1b",
+                    color: "#2a61ae",
                   }}
                 >
                   Ref.
@@ -498,7 +498,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
               <>
                 <span
                   style={{
-                    color: "#486c1b",
+                    color: "#2a61ae",
                     display: "block",
                   }}
                 >
@@ -506,7 +506,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                 </span>
                 <span
                   style={{
-                    color: "#486c1b",
+                    color: "#2a61ae",
                     display: "block",
                     fontWeight: "800",
                   }}
@@ -586,7 +586,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
 
               <div css={styles.summaryContainer}>
                 <h2>Receipt Summary</h2>
-                <hr style={{ border: "1px dotted #486c1b" }} />
+                <hr style={{ border: "1px dotted #2a61ae" }} />
                 <p css={styles.summaryText}>
                   <span>Receipt Funding:</span>
                   <b>KES {Number(receipt).toLocaleString()}</b>
@@ -628,7 +628,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                   </b>
                 </p>
 
-                <hr style={{ border: "1px dotted #486c1b" }} />
+                <hr style={{ border: "1px dotted #2a61ae" }} />
               </div>
             </>
           ) : activeTab === "Incurred Costs" ? (
@@ -655,7 +655,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
 
               <div css={styles.summaryContainer}>
                 <h2>Summary</h2>
-                <hr style={{ border: "1px dotted #486c1b" }} />
+                <hr style={{ border: "1px dotted #2a61ae" }} />
 
                 <p css={styles.summaryText}>
                   <span>Total Incurred Costs:</span>
@@ -673,7 +673,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                   <b>KES {runningBalance.toLocaleString()}</b>
                 </p>
 
-                <hr style={{ border: "1px dotted #486c1b" }} />
+                <hr style={{ border: "1px dotted #2a61ae" }} />
               </div>
             </>
           ) : activeTab === "Production Report" ? (
@@ -701,7 +701,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                 </tbody>
               </table>
               <div css={styles.summaryContainer}>
-                <hr style={{ border: "1px dotted #486c1b" }} />
+                <hr style={{ border: "1px dotted #2a61ae" }} />
                 <p css={styles.summaryText}>
                   <span>Total Morning Production:</span>
                   <b>{totals.morning} Litres</b>
@@ -717,7 +717,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                   <b>{totals.overall} Litres</b>
                 </p>
 
-                <hr style={{ border: "1px dotted #486c1b" }} />
+                <hr style={{ border: "1px dotted #2a61ae" }} />
               </div>
             </>
           ) : activeTab === "Budget" || activeTab === "Proposed Budget" ? (
@@ -744,7 +744,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
 
               <div css={styles.summaryContainer}>
                 <h2>Budget Summary</h2>
-                <hr style={{ border: "1px dotted #486c1b" }} />
+                <hr style={{ border: "1px dotted #2a61ae" }} />
                 <p css={styles.summaryText}>
                   <span>Total Budget:</span>
                   <b>
@@ -764,7 +764,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                   <b>KES {runningBalance.toFixed(2)}</b>
                 </p> */}
 
-                <hr style={{ border: "1px dotted #486c1b" }} />
+                <hr style={{ border: "1px dotted #2a61ae" }} />
               </div>
             </>
           ) : activeTab === "Invoice Details" || activeTab === "Credit Note" ? (
@@ -798,7 +798,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
               </table>
               <div css={styles.summaryContainer}>
                 <h2>Receipt Summary</h2>
-                <hr style={{ border: "1px dotted #486c1b" }} />
+                <hr style={{ border: "1px dotted #2a61ae" }} />
                 <p css={styles.summaryText}>
                   <span>Payment Method</span>
                   <b>Buy Goods</b>
@@ -819,7 +819,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                   <b>KES 503,587</b>
                 </p>
 
-                <hr style={{ border: "1px dotted #486c1b" }} />
+                <hr style={{ border: "1px dotted #2a61ae" }} />
               </div>
             </>
           ) : (
@@ -847,12 +847,12 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
 
               <div css={styles.summaryContainer}>
                 <h2>Payroll Summary</h2>
-                <hr style={{ border: "1px dotted #486c1b" }} />
+                <hr style={{ border: "1px dotted #2a61ae" }} />
                 <p css={styles.summaryText}>
                   <span>Total Sallaries:</span>
                   <b>KES {totalsalary.toLocaleString()}</b>
                 </p>
-                <hr style={{ border: "1px dotted #486c1b" }} />
+                <hr style={{ border: "1px dotted #2a61ae" }} />
               </div>
             </>
           )}

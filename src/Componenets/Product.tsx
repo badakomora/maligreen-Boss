@@ -49,12 +49,12 @@ const productStyles = css`
     padding: 18px;
     background: rgba(72, 108, 27, 0.05);
     border-radius: 10px;
-    border-left: 4px solid #486c1b;
+    border-left: 4px solid #2a61ae;
   }
 
   .product_details .title {
     font-size: 1.3em;
-    color: #486c1b;
+    color: #2a61ae;
     font-weight: 700;
     margin-bottom: 10px;
     letter-spacing: 0.5px;
@@ -125,7 +125,7 @@ const productStyles = css`
     .product_details {
       text-align: center;
       border-left: none;
-      border-top: 4px solid #486c1b;
+      border-top: 4px solid #2a61ae;
     }
   }
 `;
