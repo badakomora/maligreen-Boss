@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 
 const sidebarStyles = css`
   background: #ffffff;
-  color: #486c1b;
+  color: #2a61ae;
   width: 250px;
   padding: 1rem;
 
@@ -13,7 +13,7 @@ const sidebarStyles = css`
 
   nav a {
     text-decoration: none;
-    color: #486c1b;
+    color: #2a61ae;
     padding: 0.5rem 1rem;
     display: flex;
     align-items: center;
@@ -21,12 +21,12 @@ const sidebarStyles = css`
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    margin:5px;
+    margin: 5px;
   }
 
   nav a:hover,
   nav a.active {
-    background: #486c1b;
+    background: #2a61ae;
     color: #ffffff;
   }
 `;
@@ -36,7 +36,6 @@ interface NavbarProps {
   setActiveTab: React.Dispatch<React.SetStateAction<string>>;
 }
 
-
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
   const tabs = [
     { label: "Dashboard" },
@@ -44,12 +43,12 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
     { label: "Expenses & Budget" },
     { label: "Livestock & Production" },
     { label: "Staff Management" },
-    { label: "Logout" }
+    { label: "Logout" },
   ];
-  
+
   return (
     <div css={sidebarStyles}>
-      <img src="/2.png" alt="logo" style={{ width: "100%" }} />
+      <img src="/logo.png" alt="logo" style={{ width: "100%" }} />
       <nav>
         {tabs.map((tab) => (
           <a
@@ -61,7 +60,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
             }}
             className={activeTab === tab.label ? "active" : ""}
           >
-           {tab.label}
+            {tab.label}
           </a>
         ))}
       </nav>
