@@ -57,7 +57,7 @@ const globalStyles = css`
   }
 
   .special3 b {
-    color: #2d5110;
+    color: #2a61ae;
     font-weight: bold;
     font-size: 1.2rem;
   }
