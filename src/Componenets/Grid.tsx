@@ -11,12 +11,12 @@ const globalStyles = css`
     --color1: #ffffff;
     --color2: #ffffff;
     --color5: #ffffff;
-    --color6: #486c1b;
+    --color6: #2a61ae;
     font-family: Monaco;
   }
 
   .center-container {
-    background-color: #486c1b;
+    background-color: #2a61ae;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,7 +37,7 @@ const globalStyles = css`
   .section {
     padding: 1rem 1.8rem;
     transition: transform 0.3s ease-out;
-    box-shadow: 0px 0px 65px -3px #486c1b;
+    box-shadow: 0px 0px 65px -3px #2a61ae;
   }
 
   .section:hover {
@@ -53,7 +53,7 @@ const globalStyles = css`
   }
 
   .special3 {
-    color: #486c1b;
+    color: #2a61ae;
   }
 
   .special3 b {
