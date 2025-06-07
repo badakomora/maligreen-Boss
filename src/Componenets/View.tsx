@@ -4,7 +4,6 @@ import type React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { serverUrl } from "../AppConfig";
 
 // Applying the simpler styling from Component 1
