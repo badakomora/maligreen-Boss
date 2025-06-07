@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { Dynamics } from "./Dynamics";
-import { serverUrl } from "../AppConfig";
+import { css } from "@emotion/react"
+import axios from "axios"
+import { useState, useEffect } from "react"
+import { Dynamics } from "./Dynamics"
+import { serverUrl } from "../AppConfig"
 
 const styles = {
   container: css`
@@ -58,7 +58,6 @@ const styles = {
     width: 100%;
     border-radius: 8px;
   `,
-
   caption: css`
     color: #2a61ae;
     text-align: left;
@@ -131,45 +130,44 @@ const styles = {
       font-weight: 700;
     }
   `,
-};
+}
 
 interface NavbarProps {
-  activeTab: string;
+  activeTab: string
 }
 
 interface IdProps {
-  budgetId: number | string;
-  receiptId: number | string;
-  invoiceId: number;
-  productionId: number | string;
-  payrollId: number | string;
+  budgetId: number | string
+  receiptId: number | string
+  invoiceId: number
+  productionId: number | string
+  payrollId: number | string
 }
 
 interface TableDataProps {
-  id: number;
-  name: string;
-  value: number;
-  date: string;
+  id: number
+  name: string
+  value: number
+  date: string
 }
 
 interface payrollProps {
-  id: number;
-  name: string;
-  designation: string;
-  salary: number;
-  status: number;
-  term: string;
+  id: number
+  name: string
+  designation: string
+  salary: number
+  status: number
 }
 
 interface ProductionProps {
-  morning: string;
-  evening: string;
-  date: string;
-  overal: string;
+  morning: string
+  evening: string
+  date: string
+  overal: string
 }
 
 interface BudgetData {
-  [account: string]: TableDataProps[];
+  [account: string]: TableDataProps[]
 }
 
 export const Budget: React.FC<NavbarProps & IdProps> = ({
@@ -202,193 +200,204 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
         important: true,
       },
     ],
-  };
+  }
 
-  const [budgetData, setBudgetData] = useState<BudgetData>({});
-  const [incurreddata, setInccurredCostsData] = useState<BudgetData>({});
-  const [receiptData, setReceiptsData] = useState<BudgetData>({});
-  const [receipt, setReceipt] = useState(0);
-  const [balanceafter, setBalanceAfter] = useState(0);
-  const [date, setDate] = useState();
+  const [budgetData, setBudgetData] = useState<BudgetData>({})
+  const [incurreddata, setInccurredCostsData] = useState<BudgetData>({})
+  const [receiptData, setReceiptsData] = useState<BudgetData>({})
+  const [receipt, setReceipt] = useState(0)
+  const [balanceafter, setBalanceAfter] = useState(0)
+  const [date, setDate] = useState()
 
-  const [production, setProduction] = useState<ProductionProps[]>([]);
-  const [totals, setTotals] = useState({ morning: 0, evening: 0, overall: 0 });
-  const { runningBalance } = Dynamics();
-  const [perioddates, setperioddates] = useState("");
-  const [payrolldata, setPayrollData] = useState<payrollProps[]>([]);
-  const [payrollmonth, setPayrollMonth] = useState("");
-  const [totalsalary, setTotalSalary] = useState(0);
+  const [production, setProduction] = useState<ProductionProps[]>([])
+  const [totals, setTotals] = useState({ morning: 0, evening: 0, overall: 0 })
+  const { runningBalance } = Dynamics()
+  const [perioddates, setperioddates] = useState("")
+  const [payrolldata, setPayrollData] = useState<payrollProps[]>([])
+  const [payrollmonth, setPayrollMonth] = useState("")
+  const [totalsalary, setTotalSalary] = useState(0)
+
   useEffect(() => {
     const fetchBudgetMonthsItems = async () => {
       try {
-        const response = await axios.get(`${serverUrl}budget/${budgetId}`);
-        const groupedBudget: BudgetData = {};
+        const response = await axios.get(`${serverUrl}budget/${budgetId}`)
+        const groupedBudget: BudgetData = {}
 
         response.data.list.forEach(
           (item: {
-            id: number;
-            description: string;
-            cost: number;
-            monthadded: string;
-            account: string;
+            id: number
+            description: string
+            cost: number
+            monthadded: string
+            account: string
           }) => {
             const entry = {
               id: item.id,
               name: item.description,
               value: item.cost,
               date: item.monthadded,
-            };
-
-            if (!groupedBudget[item.account]) {
-              groupedBudget[item.account] = [];
             }
-            groupedBudget[item.account].push(entry);
-          }
-        );
 
-        setBudgetData(groupedBudget);
+            const normalizedAccount = item.account.trim()
+
+            if (!groupedBudget[normalizedAccount]) {
+              groupedBudget[normalizedAccount] = []
+            }
+            groupedBudget[normalizedAccount].push(entry)
+          },
+        )
+
+        setBudgetData(groupedBudget)
       } catch (error) {
-        console.error("Error fetching budget:", error);
+        console.error("Error fetching budget:", error)
       }
-    };
+    }
 
     const fetchInccurredCostsItems = async () => {
       try {
-        const response = await axios.get(`${serverUrl}incurredcost/list`);
-        const groupedIncurredCosts: BudgetData = {};
+        const response = await axios.get(`${serverUrl}incurredcost/list`)
+        const groupedIncurredCosts: BudgetData = {}
 
         response.data.list.forEach(
           (item: {
-            id: number;
-            description: string;
-            cost: number;
-            datecreated: string;
-            account: string;
+            id: number
+            description: string
+            cost: number
+            datecreated: string
+            account: string
           }) => {
             const entry = {
               id: item.id,
               name: item.description,
               value: item.cost,
               date: item.datecreated,
-            };
-
-            if (!groupedIncurredCosts[item.account]) {
-              groupedIncurredCosts[item.account] = [];
             }
-            groupedIncurredCosts[item.account].push(entry);
-          }
-        );
 
-        setInccurredCostsData(groupedIncurredCosts);
+            const normalizedAccount = item.account.trim()
+
+            if (!groupedIncurredCosts[normalizedAccount]) {
+              groupedIncurredCosts[normalizedAccount] = []
+            }
+            groupedIncurredCosts[normalizedAccount].push(entry)
+          },
+        )
+
+        setInccurredCostsData(groupedIncurredCosts)
       } catch (error) {
-        console.error("Error fetching incurred costs:", error);
+        console.error("Error fetching incurred costs:", error)
       }
-    };
+    }
 
     const fetchProduction = async () => {
       try {
-        const response = await axios.get(
-          `${serverUrl}production/${productionId}`
-        );
+        const response = await axios.get(`${serverUrl}production/${productionId}`)
 
         const productionList = response.data.list.map((item: any) => ({
           date: new Date(item.dateadded).toLocaleDateString("en-GB"),
           morning: item.morningproduction.toString(),
           evening: item.eveningproduction.toString(),
-        }));
+        }))
 
         const totals = {
           morning: response.data.totals.total_morning,
           evening: response.data.totals.total_evening,
           overall: response.data.totals.total_production,
-        };
+        }
 
-        setProduction(productionList);
-        setTotals(totals); // useState({ morning: 0, evening: 0, overall: 0 })
-        setperioddates(response.data.perioddate);
+        setProduction(productionList)
+        setTotals(totals)
+        setperioddates(response.data.perioddate)
       } catch (error) {
-        console.error("Error fetching production:", error);
+        console.error("Error fetching production:", error)
       }
-    };
+    }
 
     const fetchReceipts = async () => {
       try {
-        const response = await axios.get(
-          `${serverUrl}expense/receipt/${receiptId}`
-        );
-        const groupedReceipts: BudgetData = {};
+        const response = await axios.get(`${serverUrl}expense/receipt/${receiptId}`)
+        const groupedReceipts: BudgetData = {}
 
         response.data.list.forEach(
           (item: {
-            amount: number;
-            itemdescription: string;
-            account: string;
-            cost: number;
-            date: string;
-            quantity: number;
+            amount: number
+            itemdescription: string
+            account: string
+            cost: number
+            date: string
+            quantity: number
           }) => {
             const entry = {
               id: item.amount,
               name: item.itemdescription,
               value: item.cost * item.quantity,
               date: "",
-            };
-
-            if (!groupedReceipts[item.account]) {
-              groupedReceipts[item.account] = [];
             }
-            groupedReceipts[item.account].push(entry);
-          }
-        );
 
-        setReceiptsData(groupedReceipts);
-        setReceipt(response.data.receipt || 0);
-        setDate(response.data.date);
-        setBalanceAfter(response.data.currentBalance);
+            const normalizedAccount = item.account.trim()
+
+            if (!groupedReceipts[normalizedAccount]) {
+              groupedReceipts[normalizedAccount] = []
+            }
+            groupedReceipts[normalizedAccount].push(entry)
+          },
+        )
+
+        setReceiptsData(groupedReceipts)
+        setReceipt(response.data.receipt)
+        setDate(response.data.date)
+        setBalanceAfter(response.data.currentBalance)
       } catch (error) {
-        console.error("Error fetching budget:", error);
+        console.error("Error fetching budget:", error)
       }
-    };
+    }
 
     const fetchPayroll = async () => {
       try {
-        const response = await axios.get(
-          `${serverUrl}staff/payroll/${payrollId}`
-        );
+        const response = await axios.get(`${serverUrl}staff/payroll/${payrollId}`)
 
         const payroll = response.data.payroll.map(
           (
             item: {
-              name: string;
-              designation: string;
-              salary: string;
-              status: number;
-              term: string;
+              name: string
+              designation: string
+              salary: string
+              status: number
             },
-            id: number
+            id: number,
           ) => ({
             id: id + 1,
             name: item.name,
             designation: item.designation,
             salary: item.salary,
-            term: item.term,
-          })
-        );
+            status:
+              item.status === 0
+                ? "Dismissed"
+                : item.status === 1
+                  ? "Awaiting Confirmation"
+                  : item.status === 2
+                    ? "Permanent and Pensionable"
+                    : item.status === 3
+                      ? "Casual"
+                      : item.status === 4
+                        ? "Inter"
+                        : "",
+          }),
+        )
 
-        setPayrollData(payroll);
-        setTotalSalary(response.data.totalSalary);
-        setPayrollMonth(response.data.monthadded);
+        setPayrollData(payroll)
+        setTotalSalary(response.data.totalSalary)
+        setPayrollMonth(response.data.monthadded)
       } catch (error) {
-        console.error("Error fetching budget:", error);
+        console.error("Error fetching budget:", error)
       }
-    };
+    }
 
-    fetchPayroll();
-    fetchInccurredCostsItems();
-    fetchProduction();
-    fetchReceipts();
-    fetchBudgetMonthsItems();
-  }, [budgetId, payrollId, productionId, receiptId]);
+    fetchPayroll()
+    fetchInccurredCostsItems()
+    fetchProduction()
+    fetchReceipts()
+    fetchBudgetMonthsItems()
+  }, [budgetId, payrollId, productionId, receiptId])
 
   const invoices = [
     {
@@ -409,15 +418,12 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
       quantity: "100g",
       grand: "5000",
     },
-  ];
+  ]
 
-  // Format currency values consistently
   const formatCurrency = (value: string) => {
-    // Remove commas and convert to number
-    const numValue = Number(value.replace(/,/g, ""));
-    // Format with commas
-    return numValue.toLocaleString();
-  };
+    const numValue = Number(value.replace(/,/g, ""))
+    return numValue.toLocaleString()
+  }
 
   return (
     <main css={styles.container}>
@@ -425,20 +431,15 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
         <div css={styles.headerContainer}>
           <img src="/logo.png" alt="Company Logo" width="200px" height="80px" />
           <h4 css={styles.header}>
-            {activeTab === "Budget" || activeTab === "Proposed Budget" ? (
+            {activeTab === "Budget" ? (
               <>
                 {Object.entries(budgetData)
                   .slice(0, 1)
                   .map(([account, items], index) => (
-                    <div key={index}>
-                      {items.length > 0 && (
-                        <span key={0} css={styles.spanFirst}>
-                          {items[0].date}
-                        </span>
-                      )}
+                    <div key={`budget-header-${index}`}>
+                      {items.length > 0 && <span css={styles.spanFirst}>{items[0].date}</span>}
                     </div>
                   ))}
-
                 <span css={styles.spanLast}>Monthly Budget</span>
               </>
             ) : activeTab === "Receipt Breakdown" ? (
@@ -453,17 +454,13 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                   }}
                 >
                   Ref.
-                  <b css={styles.spanLast}>KES {receipt.toLocaleString()}</b>
+                  <b css={styles.spanLast}>KES {receipt}</b>
                 </span>
               </>
             ) : activeTab === "Incurred Costs" ? (
               <>
                 <span css={styles.spanFirst}>
-                  {
-                    Object.entries(incurreddata).flatMap(
-                      ([_, items]) => items
-                    )[0]?.date
-                  }
+                  {Object.entries(incurreddata).flatMap(([_, items]) => items)[0]?.date}
                 </span>
                 <span
                   style={{
@@ -493,8 +490,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                 <span css={styles.spanFirst}>{perioddates}</span>
                 <span css={styles.spanLast}>Production Report</span>
               </>
-            ) : activeTab === "Invoice Details" ||
-              activeTab === "Credit Note" ? (
+            ) : activeTab === "Invoice Details" || activeTab === "Credit Note" ? (
               <>
                 <span
                   style={{
@@ -536,7 +532,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                 </thead>
                 <tbody>
                   {farmMetrics.herdMetrics.map((item, i) => (
-                    <tr key={i}>
+                    <tr key={`herd-${i}`}>
                       <th>{item.name}</th>
                       <td>{item.value}</td>
                     </tr>
@@ -554,7 +550,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                 </thead>
                 <tbody>
                   {farmMetrics.healthStatus.map((item, i) => (
-                    <tr key={i}>
+                    <tr key={`health-${i}`}>
                       <th>{item.name}</th>
                       <td>{formatCurrency(item.value)}</td>
                     </tr>
@@ -564,8 +560,8 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
             </>
           ) : activeTab === "Receipt Breakdown" ? (
             <>
-              {Object.entries(receiptData).map(([account, items], index) => (
-                <table css={styles.table} key={index}>
+              {Object.entries(receiptData).map(([account, items], accountIndex) => (
+                <table css={styles.table} key={`receipt-table-${accountIndex}`}>
                   <caption css={styles.caption}>{account}</caption>
                   <thead>
                     <tr>
@@ -574,8 +570,8 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {items.map((item) => (
-                      <tr key={item.id}>
+                    {items.map((item, itemIndex) => (
+                      <tr key={`receipt-${accountIndex}-${itemIndex}`}>
                         <th>{item.name}</th>
                         <td>KES {item.value.toLocaleString()}</td>
                       </tr>
@@ -604,10 +600,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                     {Number(
                       Object.values(receiptData)
                         .flat()
-                        .reduce(
-                          (total, item) => total + (Number(item.value) || 0),
-                          0
-                        )
+                        .reduce((total, item) => total + (Number(item.value) || 0), 0),
                     ).toLocaleString()}
                   </b>
                 </p>
@@ -620,10 +613,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                       balanceafter -
                       Object.values(receiptData)
                         .flat()
-                        .reduce(
-                          (total, item) => total + (Number(item.value) || 0),
-                          0
-                        )
+                        .reduce((total, item) => total + (Number(item.value) || 0), 0)
                     ).toLocaleString()}
                   </b>
                 </p>
@@ -633,8 +623,8 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
             </>
           ) : activeTab === "Incurred Costs" ? (
             <>
-              {Object.entries(incurreddata).map(([account, items], index) => (
-                <table css={styles.table} key={index}>
+              {Object.entries(incurreddata).map(([account, items], accountIndex) => (
+                <table css={styles.table} key={`incurred-table-${accountIndex}`}>
                   <caption css={styles.caption}>{account}</caption>
                   <thead>
                     <tr>
@@ -643,8 +633,8 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {items.map((item) => (
-                      <tr key={item.id}>
+                    {items.map((item, itemIndex) => (
+                      <tr key={`incurred-${accountIndex}-${itemIndex}`}>
                         <th>{item.name}</th>
                         <td>KES {item.value.toLocaleString()}</td>
                       </tr>
@@ -689,13 +679,11 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                 </thead>
                 <tbody>
                   {production.map((item, i) => (
-                    <tr key={i}>
+                    <tr key={`production-${i}`}>
                       <th>{item.date}</th>
                       <td>{item.morning} Litres</td>
                       <td>{item.evening} Litres</td>
-                      <td>
-                        {Number(item.morning) + Number(item.evening)} Litres
-                      </td>
+                      <td>{Number(item.morning) + Number(item.evening)} Litres</td>
                     </tr>
                   ))}
                 </tbody>
@@ -720,10 +708,10 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                 <hr style={{ border: "1px dotted #2a61ae" }} />
               </div>
             </>
-          ) : activeTab === "Budget" || activeTab === "Proposed Budget" ? (
+          ) : activeTab === "Budget" ? (
             <>
-              {Object.entries(budgetData).map(([account, items], index) => (
-                <table css={styles.table} key={index}>
+              {Object.entries(budgetData).map(([account, items], accountIndex) => (
+                <table css={styles.table} key={`budget-table-${accountIndex}`}>
                   <caption css={styles.caption}>{account}</caption>
                   <thead>
                     <tr>
@@ -732,8 +720,8 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {items.map((item) => (
-                      <tr key={item.id}>
+                    {items.map((item, itemIndex) => (
+                      <tr key={`budget-${accountIndex}-${itemIndex}`}>
                         <th>{item.name}</th>
                         <td>KES {item.value.toLocaleString()}</td>
                       </tr>
@@ -751,18 +739,10 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                     KES{" "}
                     {Object.values(budgetData)
                       .flat()
-                      .reduce(
-                        (total, item) => total + (Number(item.value) || 0),
-                        0
-                      )
-                      .toLocaleString()}
+                      .reduce((total, item) => total + (Number(item.value) || 0), 0)
+                      .toFixed(2)}
                   </b>
                 </p>
-
-                {/* <p css={styles.summaryText}>
-                  <span>Running Balance:</span>
-                  <b>KES {runningBalance.toFixed(2)}</b>
-                </p> */}
 
                 <hr style={{ border: "1px dotted #2a61ae" }} />
               </div>
@@ -771,9 +751,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
             <>
               <table css={styles.table}>
                 <caption css={styles.caption}>
-                  {activeTab === "Invoice Details"
-                    ? "Customer Receipt"
-                    : "Credit Note"}
+                  {activeTab === "Invoice Details" ? "Customer Receipt" : "Credit Note"}
                 </caption>
                 <thead>
                   <tr>
@@ -785,7 +763,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                 </thead>
                 <tbody>
                   {invoices.map((item, i) => (
-                    <tr key={i}>
+                    <tr key={`invoice-${i}`}>
                       <th>Invoice2534</th>
                       <td>
                         {item.product}({item.quantity})
@@ -829,16 +807,16 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                   <tr>
                     <th>Name</th>
                     <th>Designation</th>
-                    <th>Employment Term </th>
+                    <th>Employment Term</th>
                     <th>Basic Salary</th>
                   </tr>
                 </thead>
                 <tbody>
                   {payrolldata.map((item, i) => (
-                    <tr key={i}>
+                    <tr key={`payroll-${i}`}>
                       <th>{item.name}</th>
                       <td>{item.designation}</td>
-                      <td>{item.term}</td>
+                      <td>{item.status}</td>
                       <td>KES {item.salary.toLocaleString("en-US")}</td>
                     </tr>
                   ))}
@@ -849,7 +827,7 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
                 <h2>Payroll Summary</h2>
                 <hr style={{ border: "1px dotted #2a61ae" }} />
                 <p css={styles.summaryText}>
-                  <span>Total Sallaries:</span>
+                  <span>Total Salaries:</span>
                   <b>KES {totalsalary.toLocaleString()}</b>
                 </p>
                 <hr style={{ border: "1px dotted #2a61ae" }} />
@@ -859,14 +837,5 @@ export const Budget: React.FC<NavbarProps & IdProps> = ({
         </div>
       </section>
     </main>
-  );
-};
-// {Object.entries(budgetData).map(([account, items], index) => (
-//                   {items.map((item) => (
-//                   <tr key={i}>
-//                     <th>{item.name}</th>
-//                     <td>{item.designation}</td>
-//                     <td>KES {item.allowance}</td>
-//                     <td>KES {item.salary}</td>
-//                   </tr>
-//                 ))}))}
+  )
+}

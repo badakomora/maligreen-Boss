@@ -661,7 +661,7 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                   activeDot={{
                     r: 7,
                     fill: "#2a61ae",
-                    stroke: "#fff",
+                    stroke: "#fffff",
                     strokeWidth: 2,
                   }}
                 />
@@ -669,13 +669,13 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                   type="monotone"
                   dataKey="tillRevenue"
                   name="Till Revenue"
-                  stroke="#8884d8"
+                  stroke="#9ecc46"
                   strokeWidth={3}
-                  dot={{ r: 4, fill: "#8884d8", strokeWidth: 1 }}
+                  dot={{ r: 4, fill: "#9ecc46", strokeWidth: 1 }}
                   activeDot={{
                     r: 7,
-                    fill: "#8884d8",
-                    stroke: "#fff",
+                    fill: "#9ecc46",
+                    stroke: "#fffff",
                     strokeWidth: 2,
                   }}
                 />
@@ -683,13 +683,13 @@ export const Chart: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                   type="monotone"
                   dataKey="bankRevenue"
                   name="Bank Revenue"
-                  stroke="#ff7300"
+                  stroke="#040503"
                   strokeWidth={3}
-                  dot={{ r: 4, fill: "#ff7300", strokeWidth: 1 }}
+                  dot={{ r: 4, fill: "#040503", strokeWidth: 1 }}
                   activeDot={{
                     r: 7,
-                    fill: "#ff7300",
-                    stroke: "#fff",
+                    fill: "#040503",
+                    stroke: "#fffff",
                     strokeWidth: 2,
                   }}
                 />

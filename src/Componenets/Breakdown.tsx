@@ -443,60 +443,67 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
     <section css={breakdownStyles}>
       <div className="container">
         <div className="links-section">
-          {incurredstatus === 4 ? (
-            ""
-          ) : incurred ? (
-            <div style={{ display: "flex" }}>
-              <span className="date-badge">
-                {statusLabels[incurredstatus] || ""}
-              </span>
-              <a
-                href="."
-                className="action-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab("Incurred Costs");
-                  if (incurredstatus === 1) {
-                    handleStatus(2, "incurred");
-                  }
-                }}
-              >
-                Incurred Cost {formatCurrency(incurred).toLocaleString()} -{" "}
-                {datecreated}{" "}
-                {incurredstatus === 1
-                  ? "submitted for approval"
-                  : incurredstatus === 2
-                  ? "in Review"
-                  : incurredstatus === 3
-                  ? "approved"
-                  : ""}{" "}
-                &raquo;
-              </a>
-            </div>
-          ) : (
-            ""
-          )}
-          {budgetMonthsData
-            .filter((month) => month.status === 1 || month.status === 2)
-            .map((month, index) => (
-              <div style={{ display: "flex" }} key={index}>
-                <span className="date-badge">
-                  {month.status === 1 ? "New" : "In review"}
-                </span>
-                <a
-                  href="."
-                  className="action-link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setActiveTab("Proposed Budget");
-                    setBudgetId(Number(month.id));
-                    handleStatus(2, "budget");
-                  }}
-                >
-                  {month.name} budget Submitted for approval {"\u00BB"}
-                </a>
-              </div>
-            ))}
+          <>
+            {incurred === 0 &&
+            budgetMonthsData.filter(
+              (month) => month.status === 1 || month.status === 2
+            ).length === 0 ? (
+              <span className="action-link">Nothing new here yet!</span>
+            ) : (
+              <>
+                {incurred !== 0 && (
+                  <div style={{ display: "flex" }}>
+                    <span className="date-badge">
+                      {statusLabels[incurredstatus] || ""}
+                    </span>
+                    <a
+                      href="."
+                      className="action-link"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveTab("Incurred Costs");
+                        if (incurredstatus === 1) {
+                          handleStatus(2, "incurred");
+                        }
+                      }}
+                    >
+                      Incurred Cost {formatCurrency(incurred).toLocaleString()}{" "}
+                      - {datecreated}{" "}
+                      {incurredstatus === 1
+                        ? "submitted for approval"
+                        : incurredstatus === 2
+                        ? "in Review"
+                        : incurredstatus === 3
+                        ? "approved"
+                        : ""}{" "}
+                      &raquo;
+                    </a>
+                  </div>
+                )}
+                {budgetMonthsData
+                  .filter((month) => month.status === 1 || month.status === 2)
+                  .map((month, index) => (
+                    <div style={{ display: "flex" }} key={index}>
+                      <span className="date-badge">
+                        {month.status === 1 ? "New" : "In review"}
+                      </span>
+                      <a
+                        href="."
+                        className="action-link"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveTab("Proposed Budget");
+                          setBudgetId(Number(month.id));
+                          handleStatus(2, "budget");
+                        }}
+                      >
+                        {month.name} budget Submitted for approval {"\u00BB"}
+                      </a>
+                    </div>
+                  ))}
+              </>
+            )}
+          </>
         </div>
 
         <div className="section-container">
