@@ -22,13 +22,6 @@ interface MeetingModalProps {
   onSubmit: (dateTime: string, purpose: string) => void;
 }
 
-// PayrollModal Component Interface
-interface PayrollModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (month: string, year: string) => void;
-}
-
 // ApproveModal Component Interface
 interface ApproveModalProps {
   isOpen: boolean;
@@ -218,190 +211,6 @@ const revenueItemStyles = css`
     color: #2a61ae;
   }
 `;
-
-// PayrollModal Component
-const PayrollModal = ({ isOpen, onClose, onSubmit }: PayrollModalProps) => {
-  const [month, setMonth] = useState("");
-  const [year, setYear] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      const response = await axios.post(`${serverUrl}payroll/create`, {
-        month,
-        year,
-      });
-
-      setMonth("");
-      setYear("");
-
-      toast.success(response.data.message || "Payroll created successfully");
-      onClose();
-      onSubmit(month, year);
-    } catch (error) {
-      console.error("Error creating payroll:", error);
-      toast.error("Failed to create payroll. Please try again.");
-    }
-  };
-
-  if (!isOpen) return null;
-
-  const colors = {
-    primary: "#2a61ae",
-    white: "#ffffff",
-    background: "#f8f9fa",
-    border: "#e2e8f0",
-    text: "#333333",
-    lightGreen: "#ecf4e4",
-  };
-
-  const styles = {
-    header: css`
-      background-color: ${colors.lightGreen};
-      padding: 20px 30px;
-      border-bottom: 1px solid ${colors.border};
-    `,
-    container: css`
-      padding: 30px;
-      background-color: ${colors.white};
-    `,
-    heading: css`
-      color: ${colors.primary};
-      font-size: 24px;
-      font-weight: 700;
-      margin: 0;
-    `,
-    subheading: css`
-      color: ${colors.text};
-      font-size: 14px;
-      margin-top: 5px;
-      opacity: 0.8;
-    `,
-    label: css`
-      font-size: 14px;
-      font-weight: 600;
-      color: ${colors.primary};
-      margin-bottom: 8px;
-      display: block;
-    `,
-    inputcontainer: css`
-      width: 100%;
-      margin-bottom: 20px;
-    `,
-    input: css`
-      font-size: 15px;
-      color: ${colors.text};
-      background-color: ${colors.white};
-      width: 100%;
-      padding: 12px 15px;
-      border: 1px solid ${colors.border};
-      border-radius: 8px;
-      box-sizing: border-box;
-      transition: all 0.2s ease;
-
-      &:focus {
-        border-color: ${colors.primary};
-        box-shadow: 0 0 0 3px rgba(72, 108, 27, 0.15);
-        outline: none;
-      }
-    `,
-    buttonContainer: css`
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 10px;
-    `,
-    submitButton: css`
-      ${btnPrimary}
-      padding: 12px 24px;
-      font-size: 15px;
-      transition: all 0.2s ease;
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(72, 108, 27, 0.2);
-      }
-    `,
-    cancelButton: css`
-      ${btnSecondary}
-      padding: 12px 24px;
-      font-size: 15px;
-      transition: all 0.2s ease;
-
-      &:hover {
-        transform: translateY(-2px);
-      }
-    `,
-  };
-
-  return (
-    <div
-      css={modalOverlayStyles}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div css={modalContentStyles}>
-        <div css={styles.header}>
-          <h1 css={styles.heading}>Create New Payroll</h1>
-          <p css={styles.subheading}>Set up a new monthly payroll period</p>
-        </div>
-        <div css={styles.container}>
-          <form onSubmit={handleSubmit}>
-            <div css={styles.inputcontainer}>
-              <label css={styles.label}>Month</label>
-              <select
-                css={styles.input}
-                value={month}
-                onChange={(e) => setMonth(e.target.value)}
-                required
-              >
-                <option value="">Select Month</option>
-                <option value="January">January</option>
-                <option value="February">February</option>
-                <option value="March">March</option>
-                <option value="April">April</option>
-                <option value="May">May</option>
-                <option value="June">June</option>
-                <option value="July">July</option>
-                <option value="August">August</option>
-                <option value="September">September</option>
-                <option value="October">October</option>
-                <option value="November">November</option>
-                <option value="December">December</option>
-              </select>
-            </div>
-
-            <div css={styles.inputcontainer}>
-              <label css={styles.label}>Year</label>
-              <input
-                css={styles.input}
-                type="number"
-                placeholder="Enter year (e.g., 2024)"
-                value={year}
-                onChange={(e) => setYear(e.target.value)}
-                min="2020"
-                max="2030"
-                required
-              />
-            </div>
-
-            <div css={styles.buttonContainer}>
-              <button type="button" css={styles.cancelButton} onClick={onClose}>
-                Cancel
-              </button>
-              <button type="submit" css={styles.submitButton}>
-                Create Payroll
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 // MeetingModal Component
 const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
   const [purpose, setPurpose] = useState("");
@@ -1176,7 +985,6 @@ export default function App() {
   const [receiptId, setreceiptId] = useState<number | string>(0);
   const [payrollId, setPayrollId] = useState<number | string>(0);
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
-  const [isPayrollModalOpen, setIsPayrollModalOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
@@ -1708,13 +1516,8 @@ export default function App() {
             value={budgetId}
             onChange={(e) => {
               const val = e.target.value;
-              if (val === "new") {
-                setActiveTab("Create Budget");
-                setBudgetId(val);
-              } else {
-                setActiveTab("Budget");
-                setBudgetId(Number(val));
-              }
+              setActiveTab("Budget");
+              setBudgetId(Number(val));
             }}
           >
             <option>Budgets</option>
@@ -1757,16 +1560,12 @@ export default function App() {
             onChange={(e) => {
               const value = e.target.value;
               setSelectedMonth(value);
-              if (value === "new") {
-                setIsPayrollModalOpen(true);
-              } else if (value) {
-                setPayrollId(value);
-                setActiveTab("Payroll Report");
-              }
+              setPayrollId(value);
+              setActiveTab("Payroll Report");
             }}
           >
             <option value="">Monthly Payrolls</option>
-            <option value="new">Create New Payroll</option>
+            {/* <option value="new">Create New Payroll</option> */}
             {payrollmonths.map((month, index) => (
               <option key={index} value={month.id}>
                 {month.name}
@@ -1775,22 +1574,6 @@ export default function App() {
           </select>
         );
       case "Proposed Budget":
-        return (
-          <>
-            <button
-              css={btnSecondary}
-              onClick={() => setIsApproveModalOpen(true)}
-            >
-              Approve
-            </button>
-            <button
-              css={btnPrimary}
-              onClick={() => setIsDeclineModalOpen(true)}
-            >
-              Decline
-            </button>
-          </>
-        );
       case "Incurred Costs":
         return (
           <>
@@ -2032,15 +1815,6 @@ export default function App() {
         onClose={() => setIsMeetingModalOpen(false)}
         onSubmit={() => {
           setIsMeetingModalOpen(false);
-          refreshData();
-        }}
-      />
-
-      <PayrollModal
-        isOpen={isPayrollModalOpen}
-        onClose={() => setIsPayrollModalOpen(false)}
-        onSubmit={() => {
-          setIsPayrollModalOpen(false);
           refreshData();
         }}
       />

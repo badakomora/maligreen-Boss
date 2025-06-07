@@ -444,7 +444,7 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
       );
 
       toast.success(
-        updateResponse.data.tab || "Staff status updated successfully"
+        updateResponse.data.tab
       );
 
       // Refresh the staff list and employment terms
