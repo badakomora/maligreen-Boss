@@ -992,7 +992,7 @@ const DeclineModal = ({
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(72, 108, 27, 0.2);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
     `,
     cancelButton: css`
@@ -1182,6 +1182,7 @@ export default function App() {
   const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
   const [isRevenueTooltipOpen, setIsRevenueTooltipOpen] = useState(false);
   const [isReceivableTooltipOpen, setIsReceivableTooltipOpen] = useState(false);
+  const [isComponentLoading, setIsComponentLoading] = useState(false);
 
   const [budgetAmount, setBudgetAmount] = useState<number | string>("");
   const [budgetMonthsData, setBudgetMonthsData] = useState<items[]>([]);
@@ -1202,9 +1203,181 @@ export default function App() {
   const [unpaidtotal, setUnpaidTotal] = useState(0);
 
   useEffect(() => {
+    setIsComponentLoading(true);
     localStorage.setItem("activeTab", activeTab);
-    fetchAllData();
-  });
+
+    // Simulate component loading time and fetch data
+    const loadComponent = async () => {
+      try {
+        await fetchAllData();
+        // Add a small delay to show loading state
+        setTimeout(() => {
+          setIsComponentLoading(false);
+        }, 300);
+      } catch (error) {
+        console.error("Error loading component:", error);
+        setIsComponentLoading(false);
+      }
+    };
+    const fetchAllData = async () => {
+      try {
+        await Promise.all([
+          fetchBudgetMonths(),
+          fetchMeeting(),
+          fetchTotalBudgetCost(),
+          fetchProductionPeriod(),
+          fetchReceipts(),
+          fetchRevenue(),
+          fetchIncurredItems(),
+          fetchPayrollMonths(),
+          fetchPreviousPayroll(),
+        ]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Failed to load some data. Please refresh the page.");
+      }
+    };
+    const fetchBudgetMonths = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}item/budgetList`);
+        const shelterList = response.data.list.map(
+          (item: { id: number; monthadded: string; status: number }) => ({
+            id: item.id,
+            name: item.monthadded,
+            status: item.status,
+          })
+        );
+        setBudgetMonthsData(shelterList);
+      } catch (error) {
+        console.error("Error fetching budget months:", error);
+      }
+    };
+
+    const fetchMeeting = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}item/meeting/list`);
+        const meetingList = response.data.list.map(
+          (item: {
+            id: number;
+            purpose: string;
+            datescheduled: string;
+            venue: string;
+            note: string;
+            status: number;
+            datecreated: string;
+          }) => ({
+            id: item.id,
+            name: `${item.datescheduled} - ${item.purpose}`,
+            status: item.status,
+            venue: item.venue,
+            note: item.note,
+            datecreated: item.datecreated,
+          })
+        );
+        setScheduledMeeting(meetingList);
+      } catch (error) {
+        console.error("Error fetching meeting list:", error);
+      }
+    };
+
+    const fetchTotalBudgetCost = async () => {
+      try {
+        if (budgetId) {
+          const response = await axios.get(`${serverUrl}budget/${budgetId}`);
+          const cost = response.data.totalCost;
+          setBudgetAmount(cost || "");
+        }
+      } catch (error) {
+        console.error("Error fetching budget total cost:", error);
+      }
+    };
+
+    const fetchProductionPeriod = async () => {
+      try {
+        const response = await axios.get(
+          `${serverUrl}item/productionperiodlist`
+        );
+        const productionperiodList = response.data.list.map(
+          (item: { id: number; monthadded: string }) => ({
+            id: item.id,
+            name: item.monthadded,
+          })
+        );
+        setproductionPeriodData(productionperiodList);
+      } catch (error) {
+        console.error("Error fetching production periods:", error);
+      }
+    };
+
+    const fetchReceipts = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}item/receiptList`);
+        const filteredSales = response.data.list.map(
+          (item: { id: number; amount: number; datesent: string }) => ({
+            id: item.id,
+            amount: item.amount,
+            date: new Date(item.datesent).toLocaleDateString(),
+          })
+        );
+        setReceiptsData(filteredSales);
+      } catch (error) {
+        console.error("Error fetching receipts:", error);
+      }
+    };
+
+    const fetchRevenue = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}invoice/list`);
+        const { chartdata, totalsales, unpaid } = response.data;
+
+        const latest = chartdata?.[0] || {};
+        setTotalSalesData(totalsales);
+        setCashTotal(Number(latest.cashrevenue || 0));
+        setTillTotal(Number(latest.tillrevenue || 0));
+        setBankTotal(Number(latest.bankrevenue || 0));
+        setUnpaidTotal(Number(unpaid || 0));
+      } catch (error) {
+        console.error("Error fetching revenue:", error);
+      }
+    };
+
+    const fetchIncurredItems = async () => {
+      try {
+        const { data } = await axios.get(`${serverUrl}incurredcost/list`);
+        setIncurred(data?.incurred ?? 0);
+        setCreateddate(data?.datecreated ?? "");
+      } catch (error) {
+        console.error("Error fetching incurred costs:", error);
+      }
+    };
+
+    const fetchPayrollMonths = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}item/PayrollList`);
+        const payrollList = response.data.map(
+          (item: { id: number; monthadded: string }) => ({
+            id: item.id,
+            name: item.monthadded,
+          })
+        );
+        setPayrollMonths(payrollList);
+      } catch (error) {
+        console.error("Error fetching payroll months:", error);
+      }
+    };
+
+    const fetchPreviousPayroll = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}staff/list`);
+        setTotalSalary(response.data.totalsalary || 0);
+        setPayrollMonth(response.data.monthadded);
+      } catch (error) {
+        console.error("Error fetching previous payroll:", error);
+      }
+    };
+
+    loadComponent();
+  }, [activeTab, budgetId]); // Add activeTab as dependency
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -1259,153 +1432,14 @@ export default function App() {
         fetchBudgetMonths(),
         fetchMeeting(),
         fetchTotalBudgetCost(),
-        fetchProductionPeriod(),
         fetchReceipts(),
         fetchRevenue(),
         fetchIncurredItems(),
-        fetchPayrollMonths(),
         fetchPreviousPayroll(),
       ]);
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Failed to load some data. Please refresh the page.");
-    }
-  };
-
-  const fetchBudgetMonths = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}item/budgetList`);
-      const shelterList = response.data.list.map(
-        (item: { id: number; monthadded: string; status: number }) => ({
-          id: item.id,
-          name: item.monthadded,
-          status: item.status,
-        })
-      );
-      setBudgetMonthsData(shelterList);
-    } catch (error) {
-      console.error("Error fetching budget months:", error);
-    }
-  };
-
-  const fetchMeeting = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}item/meeting/list`);
-      const meetingList = response.data.list.map(
-        (item: {
-          id: number;
-          purpose: string;
-          datescheduled: string;
-          venue: string;
-          note: string;
-          status: number;
-          datecreated: string;
-        }) => ({
-          id: item.id,
-          name: `${item.datescheduled} - ${item.purpose}`,
-          status: item.status,
-          venue: item.venue,
-          note: item.note,
-          datecreated: item.datecreated,
-        })
-      );
-      setScheduledMeeting(meetingList);
-    } catch (error) {
-      console.error("Error fetching meeting list:", error);
-    }
-  };
-
-  const fetchTotalBudgetCost = async () => {
-    try {
-      if (budgetId) {
-        const response = await axios.get(`${serverUrl}budget/${budgetId}`);
-        const cost = response.data.totalCost;
-        setBudgetAmount(cost || "");
-      }
-    } catch (error) {
-      console.error("Error fetching budget total cost:", error);
-    }
-  };
-
-  const fetchProductionPeriod = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}item/productionperiodlist`);
-      const productionperiodList = response.data.list.map(
-        (item: { id: number; monthadded: string }) => ({
-          id: item.id,
-          name: item.monthadded,
-        })
-      );
-      setproductionPeriodData(productionperiodList);
-    } catch (error) {
-      console.error("Error fetching production periods:", error);
-    }
-  };
-
-  const fetchReceipts = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}item/receiptList`);
-      const filteredSales = response.data.list.map(
-        (item: { id: number; amount: number; datesent: string }) => ({
-          id: item.id,
-          amount: item.amount,
-          date: new Date(item.datesent).toLocaleDateString(),
-        })
-      );
-      setReceiptsData(filteredSales);
-    } catch (error) {
-      console.error("Error fetching receipts:", error);
-    }
-  };
-
-  const fetchRevenue = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}invoice/list`);
-      const { chartdata, totalsales, unpaid } = response.data;
-
-      const latest = chartdata?.[0] || {};
-      setTotalSalesData(totalsales);
-      setCashTotal(Number(latest.cashrevenue || 0));
-      setTillTotal(Number(latest.tillrevenue || 0));
-      setBankTotal(Number(latest.bankrevenue || 0));
-      setUnpaidTotal(Number(unpaid || 0));
-    } catch (error) {
-      console.error("Error fetching revenue:", error);
-    }
-  };
-
-  const fetchIncurredItems = async () => {
-    try {
-      const { data } = await axios.get(`${serverUrl}incurredcost/list`);
-      setIncurred(data?.incurred ?? 0);
-      setCreateddate(data?.datecreated ?? "");
-    } catch (error) {
-      console.error("Error fetching incurred costs:", error);
-    }
-  };
-
-  const fetchPayrollMonths = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}item/PayrollList`);
-      const payrollList = response.data.map(
-        (item: { id: number; monthadded: string }) => ({
-          id: item.id,
-          name: item.monthadded,
-        })
-      );
-      setPayrollMonths(payrollList);
-    } catch (error) {
-      console.error("Error fetching payroll months:", error);
-    }
-  };
-
-  const fetchPreviousPayroll = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}staff/list`);
-      setTotalSalary(response.data.totalsalary || 0);
-      setPayrollMonth(response.data.monthadded);
-    } catch (error) {
-      console.error("Error fetching previous payroll:", error);
     }
   };
 
@@ -1417,6 +1451,51 @@ export default function App() {
     activeTab: string,
     setActiveTab: React.Dispatch<React.SetStateAction<string>>
   ) => {
+    // Show loading spinner while component is loading
+    if (isComponentLoading) {
+      return (
+        <div
+          css={css`
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px;
+            flex-direction: column;
+            gap: 1rem;
+          `}
+        >
+          <div
+            css={css`
+              width: 40px;
+              height: 40px;
+              border: 4px solid #f3f3f3;
+              border-top: 4px solid #2a61ae;
+              border-radius: 50%;
+              animation: spin 1s linear infinite;
+
+              @keyframes spin {
+                0% {
+                  transform: rotate(0deg);
+                }
+                100% {
+                  transform: rotate(360deg);
+                }
+              }
+            `}
+          />
+          <p
+            css={css`
+              color: #2a61ae;
+              font-size: 16px;
+              margin: 0;
+            `}
+          >
+            Loading {activeTab}...
+          </p>
+        </div>
+      );
+    }
+
     switch (activeTab) {
       case "Dashboard":
         return <Grid />;
@@ -1764,7 +1843,7 @@ export default function App() {
           </>
         );
       default:
-        return <p>No data available</p>;
+        return;
     }
   };
 
@@ -1992,4 +2071,31 @@ export default function App() {
       />
     </div>
   );
+}
+function fetchMeeting(): any {
+  throw new Error("Function not implemented.");
+}
+
+function fetchBudgetMonths(): any {
+  throw new Error("Function not implemented.");
+}
+
+function fetchTotalBudgetCost(): any {
+  throw new Error("Function not implemented.");
+}
+
+function fetchReceipts(): any {
+  throw new Error("Function not implemented.");
+}
+
+function fetchRevenue(): any {
+  throw new Error("Function not implemented.");
+}
+
+function fetchIncurredItems(): any {
+  throw new Error("Function not implemented.");
+}
+
+function fetchPreviousPayroll(): any {
+  throw new Error("Function not implemented.");
 }

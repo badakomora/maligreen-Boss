@@ -155,11 +155,6 @@ const breakdownStyles = css`
     transition: all 0.2s ease;
     border-left: 3px solid transparent;
     background-color: rgba(240, 244, 235, 0.3);
-
-    &:hover {
-      border-left-color: var(--primary-color);
-      background-color: rgba(240, 244, 235, 0.6);
-    }
   }
 
   .important-item {
@@ -437,8 +432,6 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
     3: "Running Funds",
   };
 
-  const todayString = new Date().toISOString().split("T")[0];
-
   return (
     <section css={breakdownStyles}>
       <div className="container">
@@ -515,15 +508,20 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
               <div className="card">
                 <div className="card-header">
                   <h4 className="section-subtitle">
-                    {today === todayString ? "Today's" : "Last"} Expense Summary{" "}
-                    <span className="date-badge">{today}</span>
+                    {today ===
+                    `${
+                      new Date().getMonth() + 1
+                    }/${new Date().getDate()}/${new Date().getFullYear()}`
+                      ? "Today's"
+                      : "Last"}
+                    Expense Summary <span className="date-badge">{today}</span>
                   </h4>
                 </div>
                 <ul className="items-list">
                   <li className="list-item">
                     <span className="item-name">
                       Biggest Expense
-                      <span className="note">(Today)</span>
+                      <span className="note"></span>
                     </span>
                     <span className="amount-note">
                       <span className="amount">
@@ -536,7 +534,7 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                   <li className="list-item">
                     <span className="item-name">
                       Total Expense
-                      <span className="note">(Today's expenditures)</span>
+                      <span className="note"></span>
                     </span>
                     <span className="amount-note">
                       <span className="amount">
@@ -553,15 +551,15 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                         {formatCurrency(todaysExpenses.runningBalance)}
                       </span>
                     </span>
-                  </li>
+                  </li> */}
                   <li className="list-item important-item">
-                    <span className="item-name">Recent Funding</span>
+                    <span className="item-name">Running Funding</span>
                     <span className="amount-note">
                       <span className="amount">
                         {todaysExpenses.recentFunding || "N/A"}
                       </span>
                     </span>
-                  </li> */}
+                  </li>
                 </ul>
               </div>
             </div>
@@ -598,7 +596,7 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({
                   <li className="list-item">
                     <span className="item-name">
                       Total Revenue
-                      <span className="note">(Available income)</span>
+                      <span className="note"></span>
                     </span>
                     <span className="amount-note">
                       <span className="amount">
