@@ -105,13 +105,11 @@ const panelStyle = css`
   margin: 0.1rem auto;
   background: #ffffff;
   font-family: Monaco;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 
   h4 {
     color: #2a61ae;
     font-size: 1.4rem;
     font-weight: 600;
-    margin-bottom: 1rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -131,12 +129,11 @@ const userListStyle = css`
     padding: 1.2rem 1.5rem;
     position: relative;
     margin: 0.8rem 0.5rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 
     &::before {
       content: "";
       width: 4px;
-      height: 70%;
+      height: 50%;
       background-color: #2a61ae;
       position: absolute;
       left: 0;
@@ -562,7 +559,7 @@ export const Block: React.FC<NavbarProps & IdsProps> = ({
                               }}
                             >
                               {user.status === 0
-                                ? "Approve Employment "
+                                ? "Approve Employment Term"
                                 : "Update Employment Term"}
                             </a>
                           </>

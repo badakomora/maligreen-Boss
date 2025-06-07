@@ -22,7 +22,14 @@ interface MeetingModalProps {
   onSubmit: (dateTime: string, purpose: string) => void;
 }
 
-// ApproveModal Component Interface - Updated to include incurred and datecreated
+// PayrollModal Component Interface
+interface PayrollModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (month: string, year: string) => void;
+}
+
+// ApproveModal Component Interface
 interface ApproveModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -34,8 +41,8 @@ interface ApproveModalProps {
   incurred?: number;
   datecreated?: string;
   activeTab?: string;
-  budgetAmount?: number | string; // Add this line
-  refreshData?: () => Promise<void>; // Add this line
+  budgetAmount?: number | string;
+  refreshData?: () => Promise<void>;
 }
 
 // DeclineModal Component Interface
@@ -44,10 +51,10 @@ interface DeclineModalProps {
   onClose: () => void;
   onSubmit: (reason: string) => void;
   activeTab?: string;
-  refreshData?: () => Promise<void>; // Add this line
+  refreshData?: () => Promise<void>;
 }
 
-// Update the modalOverlayStyles with a smooth animation
+// Modal styles
 const modalOverlayStyles = css`
   position: fixed;
   top: 0;
@@ -72,7 +79,6 @@ const modalOverlayStyles = css`
   }
 `;
 
-// Update the modalContentStyles with better styling and animation
 const modalContentStyles = css`
   background: white;
   padding: 0;
@@ -213,7 +219,190 @@ const revenueItemStyles = css`
   }
 `;
 
-// Replace the MeetingModal component with this improved version
+// PayrollModal Component
+const PayrollModal = ({ isOpen, onClose, onSubmit }: PayrollModalProps) => {
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(`${serverUrl}payroll/create`, {
+        month,
+        year,
+      });
+
+      setMonth("");
+      setYear("");
+
+      toast.success(response.data.message || "Payroll created successfully");
+      onClose();
+      onSubmit(month, year);
+    } catch (error) {
+      console.error("Error creating payroll:", error);
+      toast.error("Failed to create payroll. Please try again.");
+    }
+  };
+
+  if (!isOpen) return null;
+
+  const colors = {
+    primary: "#2a61ae",
+    white: "#ffffff",
+    background: "#f8f9fa",
+    border: "#e2e8f0",
+    text: "#333333",
+    lightGreen: "#ecf4e4",
+  };
+
+  const styles = {
+    header: css`
+      background-color: ${colors.lightGreen};
+      padding: 20px 30px;
+      border-bottom: 1px solid ${colors.border};
+    `,
+    container: css`
+      padding: 30px;
+      background-color: ${colors.white};
+    `,
+    heading: css`
+      color: ${colors.primary};
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+    `,
+    subheading: css`
+      color: ${colors.text};
+      font-size: 14px;
+      margin-top: 5px;
+      opacity: 0.8;
+    `,
+    label: css`
+      font-size: 14px;
+      font-weight: 600;
+      color: ${colors.primary};
+      margin-bottom: 8px;
+      display: block;
+    `,
+    inputcontainer: css`
+      width: 100%;
+      margin-bottom: 20px;
+    `,
+    input: css`
+      font-size: 15px;
+      color: ${colors.text};
+      background-color: ${colors.white};
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid ${colors.border};
+      border-radius: 8px;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+
+      &:focus {
+        border-color: ${colors.primary};
+        box-shadow: 0 0 0 3px rgba(72, 108, 27, 0.15);
+        outline: none;
+      }
+    `,
+    buttonContainer: css`
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 10px;
+    `,
+    submitButton: css`
+      ${btnPrimary}
+      padding: 12px 24px;
+      font-size: 15px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(72, 108, 27, 0.2);
+      }
+    `,
+    cancelButton: css`
+      ${btnSecondary}
+      padding: 12px 24px;
+      font-size: 15px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+    `,
+  };
+
+  return (
+    <div
+      css={modalOverlayStyles}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div css={modalContentStyles}>
+        <div css={styles.header}>
+          <h1 css={styles.heading}>Create New Payroll</h1>
+          <p css={styles.subheading}>Set up a new monthly payroll period</p>
+        </div>
+        <div css={styles.container}>
+          <form onSubmit={handleSubmit}>
+            <div css={styles.inputcontainer}>
+              <label css={styles.label}>Month</label>
+              <select
+                css={styles.input}
+                value={month}
+                onChange={(e) => setMonth(e.target.value)}
+                required
+              >
+                <option value="">Select Month</option>
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November">November</option>
+                <option value="December">December</option>
+              </select>
+            </div>
+
+            <div css={styles.inputcontainer}>
+              <label css={styles.label}>Year</label>
+              <input
+                css={styles.input}
+                type="number"
+                placeholder="Enter year (e.g., 2024)"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                min="2020"
+                max="2030"
+                required
+              />
+            </div>
+
+            <div css={styles.buttonContainer}>
+              <button type="button" css={styles.cancelButton} onClick={onClose}>
+                Cancel
+              </button>
+              <button type="submit" css={styles.submitButton}>
+                Create Payroll
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// MeetingModal Component
 const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
   const [purpose, setPurpose] = useState("");
   const [date, setDate] = useState("");
@@ -224,15 +413,13 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
     e.preventDefault();
 
     try {
-      // Call the backend API to schedule a meeting with the correct parameter names
       const response = await axios.post(`${serverUrl}item/scheduleMeeting`, {
         purpose,
-        datescheduled: date, // Changed from 'date' to 'datescheduled' to match backend
+        datescheduled: date,
         venue,
         note,
       });
 
-      // Reset form
       setPurpose("");
       setDate("");
       setVenue("");
@@ -240,7 +427,7 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
 
       toast.success(response.data.tab);
       onClose();
-      onSubmit(date, purpose); // Call the onSubmit prop with the form data
+      onSubmit(date, purpose);
     } catch (error) {
       console.error("Error scheduling meeting:", error);
       toast.error("Failed to schedule meeting. Please try again.");
@@ -249,7 +436,6 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
 
   if (!isOpen) return null;
 
-  // Theme Colors
   const colors = {
     primary: "#2a61ae",
     white: "#ffffff",
@@ -259,7 +445,6 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
     lightGreen: "#ecf4e4",
   };
 
-  // Styles
   const styles = {
     header: css`
       background-color: ${colors.lightGreen};
@@ -435,7 +620,7 @@ const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
   );
 };
 
-// ApproveModal Component - Fixed to properly handle incurred and datecreated
+// ApproveModal Component
 const ApproveModal = ({
   isOpen,
   onClose,
@@ -443,8 +628,8 @@ const ApproveModal = ({
   incurred = 0,
   datecreated = "",
   activeTab = "",
-  budgetAmount: propBudgetAmount = "", // Add this line
-  refreshData, // Add this line
+  budgetAmount: propBudgetAmount = "",
+  refreshData,
 }: ApproveModalProps) => {
   const [amount, setAmount] = useState("");
   const [budgetAmount, setBudgetAmount] = useState(
@@ -452,7 +637,6 @@ const ApproveModal = ({
   );
   const [approvalDate, setApprovalDate] = useState("");
 
-  // Set default values when modal opens
   useEffect(() => {
     if (isOpen) {
       if (incurred > 0) {
@@ -461,7 +645,6 @@ const ApproveModal = ({
       if (datecreated) {
         setApprovalDate(datecreated);
       }
-      // Add this: Set budget amount from props if available
       if (propBudgetAmount && propBudgetAmount !== "") {
         setBudgetAmount(propBudgetAmount.toString());
       }
@@ -472,7 +655,6 @@ const ApproveModal = ({
     e.preventDefault();
 
     try {
-      // Determine the type and amount based on activeTab
       let type, finalAmount, note;
 
       if (activeTab === "Incurred Costs") {
@@ -485,7 +667,6 @@ const ApproveModal = ({
         note = `Approved budget funding - KES ${finalAmount.toLocaleString()}`;
       }
 
-      // Call the newReceipt endpoint with the type
       const response = await axios.post(`${serverUrl}item/newReceipt`, {
         amount: finalAmount,
         date: approvalDate,
@@ -495,7 +676,6 @@ const ApproveModal = ({
 
       toast.success(response.data.tab);
 
-      // Reset form
       setAmount("");
       setBudgetAmount("");
       setApprovalDate("");
@@ -507,8 +687,6 @@ const ApproveModal = ({
         approvalDate
       );
 
-      // After toast.success(response.data.tab); and before onClose();
-      // Add data refresh
       if (refreshData) {
         await refreshData();
       }
@@ -520,7 +698,6 @@ const ApproveModal = ({
 
   if (!isOpen) return null;
 
-  // Theme Colors
   const colors = {
     primary: "#2a61ae",
     white: "#ffffff",
@@ -530,7 +707,6 @@ const ApproveModal = ({
     lightGreen: "#ecf4e4",
   };
 
-  // Styles
   const styles = {
     header: css`
       background-color: ${colors.lightGreen};
@@ -635,7 +811,6 @@ const ApproveModal = ({
         </div>
         <div css={styles.container}>
           <form onSubmit={handleSubmit}>
-            {/* Only show Amount input if NOT "Proposed Budget" */}
             {activeTab !== "Proposed Budget" && (
               <div css={styles.inputcontainer}>
                 <label css={styles.label}>Amount to be Sent (KES)</label>
@@ -651,7 +826,6 @@ const ApproveModal = ({
               </div>
             )}
 
-            {/* Only show Budget Amount input if NOT "Incurred Costs" */}
             {activeTab !== "Incurred Costs" && (
               <div css={styles.inputcontainer}>
                 <label css={styles.label}>Budget Amount (KES)</label>
@@ -703,7 +877,7 @@ const DeclineModal = ({
   onClose,
   onSubmit,
   activeTab = "",
-  refreshData, // Add this line
+  refreshData,
 }: DeclineModalProps) => {
   const [reason, setReason] = useState("");
 
@@ -711,7 +885,6 @@ const DeclineModal = ({
     e.preventDefault();
 
     try {
-      // Determine the type based on activeTab
       let type;
       if (activeTab === "Incurred Costs") {
         type = "Incurred Cost";
@@ -719,21 +892,17 @@ const DeclineModal = ({
         type = "Proposed Budget";
       }
 
-      // Call the backend API to decline with the reason and type
       const response = await axios.post(`${serverUrl}item/decline`, {
         reason,
         type,
       });
 
-      // Reset form
       setReason("");
 
       toast.success(response.data.tab);
       onClose();
       onSubmit(reason);
 
-      // After toast.success(response.data.tab); and before onClose();
-      // Add data refresh
       if (refreshData) {
         await refreshData();
       }
@@ -745,7 +914,6 @@ const DeclineModal = ({
 
   if (!isOpen) return null;
 
-  // Theme Colors
   const colors = {
     primary: "#2a61ae",
     white: "#ffffff",
@@ -755,7 +923,6 @@ const DeclineModal = ({
     lightGreen: "#ecf4e4",
   };
 
-  // Styles
   const styles = {
     header: css`
       background-color: ${colors.lightGreen};
@@ -1009,6 +1176,7 @@ export default function App() {
   const [receiptId, setreceiptId] = useState<number | string>(0);
   const [payrollId, setPayrollId] = useState<number | string>(0);
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
+  const [isPayrollModalOpen, setIsPayrollModalOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
@@ -1018,10 +1186,10 @@ export default function App() {
   const [budgetAmount, setBudgetAmount] = useState<number | string>("");
   const [budgetMonthsData, setBudgetMonthsData] = useState<items[]>([]);
   const [totalsales, setTotalSalesData] = useState(0);
-  const [, setPayrollMonths] = useState<items[]>([]);
+  const [payrollmonths, setPayrollMonths] = useState<items[]>([]);
   const [scheduledmeeting, setScheduledMeeting] = useState<items[]>([]);
   const [receipts, setReceiptsData] = useState<receiptsType[]>([]);
-  const [, setproductionPeriodData] = useState<items[]>([]);
+  const [productionperiodData, setproductionPeriodData] = useState<items[]>([]);
   const [productionId, setProductionId] = useState<string | number>(0);
   const [incurred, setIncurred] = useState(0);
   const [datecreated, setCreateddate] = useState("");
@@ -1324,7 +1492,6 @@ export default function App() {
                 </b>
               </span>
 
-              {/* Revenue Breakdown Tooltip */}
               {isRevenueTooltipOpen && (
                 <div className="revenue-tooltip" css={revenueTooltipStyles}>
                   <div css={revenueItemStyles}>
@@ -1361,7 +1528,6 @@ export default function App() {
                 </b>
               </span>
 
-              {/* Accounts Receivable Tooltip */}
               {isReceivableTooltipOpen && (
                 <div className="receivable-tooltip" css={revenueTooltipStyles}>
                   <div css={revenueItemStyles}>
@@ -1482,6 +1648,53 @@ export default function App() {
               ))}
           </select>
         );
+      case "Livestock & Production":
+        return (
+          <select
+            css={btnPrimary}
+            value={selectedMonth}
+            onChange={(e) => {
+              setSelectedMonth(e.target.value);
+              if (e.target.value) {
+                setProductionId(e.target.value);
+                setActiveTab("Production Report");
+              }
+            }}
+          >
+            <option value="">Monthly Production</option>
+            {productionperiodData.map((item, index) => (
+              <option key={`period-${index}`} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+        );
+      case "Staff Management":
+      case "Payroll Report":
+        return (
+          <select
+            css={btnPrimary}
+            value={selectedMonth}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSelectedMonth(value);
+              if (value === "new") {
+                setIsPayrollModalOpen(true);
+              } else if (value) {
+                setPayrollId(value);
+                setActiveTab("Payroll Report");
+              }
+            }}
+          >
+            <option value="">Monthly Payrolls</option>
+            <option value="new">Create New Payroll</option>
+            {payrollmonths.map((month, index) => (
+              <option key={index} value={month.id}>
+                {month.name}
+              </option>
+            ))}
+          </select>
+        );
       case "Proposed Budget":
         return (
           <>
@@ -1522,7 +1735,7 @@ export default function App() {
             </button>
           </>
         );
-      default:
+      case "Dashboard":
         return (
           <>
             <button
@@ -1550,6 +1763,8 @@ export default function App() {
             </select>
           </>
         );
+      default:
+        return <p>No data available</p>;
     }
   };
 
@@ -1627,7 +1842,6 @@ export default function App() {
                     : ""}
                 </span>
 
-                {/* Notification Content Tooltip */}
                 {isNotificationOpen && (
                   <div
                     className="tooltip-content"
@@ -1643,7 +1857,6 @@ export default function App() {
                       )
                     </div>
 
-                    {/* Scheduled Meetings */}
                     {scheduledmeeting.length > 0 && (
                       <>
                         {scheduledmeeting.slice(0, 3).map((meeting, index) => (
@@ -1664,7 +1877,6 @@ export default function App() {
                       </>
                     )}
 
-                    {/* Budget Approvals Needed */}
                     {budgetMonthsData.filter(
                       (b) => b.status === 1 || b.status === 2
                     ).length > 0 && (
@@ -1693,7 +1905,6 @@ export default function App() {
                       </>
                     )}
 
-                    {/* Incurred Costs */}
                     {incurred > 0 && (
                       <div css={notificationItemStyles}>
                         <div css={notificationTextStyles}>
@@ -1715,7 +1926,6 @@ export default function App() {
                       </div>
                     )}
 
-                    {/* No notifications */}
                     {scheduledmeeting.length === 0 &&
                       budgetMonthsData.filter(
                         (b) => b.status === 1 || b.status === 2
@@ -1743,6 +1953,15 @@ export default function App() {
         onClose={() => setIsMeetingModalOpen(false)}
         onSubmit={() => {
           setIsMeetingModalOpen(false);
+          refreshData();
+        }}
+      />
+
+      <PayrollModal
+        isOpen={isPayrollModalOpen}
+        onClose={() => setIsPayrollModalOpen(false)}
+        onSubmit={() => {
+          setIsPayrollModalOpen(false);
           refreshData();
         }}
       />
