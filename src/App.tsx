@@ -934,8 +934,9 @@ const btnPrimary = css`
   color: #ffffff;
 
   &:hover {
-    background: #365214;
-    color: #ffffff;
+    background: #ffffff;
+    color: #1e40af;
+    border: 1px solid #1e40af;
   }
   &:disabled {
     background: #a5b99a;
