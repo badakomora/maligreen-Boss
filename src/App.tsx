@@ -5,7 +5,7 @@ import { Grid } from "./Componenets/Grid";
 import { Block } from "./Componenets/Block";
 import { Budget } from "./Componenets/Budget";
 import { View } from "./Componenets/View";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,14 +15,13 @@ import { Chart } from "./Componenets/Chart";
 import { Product } from "./Componenets/Product";
 import { Dynamics } from "./Componenets/Dynamics";
 
-// MeetingModal Component
+// Interface definitions
 interface MeetingModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (dateTime: string, purpose: string) => void;
 }
 
-// ApproveModal Component Interface
 interface ApproveModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -38,7 +37,6 @@ interface ApproveModalProps {
   refreshData?: () => Promise<void>;
 }
 
-// DeclineModal Component Interface
 interface DeclineModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -47,7 +45,22 @@ interface DeclineModalProps {
   refreshData?: () => Promise<void>;
 }
 
-// Modal styles
+interface ReceiptsType {
+  id: number;
+  amount: number;
+  date: string;
+}
+
+interface Items {
+  id: number;
+  name: string;
+  status: number;
+  venue?: string;
+  note?: string;
+  datecreated?: string;
+}
+
+// Styles
 const modalOverlayStyles = css`
   position: fixed;
   top: 0;
@@ -97,7 +110,6 @@ const modalContentStyles = css`
   }
 `;
 
-// Notification tooltip styles
 const notificationTooltipStyles = css`
   position: absolute;
   top: 100%;
@@ -171,7 +183,6 @@ const notificationActionStyles = css`
   }
 `;
 
-// Revenue breakdown tooltip styles
 const revenueTooltipStyles = css`
   position: absolute;
   top: 100%;
@@ -211,6 +222,90 @@ const revenueItemStyles = css`
     color: #2a61ae;
   }
 `;
+
+const layoutStyles = css`
+  display: flex;
+  overflow: hidden;
+  font-family: Monaco;
+  width: 100%;
+`;
+
+const mainContentStyles = css`
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  background: white;
+`;
+
+const headerStyles = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const buttonStyles = css`
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 5px;
+`;
+
+const btnPrimary = css`
+  ${buttonStyles}
+  background:#2a61ae;
+  border: none;
+  color: #ffffff;
+
+  &:hover {
+    background: #ffffff;
+    color: #1e40af;
+    border: 1px solid #1e40af;
+  }
+  &:disabled {
+    background: #a5b99a;
+    cursor: not-allowed;
+  }
+`;
+
+const btnSecondary = css`
+  ${buttonStyles}
+  background: #ffffff;
+  border: 1px solid#2a61ae;
+  color: #2a61ae;
+
+  &:hover {
+    background: #2a61ae;
+    color: #ffffff;
+  }
+  &:disabled {
+    border-color: #a5b99a;
+    color: #a5b99a;
+    cursor: not-allowed;
+  }
+`;
+
+const filtersStyles = css`
+  margin-top: 10px;
+  display: block;
+  justify-content: space-between;
+`;
+
+const months = [
+  { value: "01", label: "January" },
+  { value: "02", label: "February" },
+  { value: "03", label: "March" },
+  { value: "04", label: "April" },
+  { value: "05", label: "May" },
+  { value: "06", label: "June" },
+  { value: "07", label: "July" },
+  { value: "08", label: "August" },
+  { value: "09", label: "September" },
+  { value: "10", label: "October" },
+  { value: "11", label: "November" },
+  { value: "12", label: "December" },
+];
+
 // MeetingModal Component
 const MeetingModal = ({ isOpen, onClose, onSubmit }: MeetingModalProps) => {
   const [purpose, setPurpose] = useState("");
@@ -875,102 +970,6 @@ const DeclineModal = ({
 };
 
 // Main App Component
-const layoutStyles = css`
-  display: flex;
-  overflow: hidden;
-  font-family: Monaco;
-  width: 100%;
-`;
-
-const mainContentStyles = css`
-  flex: 1;
-  overflow-y: auto;
-  padding: 2rem;
-  background: white;
-`;
-
-const headerStyles = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const buttonStyles = css`
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin: 5px;
-`;
-
-const btnPrimary = css`
-  ${buttonStyles}
-  background:#2a61ae;
-  border: none;
-  color: #ffffff;
-
-  &:hover {
-    background: #ffffff;
-    color: #1e40af;
-    border: 1px solid #1e40af;
-  }
-  &:disabled {
-    background: #a5b99a;
-    cursor: not-allowed;
-  }
-`;
-
-const btnSecondary = css`
-  ${buttonStyles}
-  background: #ffffff;
-  border: 1px solid#2a61ae;
-  color: #2a61ae;
-
-  &:hover {
-    background: #2a61ae;
-    color: #ffffff;
-  }
-  &:disabled {
-    border-color: #a5b99a;
-    color: #a5b99a;
-    cursor: not-allowed;
-  }
-`;
-
-const filtersStyles = css`
-  margin-top: 10px;
-  display: block;
-  justify-content: space-between;
-`;
-
-interface receiptsType {
-  id: number;
-  amount: number;
-  date: string;
-}
-
-interface items {
-  id: number;
-  name: string;
-  status: number;
-  venue: string;
-}
-
-const months = [
-  { value: "01", label: "January" },
-  { value: "02", label: "February" },
-  { value: "03", label: "March" },
-  { value: "04", label: "April" },
-  { value: "05", label: "May" },
-  { value: "06", label: "June" },
-  { value: "07", label: "July" },
-  { value: "08", label: "August" },
-  { value: "09", label: "September" },
-  { value: "10", label: "October" },
-  { value: "11", label: "November" },
-  { value: "12", label: "December" },
-];
-
 export default function App() {
   const [selectedMonth, setSelectedMonth] = useState("");
   const { runningBalance } = Dynamics();
@@ -993,12 +992,12 @@ export default function App() {
   const [isComponentLoading, setIsComponentLoading] = useState(false);
 
   const [budgetAmount, setBudgetAmount] = useState<number | string>("");
-  const [budgetMonthsData, setBudgetMonthsData] = useState<items[]>([]);
+  const [budgetMonthsData, setBudgetMonthsData] = useState<Items[]>([]);
   const [totalsales, setTotalSalesData] = useState(0);
-  const [payrollmonths, setPayrollMonths] = useState<items[]>([]);
-  const [scheduledmeeting, setScheduledMeeting] = useState<items[]>([]);
-  const [receipts, setReceiptsData] = useState<receiptsType[]>([]);
-  const [productionperiodData, setproductionPeriodData] = useState<items[]>([]);
+  const [payrollmonths, setPayrollMonths] = useState<Items[]>([]);
+  const [scheduledmeeting, setScheduledMeeting] = useState<Items[]>([]);
+  const [receipts, setReceiptsData] = useState<ReceiptsType[]>([]);
+  const [productionperiodData, setproductionPeriodData] = useState<Items[]>([]);
   const [productionId, setProductionId] = useState<string | number>(0);
   const [incurred, setIncurred] = useState(0);
   const [datecreated, setCreateddate] = useState("");
@@ -1009,6 +1008,118 @@ export default function App() {
   const [tillTotal, setTillTotal] = useState(0);
   const [bankTotal, setBankTotal] = useState(0);
   const [unpaidtotal, setUnpaidTotal] = useState(0);
+
+  const fetchAllData = useCallback(async () => {
+    try {
+      // Fetch all data in parallel
+      const [
+        budgetMonthsResponse,
+        meetingResponse,
+        budgetCostResponse,
+        productionPeriodResponse,
+        receiptsResponse,
+        revenueResponse,
+        incurredItemsResponse,
+        payrollMonthsResponse,
+        previousPayrollResponse,
+      ] = await Promise.all([
+        axios.get(`${serverUrl}item/budgetList`),
+        axios.get(`${serverUrl}item/meeting/list`),
+        budgetId
+          ? axios.get(`${serverUrl}budget/${budgetId}`)
+          : Promise.resolve({ data: { totalCost: "" } }),
+        axios.get(`${serverUrl}item/productionperiodlist`),
+        axios.get(`${serverUrl}item/receiptList`),
+        axios.get(`${serverUrl}invoice/list`),
+        axios.get(`${serverUrl}incurredcost/list`),
+        axios.get(`${serverUrl}item/PayrollList`),
+        axios.get(`${serverUrl}staff/list`),
+      ]);
+
+      // Process budget months
+      const shelterList = budgetMonthsResponse.data.list.map(
+        (item: { id: number; monthadded: string; status: number }) => ({
+          id: item.id,
+          name: item.monthadded,
+          status: item.status,
+        })
+      );
+      setBudgetMonthsData(shelterList);
+
+      // Process meetings
+      const meetingList = meetingResponse.data.list.map(
+        (item: {
+          id: number;
+          purpose: string;
+          datescheduled: string;
+          venue: string;
+          note: string;
+          status: number;
+          datecreated: string;
+        }) => ({
+          id: item.id,
+          name: `${item.datescheduled} - ${item.purpose}`,
+          status: item.status,
+          venue: item.venue,
+          note: item.note,
+          datecreated: item.datecreated,
+        })
+      );
+      setScheduledMeeting(meetingList);
+
+      // Process budget cost
+      const cost = budgetCostResponse.data.totalCost;
+      setBudgetAmount(cost || "");
+
+      // Process production periods
+      const productionperiodList = productionPeriodResponse.data.list.map(
+        (item: { id: number; monthadded: string }) => ({
+          id: item.id,
+          name: item.monthadded,
+        })
+      );
+      setproductionPeriodData(productionperiodList);
+
+      // Process receipts
+      const filteredSales = receiptsResponse.data.list.map(
+        (item: { id: number; amount: number; datesent: string }) => ({
+          id: item.id,
+          amount: item.amount,
+          date: new Date(item.datesent).toLocaleDateString(),
+        })
+      );
+      setReceiptsData(filteredSales);
+
+      // Process revenue
+      const { chartdata, totalsales, unpaid } = revenueResponse.data;
+      const latest = chartdata?.[0] || {};
+      setTotalSalesData(totalsales);
+      setCashTotal(Number(latest.cashrevenue || 0));
+      setTillTotal(Number(latest.tillrevenue || 0));
+      setBankTotal(Number(latest.bankrevenue || 0));
+      setUnpaidTotal(Number(unpaid || 0));
+
+      // Process incurred costs
+      setIncurred(incurredItemsResponse.data?.incurred ?? 0);
+      setCreateddate(incurredItemsResponse.data?.datecreated ?? "");
+
+      // Process payroll months
+      const payrollList = payrollMonthsResponse.data.map(
+        (item: { id: number; monthadded: string }) => ({
+          id: item.id,
+          name: item.monthadded,
+        })
+      );
+      setPayrollMonths(payrollList);
+
+      // Process previous payroll
+      setTotalSalary(previousPayrollResponse.data.totalsalary || 0);
+      setPayrollMonth(previousPayrollResponse.data.monthadded);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Failed to load some data. Please refresh the page.");
+    }
+  }, [budgetId]); // Only budgetId as dependency since it affects the API call
 
   useEffect(() => {
     setIsComponentLoading(true);
@@ -1027,165 +1138,9 @@ export default function App() {
         setIsComponentLoading(false);
       }
     };
-    const fetchAllData = async () => {
-      try {
-        await Promise.all([
-          fetchBudgetMonths(),
-          fetchMeeting(),
-          fetchTotalBudgetCost(),
-          fetchProductionPeriod(),
-          fetchReceipts(),
-          fetchRevenue(),
-          fetchIncurredItems(),
-          fetchPayrollMonths(),
-          fetchPreviousPayroll(),
-        ]);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Failed to load some data. Please refresh the page.");
-      }
-    };
-    const fetchBudgetMonths = async () => {
-      try {
-        const response = await axios.get(`${serverUrl}item/budgetList`);
-        const shelterList = response.data.list.map(
-          (item: { id: number; monthadded: string; status: number }) => ({
-            id: item.id,
-            name: item.monthadded,
-            status: item.status,
-          })
-        );
-        setBudgetMonthsData(shelterList);
-      } catch (error) {
-        console.error("Error fetching budget months:", error);
-      }
-    };
-
-    const fetchMeeting = async () => {
-      try {
-        const response = await axios.get(`${serverUrl}item/meeting/list`);
-        const meetingList = response.data.list.map(
-          (item: {
-            id: number;
-            purpose: string;
-            datescheduled: string;
-            venue: string;
-            note: string;
-            status: number;
-            datecreated: string;
-          }) => ({
-            id: item.id,
-            name: `${item.datescheduled} - ${item.purpose}`,
-            status: item.status,
-            venue: item.venue,
-            note: item.note,
-            datecreated: item.datecreated,
-          })
-        );
-        setScheduledMeeting(meetingList);
-      } catch (error) {
-        console.error("Error fetching meeting list:", error);
-      }
-    };
-
-    const fetchTotalBudgetCost = async () => {
-      try {
-        if (budgetId) {
-          const response = await axios.get(`${serverUrl}budget/${budgetId}`);
-          const cost = response.data.totalCost;
-          setBudgetAmount(cost || "");
-        }
-      } catch (error) {
-        console.error("Error fetching budget total cost:", error);
-      }
-    };
-
-    const fetchProductionPeriod = async () => {
-      try {
-        const response = await axios.get(
-          `${serverUrl}item/productionperiodlist`
-        );
-        const productionperiodList = response.data.list.map(
-          (item: { id: number; monthadded: string }) => ({
-            id: item.id,
-            name: item.monthadded,
-          })
-        );
-        setproductionPeriodData(productionperiodList);
-      } catch (error) {
-        console.error("Error fetching production periods:", error);
-      }
-    };
-
-    const fetchReceipts = async () => {
-      try {
-        const response = await axios.get(`${serverUrl}item/receiptList`);
-        const filteredSales = response.data.list.map(
-          (item: { id: number; amount: number; datesent: string }) => ({
-            id: item.id,
-            amount: item.amount,
-            date: new Date(item.datesent).toLocaleDateString(),
-          })
-        );
-        setReceiptsData(filteredSales);
-      } catch (error) {
-        console.error("Error fetching receipts:", error);
-      }
-    };
-
-    const fetchRevenue = async () => {
-      try {
-        const response = await axios.get(`${serverUrl}invoice/list`);
-        const { chartdata, totalsales, unpaid } = response.data;
-
-        const latest = chartdata?.[0] || {};
-        setTotalSalesData(totalsales);
-        setCashTotal(Number(latest.cashrevenue || 0));
-        setTillTotal(Number(latest.tillrevenue || 0));
-        setBankTotal(Number(latest.bankrevenue || 0));
-        setUnpaidTotal(Number(unpaid || 0));
-      } catch (error) {
-        console.error("Error fetching revenue:", error);
-      }
-    };
-
-    const fetchIncurredItems = async () => {
-      try {
-        const { data } = await axios.get(`${serverUrl}incurredcost/list`);
-        setIncurred(data?.incurred ?? 0);
-        setCreateddate(data?.datecreated ?? "");
-      } catch (error) {
-        console.error("Error fetching incurred costs:", error);
-      }
-    };
-
-    const fetchPayrollMonths = async () => {
-      try {
-        const response = await axios.get(`${serverUrl}item/PayrollList`);
-        const payrollList = response.data.map(
-          (item: { id: number; monthadded: string }) => ({
-            id: item.id,
-            name: item.monthadded,
-          })
-        );
-        setPayrollMonths(payrollList);
-      } catch (error) {
-        console.error("Error fetching payroll months:", error);
-      }
-    };
-
-    const fetchPreviousPayroll = async () => {
-      try {
-        const response = await axios.get(`${serverUrl}staff/list`);
-        setTotalSalary(response.data.totalsalary || 0);
-        setPayrollMonth(response.data.monthadded);
-      } catch (error) {
-        console.error("Error fetching previous payroll:", error);
-      }
-    };
 
     loadComponent();
-  }, [activeTab, budgetId]); // Add activeTab as dependency
+  }, [activeTab, fetchAllData]); // Now we can safely include fetchAllData
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -1233,23 +1188,6 @@ export default function App() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isNotificationOpen, isRevenueTooltipOpen, isReceivableTooltipOpen]);
-
-  const fetchAllData = async () => {
-    try {
-      await Promise.all([
-        fetchBudgetMonths(),
-        fetchMeeting(),
-        fetchTotalBudgetCost(),
-        fetchReceipts(),
-        fetchRevenue(),
-        fetchIncurredItems(),
-        fetchPreviousPayroll(),
-      ]);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Failed to load some data. Please refresh the page.");
-    }
-  };
 
   const refreshData = async () => {
     await fetchAllData();
@@ -1565,7 +1503,6 @@ export default function App() {
             }}
           >
             <option value="">Monthly Payrolls</option>
-            {/* <option value="new">Create New Payroll</option> */}
             {payrollmonths.map((month, index) => (
               <option key={index} value={month.id}>
                 {month.name}
@@ -1845,31 +1782,4 @@ export default function App() {
       />
     </div>
   );
-}
-function fetchMeeting(): any {
-  throw new Error("Function not implemented.");
-}
-
-function fetchBudgetMonths(): any {
-  throw new Error("Function not implemented.");
-}
-
-function fetchTotalBudgetCost(): any {
-  throw new Error("Function not implemented.");
-}
-
-function fetchReceipts(): any {
-  throw new Error("Function not implemented.");
-}
-
-function fetchRevenue(): any {
-  throw new Error("Function not implemented.");
-}
-
-function fetchIncurredItems(): any {
-  throw new Error("Function not implemented.");
-}
-
-function fetchPreviousPayroll(): any {
-  throw new Error("Function not implemented.");
 }
