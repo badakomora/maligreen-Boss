@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react"
-import axios from "axios"
-import { useEffect, useState, useMemo } from "react"
+import { css } from "@emotion/react";
+import axios from "axios";
+import { useEffect, useState, useMemo } from "react";
 
-import { serverUrl } from "../AppConfig"
-import { toast } from "react-toastify"
-import { Dynamics } from "./Dynamics"
+import { serverUrl } from "../AppConfig";
+import { toast } from "react-toastify";
+import { Dynamics } from "./Dynamics";
 
 const breakdownStyles = css`
   --primary-color: #2a61ae;
@@ -288,34 +288,37 @@ const breakdownStyles = css`
       text-align: left;
     }
   }
-`
+`;
 
 interface Items {
-  id: number
-  name: string
-  status: number
+  id: number;
+  name: string;
+  status: number;
 }
 
 interface IdProps {
-  setBudgetId: React.Dispatch<React.SetStateAction<number | string>>
+  setBudgetId: React.Dispatch<React.SetStateAction<number | string>>;
 }
 
 interface NavbarProps {
-  setActiveTab: React.Dispatch<React.SetStateAction<string>>
+  setActiveTab: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBudgetId }) => {
-  const [budgetMonthsData, setBudgetMonthsData] = useState<Items[]>([])
-  const [incurred, setIncurred] = useState(0)
-  const [incurredstatus, setIncuuredStatus] = useState(0)
-  const [datecreated, setCreateddate] = useState("")
-  const { runningBalance, recentReceipt } = Dynamics()
-  const [biggestexpense, setDailyMax] = useState(0)
-  const [totalexpense, setDailyTotal] = useState(0)
-  const [today, setToday] = useState("")
-  const [totaldaily, setTotalDaily] = useState(0)
-  const [receipttotal, setReceiptTotal] = useState(0)
-  const [totalsales, setTotalsales] = useState(0)
+export const Breakdown: React.FC<NavbarProps & IdProps> = ({
+  setActiveTab,
+  setBudgetId,
+}) => {
+  const [budgetMonthsData, setBudgetMonthsData] = useState<Items[]>([]);
+  const [incurred, setIncurred] = useState(0);
+  const [incurredstatus, setIncuuredStatus] = useState(0);
+  const [datecreated, setCreateddate] = useState("");
+  const { runningBalance, recentReceipt } = Dynamics();
+  const [biggestexpense, setDailyMax] = useState(0);
+  const [totalexpense, setDailyTotal] = useState(0);
+  const [today, setToday] = useState("");
+  const [totaldaily, setTotalDaily] = useState(0);
+  const [receipttotal, setReceiptTotal] = useState(0);
+  const [totalsales, setTotalsales] = useState(0);
 
   // Use useMemo to compute these values whenever the dependencies change
   const todaysExpenses = useMemo(
@@ -325,8 +328,8 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
       runningBalance: runningBalance,
       recentFunding: recentReceipt,
     }),
-    [biggestexpense, totalexpense, runningBalance, recentReceipt],
-  )
+    [biggestexpense, totalexpense, runningBalance, recentReceipt]
+  );
 
   const overallExpenses = useMemo(
     () => ({
@@ -335,121 +338,126 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
       totalRevenue: totalsales,
       variance: totalsales - receipttotal,
     }),
-    [totaldaily, receipttotal, totalsales],
-  )
+    [totaldaily, receipttotal, totalsales]
+  );
 
   useEffect(() => {
-    fetchBudgetMonths()
-    fetchInccurredItems()
-    fetchTodaysExpenses()
-    fetchReceiptTotal()
-    fetchTotalsales()
-  }, [])
+    fetchBudgetMonths();
+    fetchInccurredItems();
+    fetchTodaysExpenses();
+    fetchReceiptTotal();
+    fetchTotalsales();
+  }, []);
 
   const fetchBudgetMonths = async () => {
     try {
-      const response = await axios.get(`${serverUrl}item/budgetList`)
-      const shelterList = response.data.list.map((item: { id: number; monthadded: string; status: number }) => ({
-        id: item.id,
-        name: item.monthadded,
-        status: item.status,
-      }))
-      setBudgetMonthsData(shelterList)
+      const response = await axios.get(`${serverUrl}item/budgetList`);
+      const shelterList = response.data.list.map(
+        (item: { id: number; monthadded: string; status: number }) => ({
+          id: item.id,
+          name: item.monthadded,
+          status: item.status,
+        })
+      );
+      setBudgetMonthsData(shelterList);
     } catch (error) {
-      console.error("Error fetching shelter:", error)
+      console.error("Error fetching shelter:", error);
     }
-  }
+  };
 
   const fetchReceiptTotal = async () => {
     try {
-      const response = await axios.get(`${serverUrl}item/receiptList`)
-      setReceiptTotal(response.data.totalAllTime)
+      const response = await axios.get(`${serverUrl}item/receiptList`);
+      setReceiptTotal(response.data.totalAllTime);
     } catch (error) {
-      console.error("Error fetching receipt total:", error)
+      console.error("Error fetching receipt total:", error);
     }
-  }
+  };
 
   const fetchTotalsales = async () => {
     try {
-      const response = await axios.get(`${serverUrl}invoice/list`)
-      setTotalsales(response.data.totalsales)
+      const response = await axios.get(`${serverUrl}invoice/list`);
+      setTotalsales(response.data.totalsales);
     } catch (error) {
-      console.error("Error fetching total sales:", error)
+      console.error("Error fetching total sales:", error);
     }
-  }
+  };
 
   const fetchTodaysExpenses = async () => {
     try {
-      const response = await axios.get(`${serverUrl}expense/list`)
-      setDailyTotal(response.data.dailyTotal)
-      setDailyMax(response.data.biggestExpense)
-      setToday(response.data.lastDate)
-      setTotalDaily(response.data.totalExpenseOvertime)
+      const response = await axios.get(`${serverUrl}expense/list`);
+      setDailyTotal(response.data.dailyTotal);
+      setDailyMax(response.data.biggestExpense);
+      setToday(response.data.lastDate);
+      setTotalDaily(response.data.totalExpenseOvertime);
     } catch (error) {
-      console.error("Error fetching today's expenses:", error)
+      console.error("Error fetching today's expenses:", error);
     }
-  }
+  };
 
   const fetchInccurredItems = async () => {
     try {
-      const { data } = await axios.get(`${serverUrl}incurredcost/list`)
-      setIncuuredStatus(data?.status ?? 0)
-      setIncurred(data?.incurred ?? 0)
-      setCreateddate(data?.datecreated ?? "")
+      const { data } = await axios.get(`${serverUrl}incurredcost/list`);
+      setIncuuredStatus(data?.status ?? 0);
+      setIncurred(data?.incurred ?? 0);
+      setCreateddate(data?.datecreated ?? "");
     } catch (error) {
-      console.error("Error fetching incurred costs:", error)
+      console.error("Error fetching incurred costs:", error);
     }
-  }
+  };
 
-  const handleStatus = async (newStatus?: number, type?: "incurred" | "budget") => {
+  const handleStatus = async (
+    newStatus?: number,
+    type?: "incurred" | "budget"
+  ) => {
     try {
-      const status = newStatus ?? 2
-      const endpoints = []
+      const status = newStatus ?? 2;
+      const endpoints = [];
 
       if (type === "incurred" || !type) {
         endpoints.push({
           endpoint: "incurredcost/update",
           name: "Incurred costs",
-        })
+        });
       }
       if (type === "budget" || !type) {
-        endpoints.push({ endpoint: "item/budgetUpdate", name: "Budget" })
+        endpoints.push({ endpoint: "item/budgetUpdate", name: "Budget" });
       }
 
       for (const req of endpoints) {
         try {
           const { data } = await axios.post(`${serverUrl}${req.endpoint}`, {
             status,
-          })
+          });
 
           if (data?.tab) {
-            toast.success(data.tab)
+            toast.success(data.tab);
           }
         } catch (error: any) {
           if (error.response?.data?.error) {
-            toast.error(`${req.name}: ${error.response.data.error}`)
+            toast.error(`${req.name}: ${error.response.data.error}`);
           } else {
-            toast.error(`Error updating ${req.name.toLowerCase()}`)
+            toast.error(`Error updating ${req.name.toLowerCase()}`);
           }
         }
       }
 
-      fetchBudgetMonths()
-      fetchInccurredItems()
+      fetchBudgetMonths();
+      fetchInccurredItems();
     } catch (error) {
-      console.error("Error updating status:", error)
-      toast.error("An unexpected error occurred")
+      console.error("Error updating status:", error);
+      toast.error("An unexpected error occurred");
     }
-  }
+  };
 
   const formatCurrency = (amount: number) => {
-    return `KES${amount.toLocaleString()}`
-  }
+    return `KES${amount.toLocaleString()}`;
+  };
   const statusLabels: Record<number, string> = {
     1: "New",
     2: "Opened",
     3: "Running Funds",
-  }
+  };
 
   return (
     <section css={breakdownStyles}>
@@ -457,35 +465,39 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
         <div className="links-section">
           <>
             {incurred === 0 &&
-            budgetMonthsData.filter((month) => month.status === 1 || month.status === 2).length === 0 ? (
+            budgetMonthsData.filter(
+              (month) => month.status === 1 || month.status === 2
+            ).length === 0 ? (
               <div className="empty-state">
-
                 <span>Nothing new here yet!</span>
               </div>
             ) : (
               <>
                 {incurred !== 0 && (
                   <div style={{ display: "flex" }}>
-                    <span className="date-badge">{statusLabels[incurredstatus] || ""}</span>
+                    <span className="date-badge">
+                      {statusLabels[incurredstatus] || ""}
+                    </span>
                     <a
                       href="."
                       className="action-link"
                       onClick={(e) => {
-                        e.preventDefault()
-                        setActiveTab("Incurred Costs")
+                        e.preventDefault();
+                        setActiveTab("Incurred Costs");
                         if (incurredstatus === 1) {
-                          handleStatus(2, "incurred")
+                          handleStatus(2, "incurred");
                         }
                       }}
                     >
-                      Incurred Cost {formatCurrency(incurred).toLocaleString()} - {datecreated}{" "}
+                      Incurred Cost {formatCurrency(incurred).toLocaleString()}{" "}
+                      - {datecreated}{" "}
                       {incurredstatus === 1
                         ? "submitted for approval"
                         : incurredstatus === 2
-                          ? "in Review"
-                          : incurredstatus === 3
-                            ? "approved"
-                            : ""}{" "}
+                        ? "in Review"
+                        : incurredstatus === 3
+                        ? "approved"
+                        : ""}{" "}
                       &raquo;
                     </a>
                   </div>
@@ -494,15 +506,17 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
                   .filter((month) => month.status === 1 || month.status === 2)
                   .map((month, index) => (
                     <div style={{ display: "flex" }} key={index}>
-                      <span className="date-badge">{month.status === 1 ? "New" : "In review"}</span>
+                      <span className="date-badge">
+                        {month.status === 1 ? "New" : "In review"}
+                      </span>
                       <a
                         href="."
                         className="action-link"
                         onClick={(e) => {
-                          e.preventDefault()
-                          setActiveTab("Proposed Budget")
-                          setBudgetId(Number(month.id))
-                          handleStatus(2, "budget")
+                          e.preventDefault();
+                          setActiveTab("Proposed Budget");
+                          setBudgetId(Number(month.id));
+                          handleStatus(2, "budget");
                         }}
                       >
                         {month.name} budget Submitted for approval {"\u00BB"}
@@ -521,9 +535,12 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
               <div className="card">
                 <div className="card-header">
                   <h4 className="section-subtitle">
-                    {today === `${new Date().getMonth() + 1}/${new Date().getDate()}/${new Date().getFullYear()}`
-                      ? "Today's"
-                      : "Last"}
+                    {today ===
+                    `${
+                      new Date().getMonth() + 1
+                    }/${new Date().getDate()}/${new Date().getFullYear()}`
+                      ? "Today's "
+                      : "Last "}
                     Expense Summary <span className="date-badge">{today}</span>
                   </h4>
                 </div>
@@ -534,7 +551,11 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
                       <span className="note"></span>
                     </span>
                     <span className="amount-note">
-                      <span className="amount">{formatCurrency(todaysExpenses.biggestExpense).toLocaleString()}</span>
+                      <span className="amount">
+                        {formatCurrency(
+                          todaysExpenses.biggestExpense
+                        ).toLocaleString()}
+                      </span>
                     </span>
                   </li>
                   <li className="list-item">
@@ -543,7 +564,11 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
                       <span className="note"></span>
                     </span>
                     <span className="amount-note">
-                      <span className="amount">{formatCurrency(todaysExpenses.totalExpense).toLocaleString()}</span>
+                      <span className="amount">
+                        {formatCurrency(
+                          todaysExpenses.totalExpense
+                        ).toLocaleString()}
+                      </span>
                     </span>
                   </li>
                   {/* <li className="list-item">
@@ -557,7 +582,9 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
                   <li className="list-item important-item">
                     <span className="item-name">Running Funding</span>
                     <span className="amount-note">
-                      <span className="amount">{todaysExpenses.recentFunding || "N/A"}</span>
+                      <span className="amount">
+                        {todaysExpenses.recentFunding || "N/A"}
+                      </span>
                     </span>
                   </li>
                 </ul>
@@ -568,19 +595,29 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
             <div className="expense-section">
               <div className="card">
                 <div className="card-header">
-                  <h4 className="section-subtitle">Overall Financial Summary</h4>
+                  <h4 className="section-subtitle">
+                    Overall Financial Summary
+                  </h4>
                 </div>
                 <ul className="items-list">
                   <li className="list-item">
                     <span className="item-name">Total Expense</span>
                     <span className="amount-note">
-                      <span className="amount">{formatCurrency(overallExpenses.totalExpense).toLocaleString()}</span>
+                      <span className="amount">
+                        {formatCurrency(
+                          overallExpenses.totalExpense
+                        ).toLocaleString()}
+                      </span>
                     </span>
                   </li>
                   <li className="list-item">
                     <span className="item-name">Total Funding</span>
                     <span className="amount-note">
-                      <span className="amount">{formatCurrency(overallExpenses.totalFunding).toLocaleString()}</span>
+                      <span className="amount">
+                        {formatCurrency(
+                          overallExpenses.totalFunding
+                        ).toLocaleString()}
+                      </span>
                     </span>
                   </li>
                   <li className="list-item">
@@ -589,12 +626,22 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
                       <span className="note"></span>
                     </span>
                     <span className="amount-note">
-                      <span className="amount">{formatCurrency(overallExpenses.totalRevenue).toLocaleString()}</span>
+                      <span className="amount">
+                        {formatCurrency(
+                          overallExpenses.totalRevenue
+                        ).toLocaleString()}
+                      </span>
                     </span>
                   </li>
                   <li className="total-row important-item">
-                    <span>{overallExpenses.variance >= 0 ? "Profit" : "Loss"}</span>
-                    <span>{formatCurrency(overallExpenses.variance).toLocaleString()}</span>
+                    <span>
+                      {overallExpenses.variance >= 0 ? "Profit" : "Loss"}
+                    </span>
+                    <span>
+                      {formatCurrency(
+                        overallExpenses.variance
+                      ).toLocaleString()}
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -603,5 +650,5 @@ export const Breakdown: React.FC<NavbarProps & IdProps> = ({ setActiveTab, setBu
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
